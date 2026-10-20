@@ -39,6 +39,9 @@ packages = ["herascrape"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+markers = [
+    "live: hits the real api.herascrape.com (needs HERASCRAPE_API_KEY)",
+]
 
 [tool.pyright]
 include = ["herascrape", "tests"]
