@@ -22,6 +22,16 @@ def _page(
     }
 
 
+def _search_page(
+    items: list[int],
+    *,
+    cursor: Optional[str],
+    key: str = "edges",
+) -> Page:
+    """A search/top page: ``edges`` + ``next_cursor``, NO ``has_more``."""
+    return {key: [{"id": n} for n in items], "next_cursor": cursor}
+
+
 def _ids(items: list[Page]) -> list[int]:
     return [item["id"] for item in items]
 
@@ -86,6 +96,16 @@ def test_stops_when_has_more_false_even_if_cursor_set():
     fetch = Script(_page([1], cursor="c1", more=False))
     assert _ids(list(paginate(fetch))) == [1]
     assert fetch.cursors == [None]
+
+
+def test_search_top_shape_without_has_more():
+    fetch = Script(
+        _search_page([1, 2], cursor="c1"),
+        _search_page([3], cursor=None),
+    )
+    items = list(paginate(fetch, item_key="edges"))
+    assert _ids(items) == [1, 2, 3]
+    assert fetch.cursors == [None, "c1"]
 
 
 def test_max_items_truncates_mid_page():
@@ -172,6 +192,17 @@ async def test_async_max_items_on_page_boundary_skips_next_fetch():
 async def test_async_custom_item_key():
     fetch = Script(_page([7], cursor=None, more=False, key="edges"))
     assert _ids(await _acollect(fetch, item_key="edges")) == [7]
+
+
+@pytest.mark.asyncio
+async def test_async_search_top_shape_without_has_more():
+    fetch = Script(
+        _search_page([1, 2], cursor="c1"),
+        _search_page([3], cursor=None),
+    )
+    items = await _acollect(fetch, item_key="edges")
+    assert _ids(items) == [1, 2, 3]
+    assert fetch.cursors == [None, "c1"]
 
 
 @pytest.mark.asyncio
