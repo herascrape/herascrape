@@ -29,6 +29,7 @@ ClientError = Union[HerascrapeAPIError, HerascrapeTransportError]
 _BACKOFF_BASE = 0.5
 _BACKOFF_CAP = 8.0
 _BACKOFF_JITTER = 0.5
+_MAX_RETRY_AFTER = 300.0
 
 _RETRYABLE = (
     HerascrapeTransportError,
@@ -107,7 +108,7 @@ def retry_delay(exc: ClientError, *, attempt: int) -> Optional[float]:
     """Seconds to wait before retrying `exc`, or `None` if it is final."""
     if isinstance(exc, RateLimitError):
         if exc.retry_after is not None:
-            return exc.retry_after
+            return min(exc.retry_after, _MAX_RETRY_AFTER)
         return backoff_delay(attempt)
     return backoff_delay(attempt) if is_retryable(exc) else None
 
