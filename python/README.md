@@ -23,7 +23,7 @@ for follower in client.iter_user_followers(user["pk"], max_items=100):
 - Typed exception hierarchy: `NotFoundError`, `PrivateAccountError`,
   `RateLimitError` and the rest.
 - Retries with backoff, `Retry-After` handling and a client-side rate limiter.
-- Typed package (`py.typed`), Python 3.9+, one dependency: `httpx`.
+- Typed package (`py.typed`), Python 3.10+, one dependency: `httpx`.
 
 Documentation: [herascrape.com/docs](https://herascrape.com/docs).
 
