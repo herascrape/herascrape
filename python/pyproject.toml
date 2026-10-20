@@ -27,6 +27,10 @@ dependencies = ["httpx>=0.24"]
 [project.optional-dependencies]
 dev = ["pytest", "pytest-asyncio", "ruff==0.15.10", "pyright==1.1.414"]
 
+# uv installs this group by default on `uv run`/`uv sync`; the extra above is for pip/CI.
+[dependency-groups]
+dev = ["pytest", "pytest-asyncio", "ruff==0.15.10", "pyright==1.1.414"]
+
 [project.urls]
 Homepage = "https://herascrape.com"
 Repository = "https://github.com/herascrape/herascrape"
