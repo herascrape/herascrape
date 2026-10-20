@@ -40,7 +40,7 @@ packages = ["herascrape"]
 testpaths = ["tests"]
 
 [tool.ruff]
-line-length = 100
+line-length = 80
 target-version = "py39"
 
 [tool.ruff.lint]
