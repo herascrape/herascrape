@@ -1,4 +1,5 @@
-from typing import Optional, Union
+from collections.abc import Callable
+from typing import Optional, TypeVar, Union
 
 JSON = Union[str, int, float, bool, None, list["JSON"], dict[str, "JSON"]]
 
@@ -11,6 +12,17 @@ def _summary(
     return (
         f"{head}: {message}" if isinstance(message, str) and message else head
     )
+
+
+_E = TypeVar("_E", bound="HerascrapeAPIError")
+
+
+def _rebuild(
+    error_class: type[_E], args: tuple[object, ...], state: dict[str, object]
+) -> _E:
+    error = error_class.__new__(error_class, *args)
+    error.__dict__.update(state)
+    return error
 
 
 class HerascrapeError(Exception):
@@ -41,6 +53,12 @@ class HerascrapeAPIError(HerascrapeError):
         self.error_code = error_code
         self.detail = detail
         self.request_id = request_id
+
+    def __reduce__(
+        self,
+    ) -> tuple[Callable[..., "HerascrapeAPIError"], tuple[object, ...]]:
+        """Skip the keyword-only `__init__` so pickle and copy work."""
+        return _rebuild, (type(self), self.args, self.__dict__)
 
 
 class BadRequestError(HerascrapeAPIError):
@@ -149,6 +167,9 @@ _BY_STATUS: dict[int, type[HerascrapeAPIError]] = {
     404: NotFoundError,
     422: ValidationError,
     429: RateLimitError,
+    500: InternalError,
+    502: UpstreamError,
+    503: ServiceUnavailableError,
 }
 
 
