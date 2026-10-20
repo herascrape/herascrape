@@ -43,7 +43,12 @@ def _map(
 
 
 def test_maps_private_account():
-    e = _map(status_code=403, error_code="private_account", detail="x", request_id="r1")
+    e = _map(
+        status_code=403,
+        error_code="private_account",
+        detail="x",
+        request_id="r1",
+    )
     assert isinstance(e, PrivateAccountError) and e.request_id == "r1"
 
 
@@ -52,7 +57,9 @@ def test_profile_not_found_is_notfound_subclass():
 
 
 def test_invalid_cursor_maps():
-    assert isinstance(_map(status_code=400, error_code="invalid_cursor"), InvalidCursorError)
+    assert isinstance(
+        _map(status_code=400, error_code="invalid_cursor"), InvalidCursorError
+    )
 
 
 def test_rate_limit_carries_retry_after():
@@ -66,21 +73,35 @@ def test_validation_dict_detail_exposes_errors():
         error_code="unprocessable_entity",
         detail={"message": "bad", "errors": {"query": "required"}},
     )
-    assert isinstance(e, ValidationError) and e.field_errors == {"query": "required"}
+    assert isinstance(e, ValidationError) and e.field_errors == {
+        "query": "required"
+    }
 
 
 def test_validation_string_detail_no_crash():
-    e = _map(status_code=422, error_code="unprocessable_entity", detail="Invalid request data")
+    e = _map(
+        status_code=422,
+        error_code="unprocessable_entity",
+        detail="Invalid request data",
+    )
     assert isinstance(e, ValidationError) and e.field_errors is None
 
 
 def test_validation_dict_detail_without_errors_key():
-    e = _map(status_code=422, error_code="unprocessable_entity", detail={"message": "bad"})
+    e = _map(
+        status_code=422,
+        error_code="unprocessable_entity",
+        detail={"message": "bad"},
+    )
     assert isinstance(e, ValidationError) and e.field_errors is None
 
 
 def test_validation_non_dict_errors_value_is_ignored():
-    e = _map(status_code=422, error_code="unprocessable_entity", detail={"errors": ["query"]})
+    e = _map(
+        status_code=422,
+        error_code="unprocessable_entity",
+        detail={"errors": ["query"]},
+    )
     assert isinstance(e, ValidationError) and e.field_errors is None
 
 
@@ -115,7 +136,9 @@ def test_5xx_mapping():
 def test_catalog_maps_to_exact_class(
     status_code: int, error_code: str, expected: type[HerascrapeAPIError]
 ):
-    assert type(_map(status_code=status_code, error_code=error_code)) is expected
+    assert (
+        type(_map(status_code=status_code, error_code=error_code)) is expected
+    )
 
 
 @pytest.mark.parametrize(
@@ -131,12 +154,20 @@ def test_catalog_maps_to_exact_class(
         (504, ServerError),
     ],
 )
-def test_unknown_code_falls_back_by_status(status_code: int, expected: type[HerascrapeAPIError]):
-    assert type(_map(status_code=status_code, error_code="something_new")) is expected
+def test_unknown_code_falls_back_by_status(
+    status_code: int, expected: type[HerascrapeAPIError]
+):
+    assert (
+        type(_map(status_code=status_code, error_code="something_new"))
+        is expected
+    )
 
 
 def test_code_under_wrong_status_falls_back_by_status():
-    assert type(_map(status_code=404, error_code="private_account")) is NotFoundError
+    assert (
+        type(_map(status_code=404, error_code="private_account"))
+        is NotFoundError
+    )
 
 
 def test_hierarchy_roots():

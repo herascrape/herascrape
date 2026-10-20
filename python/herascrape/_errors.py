@@ -3,10 +3,14 @@ from typing import Optional, Union
 JSON = Union[str, int, float, bool, None, list["JSON"], dict[str, "JSON"]]
 
 
-def _summary(*, status_code: int, error_code: Optional[str], detail: JSON) -> str:
+def _summary(
+    *, status_code: int, error_code: Optional[str], detail: JSON
+) -> str:
     message = detail.get("message") if isinstance(detail, dict) else detail
     head = f"{status_code} {error_code}" if error_code else str(status_code)
-    return f"{head}: {message}" if isinstance(message, str) and message else head
+    return (
+        f"{head}: {message}" if isinstance(message, str) and message else head
+    )
 
 
 class HerascrapeError(Exception):
@@ -28,7 +32,11 @@ class HerascrapeAPIError(HerascrapeError):
         detail: JSON = None,
         request_id: Optional[str] = None,
     ) -> None:
-        super().__init__(_summary(status_code=status_code, error_code=error_code, detail=detail))
+        super().__init__(
+            _summary(
+                status_code=status_code, error_code=error_code, detail=detail
+            )
+        )
         self.status_code = status_code
         self.error_code = error_code
         self.detail = detail
@@ -40,7 +48,7 @@ class BadRequestError(HerascrapeAPIError):
 
 
 class InvalidCursorError(BadRequestError):
-    """400 invalid_cursor: the pagination cursor is not valid for this request."""
+    """400 invalid_cursor: the pagination cursor is not valid here."""
 
 
 class InvalidParameterError(BadRequestError):
@@ -94,7 +102,10 @@ class RateLimitError(HerascrapeAPIError):
         retry_after: Optional[float] = None,
     ) -> None:
         super().__init__(
-            status_code=status_code, error_code=error_code, detail=detail, request_id=request_id
+            status_code=status_code,
+            error_code=error_code,
+            detail=detail,
+            request_id=request_id,
         )
         self.retry_after = retry_after
 
@@ -141,7 +152,9 @@ _BY_STATUS: dict[int, type[HerascrapeAPIError]] = {
 }
 
 
-def _error_class(*, status_code: int, error_code: Optional[str]) -> type[HerascrapeAPIError]:
+def _error_class(
+    *, status_code: int, error_code: Optional[str]
+) -> type[HerascrapeAPIError]:
     if error_code is not None and (status_code, error_code) in _BY_CODE:
         return _BY_CODE[(status_code, error_code)]
     if status_code in _BY_STATUS:
@@ -157,7 +170,7 @@ def error_from_response(
     request_id: Optional[str],
     retry_after: Optional[float],
 ) -> HerascrapeAPIError:
-    """Build the exception for an error response, falling back by status then to the base."""
+    """Map an error response to its exception, falling back by status."""
     error_class = _error_class(status_code=status_code, error_code=error_code)
     if issubclass(error_class, RateLimitError):
         return error_class(
@@ -168,5 +181,8 @@ def error_from_response(
             retry_after=retry_after,
         )
     return error_class(
-        status_code=status_code, error_code=error_code, detail=detail, request_id=request_id
+        status_code=status_code,
+        error_code=error_code,
+        detail=detail,
+        request_id=request_id,
     )
