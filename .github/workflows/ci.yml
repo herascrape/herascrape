@@ -62,6 +62,55 @@ jobs:
             python/herascrape/_endpoints_sync.py \
             python/herascrape/_endpoints_async.py
 
+  js:
+    name: js client
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: js
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: js/package-lock.json
+
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.13"
+
+      - name: Install
+        run: npm ci
+
+      - name: ESLint
+        run: npx eslint .
+
+      - name: Prettier
+        run: npx prettier --check "**/*.ts"
+
+      - name: Typecheck
+        run: npx tsc --noEmit
+
+      # Capped workers: never fan out across the whole machine.
+      - name: Unit tests
+        run: npx vitest run --minWorkers=1 --maxWorkers=2
+
+      - name: Build
+        run: npm run build
+
+      # prettier is pinned in package-lock, so the emitted TS is byte-stable.
+      - name: Generated TS is up to date
+        working-directory: ${{ github.workspace }}
+        run: |
+          python3 -c "from codegen.generate import generate_ts, JS_SRC_DIR; generate_ts(out_dir=JS_SRC_DIR)"
+          git diff --exit-code -- js/src/endpoints.ts js/src/types.ts
+
   gitleaks:
     name: gitleaks
     if: github.event_name != 'schedule'

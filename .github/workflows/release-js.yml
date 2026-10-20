@@ -1,0 +1,93 @@
+name: Release (npm)
+
+# Release: publish the GitHub Release to npm with provenance.
+# Manual run: build, verify and dry-run publish the selected ref.
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-js
+  cancel-in-progress: false
+
+jobs:
+  publish-npm:
+    name: publish to npm
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    environment:
+      name: npm
+      url: https://www.npmjs.com/package/herascrape
+    permissions:
+      contents: read
+      # Tokenless npm trusted publishing + build provenance attestation.
+      id-token: write
+    defaults:
+      run:
+        working-directory: js
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+        with:
+          node-version: "22"
+          registry-url: "https://registry.npmjs.org"
+          cache: npm
+          cache-dependency-path: js/package-lock.json
+
+      # npm >= 11.5 is required for OIDC trusted publishing.
+      - name: Upgrade npm
+        run: npm install -g npm@latest
+
+      - name: Tag matches package version
+        if: github.event_name == 'release'
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          version="$(node -p "require('./package.json').version")"
+          if [ -z "$version" ] || [ "$TAG" != "v$version" ]; then
+            echo "::error::tag '$TAG' does not match package version '$version'"
+            exit 1
+          fi
+
+      - name: Install
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Unit tests
+        run: npx vitest run --minWorkers=1 --maxWorkers=2
+
+      - name: Verify tarball is clean
+        run: |
+          npm pack --dry-run --json > pack.json
+          files="$(node -e "const p=require('./pack.json');for(const f of p[0].files)console.log(f.path)")"
+          rm -f pack.json
+          echo "$files"
+          if echo "$files" | grep -Ev '^(dist/|README\.md$|LICENSE$|package\.json$)'; then
+            echo "::error::unexpected files in the npm tarball"
+            exit 1
+          fi
+          if echo "$files" | grep -E '\.map$|(^|/)\.env'; then
+            echo "::error::source maps or env files must not be published"
+            exit 1
+          fi
+
+      - name: Publish
+        if: github.event_name == 'release'
+        run: npm publish --provenance --access public
+        env:
+          # Fallback for a scoped automation token if trusted publishing is
+          # not yet bound; ignored when OIDC trusted publishing is enabled.
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Dry-run publish
+        if: github.event_name == 'workflow_dispatch'
+        run: npm publish --provenance --access public --dry-run
