@@ -1,6 +1,6 @@
 import math
 from collections.abc import Mapping
-from typing import Any, Optional, Union
+from typing import Any
 
 import httpx
 import pytest
@@ -36,7 +36,7 @@ API_KEY = "hs_live_xxxxxxxx"
 class Script:
     """MockTransport handler replaying a fixed list of replies."""
 
-    def __init__(self, *replies: Union[httpx.Response, Exception]) -> None:
+    def __init__(self, *replies: httpx.Response | Exception) -> None:
         self._replies = list(replies)
         self.requests: list[httpx.Request] = []
 
@@ -49,10 +49,8 @@ class Script:
 
 
 class Client(BaseSyncClient):
-    def get(
-        self, path: str, *, params: Optional[Mapping[str, Any]] = None
-    ) -> Any:
-        return self._request("GET", path, params=params)
+    def get(self, path: str, *, params: Mapping[str, Any] | None = None) -> Any:
+        return self._request(method="get", path=path, params=params)
 
     @property
     def closed(self) -> bool:
@@ -60,9 +58,9 @@ class Client(BaseSyncClient):
 
 
 def _make(
-    *replies: Union[httpx.Response, Exception],
+    *replies: httpx.Response | Exception,
     max_retries: int = 3,
-    rate_limit: Optional[RateLimit] = None,
+    rate_limit: RateLimit | None = None,
 ) -> tuple[Client, Script, list[float]]:
     script = Script(*replies)
     sleeps: list[float] = []
@@ -85,7 +83,7 @@ def _error(
     error_code: str,
     *,
     detail: str = "nope",
-    headers: Optional[dict[str, str]] = None,
+    headers: dict[str, str] | None = None,
 ) -> httpx.Response:
     return httpx.Response(
         status_code,
@@ -292,7 +290,7 @@ def test_api_key_falls_back_to_environment(
 
 @pytest.mark.parametrize("api_key", [None, ""])
 def test_missing_api_key_raises_authentication_error(
-    monkeypatch: pytest.MonkeyPatch, api_key: Optional[str]
+    monkeypatch: pytest.MonkeyPatch, api_key: str | None
 ):
     monkeypatch.delenv("HERASCRAPE_API_KEY", raising=False)
     with pytest.raises(AuthenticationError, match="HERASCRAPE_API_KEY"):
@@ -340,7 +338,7 @@ def test_parse_error_reads_body_and_headers():
     ],
 )
 def test_parse_error_retry_after_values(
-    header: Optional[str], expected: Optional[float]
+    header: str | None, expected: float | None
 ):
     headers = {} if header is None else {"retry-after": header}
     error = parse_error(status_code=429, headers=headers, body=b"")
@@ -384,7 +382,7 @@ def test_parse_error_ignores_non_string_error_code():
     ],
 )
 def test_is_retryable_keys_on_exception_class(
-    error: Union[HerascrapeAPIError, HerascrapeTransportError], expected: bool
+    error: HerascrapeAPIError | HerascrapeTransportError, expected: bool
 ):
     assert is_retryable(error) is expected
 

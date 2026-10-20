@@ -50,7 +50,7 @@ class Script {
 
 class TestClient extends BaseClient {
   get(path: string, params?: QueryParams): Promise<Record<string, unknown>> {
-    return this.request("GET", path, params);
+    return this.request({ method: "get", path, searchParams: params });
   }
 }
 

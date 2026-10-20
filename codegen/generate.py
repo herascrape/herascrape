@@ -136,7 +136,7 @@ def _build_endpoints() -> list[Endpoint]:
 def _annot(param: Param) -> str:
     if param.required:
         return f"{param.name}: {param.base_type}"
-    return f"{param.name}: Optional[{param.base_type}] = None"
+    return f"{param.name}: {param.base_type} | None = None"
 
 
 def _path_expr(ep: Endpoint) -> str:
@@ -180,12 +180,14 @@ def _method(ep: Endpoint, *, is_async: bool) -> list[str]:
     await_ = "await " if is_async else ""
     if ep.query_params:
         out.append(
-            f'        return {await_}self._request("get", {_path_expr(ep)}, '
+            f'        return {await_}self._request(method="get", '
+            f"path={_path_expr(ep)}, "
             f"params={_params_dict(ep.query_params)})"
         )
     else:
         out.append(
-            f'        return {await_}self._request("get", {_path_expr(ep)})'
+            f'        return {await_}self._request(method="get", '
+            f"path={_path_expr(ep)})"
         )
     return out
 
@@ -196,7 +198,7 @@ def _iter_method(ep: Endpoint, *, is_async: bool) -> list[str]:
     parts = ["self"] + [f"{p.name}: {p.base_type}" for p in ep.path_params]
     parts.append("*")
     parts += [_annot(p) for p in ep.query_params if p.name != "cursor"]
-    parts.append("max_items: Optional[int] = None")
+    parts.append("max_items: int | None = None")
     sig = f"({', '.join(parts)}) -> {iter_ret}[Any]:"
     out: list[str] = [f"    def iter_{ep.name}{sig}"]
     out += _session_fills(ep)
@@ -208,7 +210,7 @@ def _iter_method(ep: Endpoint, *, is_async: bool) -> list[str]:
     call = f"self.{ep.name}({', '.join(args)})"
     await_ = "await " if is_async else ""
     def_fetch = "async def fetch" if is_async else "def fetch"
-    out.append(f"        {def_fetch}(cursor: Optional[str]) -> Page:")
+    out.append(f"        {def_fetch}(cursor: str | None) -> Page:")
     out.append(f"            return {await_}{call}")
     out.append(
         f'        return {paginate_fn}(fetch, item_key="{ep.item_key}", '
@@ -229,7 +231,7 @@ def _render_module(*, is_async: bool, endpoints: list[Endpoint]) -> str:
         "",
         "import uuid",
         f"from collections.abc import {abc_import}",
-        "from typing import Any, Optional",
+        "from typing import Any",
         "",
         f"from ._base import {client}",
         f"from ._pagination import Page, {paginate_fn}",
@@ -256,14 +258,14 @@ def _render_types() -> str:
     lines = [
         HEADER.rstrip("\n"),
         "",
-        "from typing import Any, Optional, TypedDict",
+        "from typing import Any, TypedDict",
         "",
         "",
         "class Page(TypedDict):",
         '    """One page of a cursor-paginated response."""',
         "",
         "    items: list[Any]",
-        "    next_cursor: Optional[str]",
+        "    next_cursor: str | None",
         "    has_more: bool",
         "",
         "",
@@ -349,17 +351,20 @@ def _ts_method(ep: Endpoint) -> list[str]:
         out.append("    }")
     out += _ts_session_fills(ep)
     if ep.query_params:
-        out.append(
-            f'    return this.request{type_arg}("get", {_ts_path_expr(ep)}, {{'
-        )
+        out.append(f"    return this.request{type_arg}({{")
+        out.append('      method: "get",')
+        out.append(f"      path: {_ts_path_expr(ep)},")
+        out.append("      searchParams: {")
         for p in ep.query_params:
             c = _camel(p.name)
             value = c if p.is_session_id else f"opts.{c}"
-            out.append(f"      {p.name}: {value},")
+            out.append(f"        {p.name}: {value},")
+        out.append("      },")
         out.append("    });")
     else:
         out.append(
-            f'    return this.request{type_arg}("get", {_ts_path_expr(ep)});'
+            f"    return this.request{type_arg}({{ "
+            f'method: "get", path: {_ts_path_expr(ep)} }});'
         )
     out.append("  }")
     return out
@@ -471,7 +476,7 @@ def _ruff_format(paths: list[Path]) -> None:
             "--line-length",
             "80",
             "--target-version",
-            "py39",
+            "py310",
             *[str(p) for p in paths],
         ],
         check=True,

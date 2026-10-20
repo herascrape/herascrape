@@ -61,7 +61,7 @@ def test_name_map_covers_all_paths():
 def test_generated_sync_has_user_followers_signature():
     sig = _nows(_sync_source())
     assert (
-        "defuser_followers(self,user_id:str,*,cursor:Optional[str]=None)->Any:"
+        "defuser_followers(self,user_id:str,*,cursor:str|None=None)->Any:"
         in sig
     )
 
@@ -102,7 +102,7 @@ def test_required_query_param_has_no_default():
     sig = _nows(_method_src(_sync_source(), "search_users"))
     assert "query:str," in sig
     assert "query:str=None" not in sig
-    assert "search_session_id:Optional[str]=None" in sig
+    assert "search_session_id:str|None=None" in sig
 
 
 def test_resolve_media_requires_exactly_one():
@@ -121,7 +121,7 @@ def test_resolve_media_requires_exactly_one():
 def test_async_mixin_structure():
     src = _nows(_async_source())
     assert (
-        "asyncdefuser_followers(self,user_id:str,*,cursor:Optional[str]=None)"
+        "asyncdefuser_followers(self,user_id:str,*,cursor:str|None=None)"
         "->Any:" in src
     )
     assert "defiter_user_followers(" in src

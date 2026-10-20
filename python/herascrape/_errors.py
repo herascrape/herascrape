@@ -1,12 +1,10 @@
 from collections.abc import Callable
-from typing import Optional, TypeVar, Union
+from typing import TypeVar
 
-JSON = Union[str, int, float, bool, None, list["JSON"], dict[str, "JSON"]]
+JSON = str | int | float | bool | None | list["JSON"] | dict[str, "JSON"]
 
 
-def _summary(
-    *, status_code: int, error_code: Optional[str], detail: JSON
-) -> str:
+def _summary(*, status_code: int, error_code: str | None, detail: JSON) -> str:
     message = detail.get("message") if isinstance(detail, dict) else detail
     head = f"{status_code} {error_code}" if error_code else str(status_code)
     return (
@@ -40,9 +38,9 @@ class HerascrapeAPIError(HerascrapeError):
         self,
         *,
         status_code: int,
-        error_code: Optional[str] = None,
+        error_code: str | None = None,
         detail: JSON = None,
-        request_id: Optional[str] = None,
+        request_id: str | None = None,
     ) -> None:
         super().__init__(
             _summary(
@@ -97,7 +95,7 @@ class ValidationError(HerascrapeAPIError):
     """422: the request failed validation."""
 
     @property
-    def field_errors(self) -> Optional[dict[str, str]]:
+    def field_errors(self) -> dict[str, str] | None:
         """Per-field messages from `detail["errors"]`, if the API sent them."""
         if not isinstance(self.detail, dict):
             return None
@@ -114,10 +112,10 @@ class RateLimitError(HerascrapeAPIError):
         self,
         *,
         status_code: int,
-        error_code: Optional[str] = None,
+        error_code: str | None = None,
         detail: JSON = None,
-        request_id: Optional[str] = None,
-        retry_after: Optional[float] = None,
+        request_id: str | None = None,
+        retry_after: float | None = None,
     ) -> None:
         super().__init__(
             status_code=status_code,
@@ -174,7 +172,7 @@ _BY_STATUS: dict[int, type[HerascrapeAPIError]] = {
 
 
 def _error_class(
-    *, status_code: int, error_code: Optional[str]
+    *, status_code: int, error_code: str | None
 ) -> type[HerascrapeAPIError]:
     if error_code is not None and (status_code, error_code) in _BY_CODE:
         return _BY_CODE[(status_code, error_code)]
@@ -186,10 +184,10 @@ def _error_class(
 def error_from_response(
     *,
     status_code: int,
-    error_code: Optional[str],
+    error_code: str | None,
     detail: JSON,
-    request_id: Optional[str],
-    retry_after: Optional[float],
+    request_id: str | None,
+    retry_after: float | None,
 ) -> HerascrapeAPIError:
     """Map an error response to its exception, falling back by status."""
     error_class = _error_class(status_code=status_code, error_code=error_code)

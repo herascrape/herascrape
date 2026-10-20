@@ -1,5 +1,5 @@
 import re
-from typing import Any, Optional
+from typing import Any
 
 import httpx
 import pytest
@@ -41,7 +41,7 @@ def _ok(data: object) -> httpx.Response:
 def _page(
     items: list[Any],
     *,
-    next_cursor: Optional[str] = None,
+    next_cursor: str | None = None,
     key: str = "items",
 ) -> httpx.Response:
     return _ok(
@@ -56,7 +56,7 @@ def _page(
 def _search_top_page(
     edges: list[Any],
     *,
-    next_cursor: Optional[str] = None,
+    next_cursor: str | None = None,
 ) -> httpx.Response:
     """Real ``/search/top`` shape: ``edges`` + ``next_cursor``, NO has_more."""
     return _ok(

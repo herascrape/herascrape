@@ -3,7 +3,7 @@ import threading
 import time
 from collections.abc import Awaitable, Callable
 from dataclasses import dataclass
-from typing import Literal, Optional
+from typing import Literal
 
 Period = Literal["s", "m", "h", "d"]
 
@@ -42,7 +42,7 @@ class RateLimiter:
 
     def __init__(
         self,
-        limit: Optional[RateLimit],
+        limit: RateLimit | None,
         *,
         now: Callable[[], float] = time.monotonic,
         sleep: Callable[[float], None] = time.sleep,
