@@ -1,0 +1,149 @@
+name: Release (PyPI)
+
+# Release: publish the GitHub Release to PyPI.
+# Manual run: publish the selected ref to TestPyPI as a dry run.
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-python
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: build distributions
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.13"
+
+      - name: Tag matches package version
+        if: github.event_name == 'release'
+        env:
+          TAG: ${{ github.event.release.tag_name }}
+        run: |
+          version="$(sed -n 's/^__version__ = "\(.*\)"$/\1/p' python/herascrape/__init__.py)"
+          if [ -z "$version" ] || [ "$TAG" != "v$version" ]; then
+            echo "::error::tag '$TAG' does not match __version__ '$version'"
+            exit 1
+          fi
+
+      - name: Build sdist and wheel
+        run: |
+          python -m pip install "build==1.6.1" "twine==7.0.0"
+          python -m build python
+          twine check --strict python/dist/*
+
+      - name: Verify distribution contents
+        run: |
+          python - <<'PY'
+          import tarfile
+          import zipfile
+          from pathlib import Path
+
+          dist = Path("python/dist")
+          (wheel,) = dist.glob("*.whl")
+          (sdist,) = dist.glob("*.tar.gz")
+          wheel_files = zipfile.ZipFile(wheel).namelist()
+          sdist_files = tarfile.open(sdist).getnames()
+
+          package = [
+              "herascrape/py.typed",
+              "herascrape/types.py",
+              "herascrape/_endpoints_sync.py",
+              "herascrape/_endpoints_async.py",
+          ]
+          missing = [name for name in package if name not in wheel_files]
+          if not any(n.endswith(".dist-info/licenses/LICENSE") for n in wheel_files):
+              missing.append("wheel LICENSE")
+          if not any(n.endswith("/LICENSE") for n in sdist_files):
+              missing.append("sdist LICENSE")
+
+          banned_dirs = {"tests", "examples", "codegen", ".superpowers", ".github"}
+          stray = [
+              name
+              for name in wheel_files + sdist_files
+              if banned_dirs & set(Path(name).parts)
+              or Path(name).name.startswith(".env")
+              or name.endswith(".pyc")
+          ]
+
+          print("\n".join(sorted(wheel_files + sdist_files)))
+          if missing or stray:
+              raise SystemExit(f"missing={missing} stray={stray}")
+          PY
+
+      - name: Smoke test the wheel
+        run: |
+          python -m venv "$RUNNER_TEMP/smoke"
+          "$RUNNER_TEMP/smoke/bin/pip" install python/dist/*.whl
+          cd "$RUNNER_TEMP"
+          smoke/bin/python -c "import herascrape; print(herascrape.__version__)"
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: python-dist
+          path: python/dist/
+          if-no-files-found: error
+          retention-days: 7
+
+  publish-testpypi:
+    name: publish to TestPyPI
+    if: github.event_name == 'workflow_dispatch'
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/p/herascrape
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: python-dist
+          path: dist/
+
+      - uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # v1.14.2
+        with:
+          repository-url: https://test.pypi.org/legacy/
+          skip-existing: true
+          attestations: true
+
+  publish-pypi:
+    name: publish to PyPI
+    if: github.event_name == 'release'
+    needs: build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    environment:
+      name: pypi
+      url: https://pypi.org/p/herascrape
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: python-dist
+          path: dist/
+
+      - uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # v1.14.2
+        with:
+          attestations: true
