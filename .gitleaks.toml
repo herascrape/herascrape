@@ -1,0 +1,4 @@
+title = "herascrape gitleaks config"
+
+[extend]
+useDefault = true

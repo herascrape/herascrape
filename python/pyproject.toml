@@ -1,0 +1,52 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "herascrape"
+dynamic = ["version"]
+description = "Official Python client for the herascrape Instagram API."
+requires-python = ">=3.9"
+license = "MIT"
+authors = [{ name = "herascrape" }]
+keywords = ["instagram api", "instagram scraper", "instagram private api"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Typing :: Typed",
+]
+dependencies = ["httpx>=0.24"]
+
+[project.optional-dependencies]
+dev = ["pytest", "pytest-asyncio", "ruff", "pyright"]
+
+[project.urls]
+Homepage = "https://herascrape.com"
+Repository = "https://github.com/herascrape/herascrape"
+
+[tool.hatch.version]
+path = "herascrape/__init__.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["herascrape"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "RUF"]
+
+[tool.pyright]
+include = ["herascrape", "tests"]
+pythonVersion = "3.9"
+typeCheckingMode = "strict"
