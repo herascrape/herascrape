@@ -4,6 +4,7 @@ __pycache__/
 *.egg-info/
 .venv/
 venv/
+uv.lock
 build/
 dist/
 
@@ -20,6 +21,7 @@ htmlcov/
 
 # Local tooling
 .superpowers/
+.vscode/
 .DS_Store
 
 # Node
