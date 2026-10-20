@@ -6,6 +6,7 @@ build-backend = "hatchling.build"
 name = "herascrape"
 dynamic = ["version"]
 description = "Official Python client for the herascrape Instagram API."
+readme = "README.md"
 requires-python = ">=3.9"
 license = "MIT"
 authors = [{ name = "herascrape" }]
