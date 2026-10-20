@@ -191,6 +191,15 @@ def test_429_honors_retry_after_header():
     assert sleeps == [2.0]
 
 
+def test_429_retry_after_wait_is_capped():
+    client, _, sleeps = _make(
+        _error(429, "too_many_requests", headers={"Retry-After": "86400"}),
+        _ok({"pk": "1"}),
+    )
+    assert client.get("/users/1") == {"pk": "1"}
+    assert sleeps == [300.0]
+
+
 def test_429_exhausted_raises_rate_limit():
     client, script, sleeps = _make(
         *[_error(429, "too_many_requests") for _ in range(3)], max_retries=2
