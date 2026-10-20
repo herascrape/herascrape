@@ -1,0 +1,6 @@
+line-length = 80
+target-version = "py39"
+src = ["python", "."]
+
+[lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "RUF"]

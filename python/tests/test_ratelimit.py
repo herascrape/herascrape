@@ -1,4 +1,5 @@
 import dataclasses
+import math
 
 import pytest
 
@@ -25,6 +26,12 @@ class FakeClock:
 
 def _limiter(clock: FakeClock, limit: RateLimit) -> RateLimiter:
     return RateLimiter(limit, now=clock.now, sleep=clock.sleep)
+
+
+def _assert_slept(clock: FakeClock, expected: list[float]) -> None:
+    assert len(clock.slept) == len(expected)
+    for got, want in zip(clock.slept, expected):
+        assert math.isclose(got, want, rel_tol=1e-6)
 
 
 def test_ratelimit_period_seconds():
@@ -92,7 +99,7 @@ def test_burst_equals_rate_then_one_token_interval_each():
     assert clock.slept == []
     for _ in range(3):
         limiter.acquire()
-    assert clock.slept == [pytest.approx(0.25)] * 3
+    _assert_slept(clock, [0.25] * 3)
 
 
 def test_tokens_refill_with_time():
@@ -112,7 +119,7 @@ def test_idle_time_does_not_bank_more_than_burst():
     clock.t += 3600.0
     for _ in range(3):
         limiter.acquire()
-    assert clock.slept == [pytest.approx(0.5)]
+    _assert_slept(clock, [0.5])
 
 
 def test_slow_limit_refills_per_period():
@@ -120,7 +127,7 @@ def test_slow_limit_refills_per_period():
     limiter = _limiter(clock, RateLimit(rate=1, period_length=2, period="m"))
     limiter.acquire()
     limiter.acquire()
-    assert clock.slept == [pytest.approx(120.0)]
+    _assert_slept(clock, [120.0])
 
 
 @pytest.mark.asyncio
@@ -129,7 +136,7 @@ async def test_async_mirrors_sync_pacing():
     limiter = _limiter(clock, RateLimit(rate=2, period="s"))
     for _ in range(4):
         await limiter.aacquire(clock.asleep)
-    assert clock.slept == [pytest.approx(0.5)] * 2
+    _assert_slept(clock, [0.5] * 2)
 
 
 @pytest.mark.asyncio
@@ -138,4 +145,4 @@ async def test_async_and_sync_share_one_bucket():
     limiter = _limiter(clock, RateLimit(rate=1, period="s"))
     limiter.acquire()
     await limiter.aacquire(clock.asleep)
-    assert clock.slept == [pytest.approx(1.0)]
+    _assert_slept(clock, [1.0])

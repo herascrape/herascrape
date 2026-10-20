@@ -28,7 +28,10 @@ _TYPE_MAP = {
     "number": "float",
     "boolean": "bool",
 }
-_RETURN_TYPES = {"resolve_media": "MediaIdResolution", "balance": "BalanceResponse"}
+_RETURN_TYPES = {
+    "resolve_media": "MediaIdResolution",
+    "balance": "BalanceResponse",
+}
 
 # Cursor endpoints returning a raw feed dict, not a Page; no iter_.
 _NON_PAGE_CURSOR_ENDPOINTS = frozenset({"user_posts"})
@@ -93,7 +96,9 @@ def _build_endpoints() -> list[Endpoint]:
             for p in params
             if p["in"] == "path"
         )
-        query_params = tuple(_query_param(p) for p in params if p["in"] == "query")
+        query_params = tuple(
+            _query_param(p) for p in params if p["in"] == "query"
+        )
         name = PATH_METHOD_NAMES[path]
         endpoints.append(
             Endpoint(
@@ -142,12 +147,16 @@ def _method(ep: Endpoint, *, is_async: bool) -> list[str]:
     if ep.query_params:
         parts.append("*")
         parts += [_annot(p) for p in ep.query_params]
-    out: list[str] = [f"    {kw} {ep.name}({', '.join(parts)}) -> {ep.return_type}:"]
+    out: list[str] = [
+        f"    {kw} {ep.name}({', '.join(parts)}) -> {ep.return_type}:"
+    ]
     out.append(f'        """{ep.summary}"""')
     if ep.name == "resolve_media":
         out.append("        if (pk is None) == (code is None):")
         out.append("            raise ValueError(")
-        out.append('                "resolve_media needs exactly one of pk or code"')
+        out.append(
+            '                "resolve_media needs exactly one of pk or code"'
+        )
         out.append("            )")
     out += _session_fills(ep)
     await_ = "await " if is_async else ""
@@ -157,7 +166,9 @@ def _method(ep: Endpoint, *, is_async: bool) -> list[str]:
             f"params={_params_dict(ep.query_params)})"
         )
     else:
-        out.append(f'        return {await_}self._request("get", {_path_expr(ep)})')
+        out.append(
+            f'        return {await_}self._request("get", {_path_expr(ep)})'
+        )
     return out
 
 
@@ -172,7 +183,9 @@ def _iter_method(ep: Endpoint, *, is_async: bool) -> list[str]:
     out: list[str] = [f"    def iter_{ep.name}{sig}"]
     out += _session_fills(ep)
     args = [p.name for p in ep.path_params]
-    args += [f"{p.name}={p.name}" for p in ep.query_params if p.name != "cursor"]
+    args += [
+        f"{p.name}={p.name}" for p in ep.query_params if p.name != "cursor"
+    ]
     args.append("cursor=cursor")
     call = f"self.{ep.name}({', '.join(args)})"
     await_ = "await " if is_async else ""

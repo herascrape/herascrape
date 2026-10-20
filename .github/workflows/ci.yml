@@ -1,0 +1,84 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: test (py${{ matrix.python-version }})
+    # Pinned: ubuntu-latest may move to an image without Python 3.9.
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      # ruff is pinned in the dev extras: another version reflows the
+      # generated files and fails the regen check.
+      - name: Install
+        run: |
+          python -m pip install -e "python[dev]"
+          ruff --version
+
+      - name: Ruff lint
+        run: ruff check python codegen
+
+      - name: Ruff format
+        run: ruff format --check python codegen
+
+      - name: Pyright
+        run: pyright --project python
+
+      - name: Unit tests
+        run: python -m pytest python/tests -k "not live" -v
+
+      - name: Generated files are up to date
+        run: |
+          python -m codegen.generate
+          git diff --exit-code -- \
+            python/herascrape/types.py \
+            python/herascrape/_endpoints_sync.py \
+            python/herascrape/_endpoints_async.py
+
+  gitleaks:
+    name: gitleaks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      GITLEAKS_VERSION: "8.30.1"
+      GITLEAKS_SHA256: "551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Install gitleaks
+        run: |
+          archive="$RUNNER_TEMP/gitleaks.tar.gz"
+          curl --proto '=https' --tlsv1.2 -sSfL -o "$archive" \
+            "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+          echo "${GITLEAKS_SHA256}  $archive" | sha256sum --check --strict
+          tar -xzf "$archive" -C "$RUNNER_TEMP" gitleaks
+
+      - name: Scan history
+        run: |
+          "$RUNNER_TEMP/gitleaks" git --redact --verbose --no-banner .
