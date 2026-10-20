@@ -127,7 +127,8 @@ jobs:
 
   publish-pypi:
     name: publish to PyPI
-    if: github.event_name == 'release'
+    # Prereleases never publish.
+    if: github.event_name == 'release' && github.event.release.prerelease == false
     needs: build
     runs-on: ubuntu-24.04
     timeout-minutes: 10
