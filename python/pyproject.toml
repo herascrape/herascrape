@@ -9,6 +9,7 @@ description = "Official Python client for the herascrape Instagram API."
 readme = "README.md"
 requires-python = ">=3.9"
 license = "MIT"
+license-files = ["LICENSE"]
 authors = [{ name = "herascrape" }]
 keywords = ["instagram api", "instagram scraper", "instagram private api"]
 classifiers = [
@@ -33,6 +34,9 @@ Repository = "https://github.com/herascrape/herascrape"
 
 [tool.hatch.version]
 path = "herascrape/__init__.py"
+
+[tool.hatch.build.targets.sdist]
+include = ["/herascrape"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["herascrape"]
