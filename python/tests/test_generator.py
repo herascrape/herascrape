@@ -71,10 +71,22 @@ def test_search_top_uses_edges():
     assert src.count('item_key="edges"') == 1
 
 
+def test_user_posts_has_no_iter():
+    for src in (_sync_source(), _async_source()):
+        assert "def user_posts(" in src
+        assert "def iter_user_posts(" not in src
+
+
 def test_balance_return_typed():
     sig = _nows(_sync_source())
     assert "defbalance(self)->BalanceResponse:" in sig
     assert "->MediaIdResolution:" in sig
+
+
+def test_balance_usd_typed_as_str():
+    src = _nows((_PKG / "types.py").read_text())
+    assert "balance_usd:str" in src
+    assert "balance_usd:float" not in src
 
 
 def test_required_query_param_has_no_default():

@@ -30,6 +30,9 @@ _TYPE_MAP = {
 }
 _RETURN_TYPES = {"resolve_media": "MediaIdResolution", "balance": "BalanceResponse"}
 
+# Cursor endpoints returning a raw feed dict, not a Page; no iter_.
+_NON_PAGE_CURSOR_ENDPOINTS = frozenset({"user_posts"})
+
 _OUTPUT_FILES = ("types.py", "_endpoints_sync.py", "_endpoints_async.py")
 
 
@@ -212,7 +215,7 @@ def _render_module(*, is_async: bool, endpoints: list[Endpoint]) -> str:
     for ep in endpoints:
         lines.append("")
         lines += _method(ep, is_async=is_async)
-        if ep.paginable:
+        if ep.paginable and ep.name not in _NON_PAGE_CURSOR_ENDPOINTS:
             lines.append("")
             lines += _iter_method(ep, is_async=is_async)
     return "\n".join(lines) + "\n"
@@ -243,7 +246,7 @@ def _render_types() -> str:
         "class BalanceResponse(TypedDict):",
         '    """Remaining account balance."""',
         "",
-        "    balance_usd: float",
+        "    balance_usd: str",
         "    currency: str",
     ]
     return "\n".join(lines) + "\n"

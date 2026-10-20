@@ -21,5 +21,5 @@ class MediaIdResolution(TypedDict):
 class BalanceResponse(TypedDict):
     """Remaining account balance."""
 
-    balance_usd: float
+    balance_usd: str
     currency: str

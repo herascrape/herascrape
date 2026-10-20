@@ -70,18 +70,6 @@ class AsyncEndpoints(BaseAsyncClient):
             params={"cursor": cursor, "max_id": max_id},
         )
 
-    def iter_user_posts(
-        self,
-        user_id: str,
-        *,
-        max_id: Optional[str] = None,
-        max_items: Optional[int] = None,
-    ) -> AsyncIterator[Any]:
-        async def fetch(cursor: Optional[str]) -> Page:
-            return await self.user_posts(user_id, max_id=max_id, cursor=cursor)
-
-        return apaginate(fetch, item_key="items", max_items=max_items)
-
     async def user_reels(
         self,
         user_id: str,
