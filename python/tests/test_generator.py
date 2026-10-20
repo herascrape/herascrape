@@ -13,12 +13,21 @@ from codegen import generate  # noqa: E402
 from codegen.names import PATH_METHOD_NAMES  # noqa: E402
 
 _PKG = _REPO_ROOT / "python" / "herascrape"
+_JS_SRC = _REPO_ROOT / "js" / "src"
 _OPENAPI = _REPO_ROOT / "openapi.json"
 
 
 def _openapi_paths() -> set[str]:
     paths: dict[str, object] = json.loads(_OPENAPI.read_text())["paths"]
     return set(paths)
+
+
+def _ts_endpoints() -> str:
+    return (_JS_SRC / "endpoints.ts").read_text()
+
+
+def _ts_types() -> str:
+    return (_JS_SRC / "types.ts").read_text()
 
 
 def _sync_source() -> str:
@@ -124,4 +133,51 @@ def test_regen_is_clean(tmp_path: Path):
     for name in ("types.py", "_endpoints_sync.py", "_endpoints_async.py"):
         got = (tmp_path / name).read_text()
         want = (_PKG / name).read_text()
+        assert got == want, f"{name} differs from a fresh regeneration"
+
+
+def test_emits_ts_endpoints():
+    src = _nows(_ts_endpoints())
+    assert (
+        "userFollowers(opts:{userId:string;cursor?:string;}):"
+        "Promise<Record<string,unknown>>" in src
+    )
+    assert "iterUserFollowers(opts:{" in src
+
+
+def test_ts_user_posts_has_no_iter():
+    src = _ts_endpoints()
+    assert "userPosts(opts: {" in src
+    assert "iterUserPosts(" not in src
+
+
+def test_ts_search_top_uses_edges():
+    src = _ts_endpoints()
+    assert "iterSearchTop(opts: {" in src
+    assert src.count('itemKey: "edges"') == 1
+
+
+def test_ts_search_autogenerates_session_ids():
+    src = _nows(_ts_endpoints())
+    assert "constsearchSessionId=opts.searchSessionId??sessionId();" in src
+
+
+def test_ts_balance_and_resolve_media_typed():
+    endpoints = _nows(_ts_endpoints())
+    assert "balance():Promise<BalanceResponse>" in endpoints
+    assert "):Promise<MediaIdResolution>" in endpoints
+    types = _nows(_ts_types())
+    assert "balance_usd:string" in types
+    assert "balance_usd:number" not in types
+
+
+@pytest.mark.skipif(
+    not generate._PRETTIER_BIN.exists(),
+    reason="prettier not installed; run `npm ci` in js/",
+)
+def test_ts_regen_is_clean(tmp_path: Path):
+    generate.generate_ts(out_dir=tmp_path)
+    for name in ("types.ts", "endpoints.ts"):
+        got = (tmp_path / name).read_text()
+        want = (_JS_SRC / name).read_text()
         assert got == want, f"{name} differs from a fresh regeneration"
