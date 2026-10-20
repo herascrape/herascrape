@@ -7,7 +7,9 @@ Item = dict[str, Any]
 
 def _next_cursor(page: Page) -> Optional[str]:
     """Cursor for the following page, or None when the walk is over."""
-    return page["next_cursor"] if page["has_more"] else None
+    next_cursor = page["next_cursor"]
+    has_more = page.get("has_more", next_cursor is not None)
+    return next_cursor if has_more else None
 
 
 def paginate(
