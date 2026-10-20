@@ -17,6 +17,8 @@ concurrency:
 jobs:
   publish-npm:
     name: publish to npm
+    # Prereleases never publish; a manual run is always a dry run.
+    if: github.event_name == 'workflow_dispatch' || github.event.release.prerelease == false
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     environment:

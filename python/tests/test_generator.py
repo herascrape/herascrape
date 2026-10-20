@@ -172,7 +172,7 @@ def test_ts_balance_and_resolve_media_typed():
 
 
 @pytest.mark.skipif(
-    not generate._PRETTIER_BIN.exists(),
+    not generate.PRETTIER_BIN.exists(),
     reason="prettier not installed; run `npm ci` in js/",
 )
 def test_ts_regen_is_clean(tmp_path: Path):

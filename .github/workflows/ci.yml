@@ -54,9 +54,10 @@ jobs:
       - name: Unit tests
         run: python -m pytest python/tests -m "not live" -v
 
+      # Python only: the TS generator needs prettier, installed in the js job.
       - name: Generated files are up to date
         run: |
-          python -m codegen.generate
+          python -c "from codegen.generate import generate, PACKAGE_DIR; generate(out_dir=PACKAGE_DIR)"
           git diff --exit-code -- \
             python/herascrape/types.py \
             python/herascrape/_endpoints_sync.py \
