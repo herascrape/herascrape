@@ -2,7 +2,7 @@
 
 import uuid
 from collections.abc import Iterator
-from typing import Any, Optional
+from typing import Any
 
 from ._base import BaseSyncClient
 from ._pagination import Page, paginate
@@ -18,40 +18,40 @@ class SyncEndpoints(BaseSyncClient):
 
     def user_by_username(self, username: str) -> Any:
         """Get User By Username"""
-        return self._request("get", f"/users/username/{username}")
+        return self._request(method="get", path=f"/users/username/{username}")
 
     def user(self, user_id: str) -> Any:
         """Get User"""
-        return self._request("get", f"/users/{user_id}")
+        return self._request(method="get", path=f"/users/{user_id}")
 
-    def user_followers(
-        self, user_id: str, *, cursor: Optional[str] = None
-    ) -> Any:
+    def user_followers(self, user_id: str, *, cursor: str | None = None) -> Any:
         """Get User Followers"""
         return self._request(
-            "get", f"/users/{user_id}/followers", params={"cursor": cursor}
+            method="get",
+            path=f"/users/{user_id}/followers",
+            params={"cursor": cursor},
         )
 
     def iter_user_followers(
-        self, user_id: str, *, max_items: Optional[int] = None
+        self, user_id: str, *, max_items: int | None = None
     ) -> Iterator[Any]:
-        def fetch(cursor: Optional[str]) -> Page:
+        def fetch(cursor: str | None) -> Page:
             return self.user_followers(user_id, cursor=cursor)
 
         return paginate(fetch, item_key="items", max_items=max_items)
 
-    def user_following(
-        self, user_id: str, *, cursor: Optional[str] = None
-    ) -> Any:
+    def user_following(self, user_id: str, *, cursor: str | None = None) -> Any:
         """Get User Following"""
         return self._request(
-            "get", f"/users/{user_id}/following", params={"cursor": cursor}
+            method="get",
+            path=f"/users/{user_id}/following",
+            params={"cursor": cursor},
         )
 
     def iter_user_following(
-        self, user_id: str, *, max_items: Optional[int] = None
+        self, user_id: str, *, max_items: int | None = None
     ) -> Iterator[Any]:
-        def fetch(cursor: Optional[str]) -> Page:
+        def fetch(cursor: str | None) -> Page:
             return self.user_following(user_id, cursor=cursor)
 
         return paginate(fetch, item_key="items", max_items=max_items)
@@ -60,13 +60,13 @@ class SyncEndpoints(BaseSyncClient):
         self,
         user_id: str,
         *,
-        cursor: Optional[str] = None,
-        max_id: Optional[str] = None,
+        cursor: str | None = None,
+        max_id: str | None = None,
     ) -> Any:
         """Get User Posts"""
         return self._request(
-            "get",
-            f"/users/{user_id}/posts",
+            method="get",
+            path=f"/users/{user_id}/posts",
             params={"cursor": cursor, "max_id": max_id},
         )
 
@@ -74,13 +74,13 @@ class SyncEndpoints(BaseSyncClient):
         self,
         user_id: str,
         *,
-        cursor: Optional[str] = None,
-        sort_by_views: Optional[bool] = None,
+        cursor: str | None = None,
+        sort_by_views: bool | None = None,
     ) -> Any:
         """Get User Reels"""
         return self._request(
-            "get",
-            f"/users/{user_id}/reels",
+            method="get",
+            path=f"/users/{user_id}/reels",
             params={"cursor": cursor, "sort_by_views": sort_by_views},
         )
 
@@ -88,76 +88,78 @@ class SyncEndpoints(BaseSyncClient):
         self,
         user_id: str,
         *,
-        sort_by_views: Optional[bool] = None,
-        max_items: Optional[int] = None,
+        sort_by_views: bool | None = None,
+        max_items: int | None = None,
     ) -> Iterator[Any]:
-        def fetch(cursor: Optional[str]) -> Page:
+        def fetch(cursor: str | None) -> Page:
             return self.user_reels(
                 user_id, sort_by_views=sort_by_views, cursor=cursor
             )
 
         return paginate(fetch, item_key="items", max_items=max_items)
 
-    def user_tagged(self, user_id: str, *, cursor: Optional[str] = None) -> Any:
+    def user_tagged(self, user_id: str, *, cursor: str | None = None) -> Any:
         """Get User Tagged"""
         return self._request(
-            "get", f"/users/{user_id}/tagged", params={"cursor": cursor}
+            method="get",
+            path=f"/users/{user_id}/tagged",
+            params={"cursor": cursor},
         )
 
     def iter_user_tagged(
-        self, user_id: str, *, max_items: Optional[int] = None
+        self, user_id: str, *, max_items: int | None = None
     ) -> Iterator[Any]:
-        def fetch(cursor: Optional[str]) -> Page:
+        def fetch(cursor: str | None) -> Page:
             return self.user_tagged(user_id, cursor=cursor)
 
         return paginate(fetch, item_key="items", max_items=max_items)
 
     def user_stories(self, user_id: str) -> Any:
         """Get User Stories"""
-        return self._request("get", f"/users/{user_id}/stories")
+        return self._request(method="get", path=f"/users/{user_id}/stories")
 
     def user_highlights(self, user_id: str) -> Any:
         """Get User Highlights"""
-        return self._request("get", f"/users/{user_id}/highlights")
+        return self._request(method="get", path=f"/users/{user_id}/highlights")
 
-    def user_reposts(
-        self, user_id: str, *, cursor: Optional[str] = None
-    ) -> Any:
+    def user_reposts(self, user_id: str, *, cursor: str | None = None) -> Any:
         """Get User Reposts"""
         return self._request(
-            "get", f"/users/{user_id}/reposts", params={"cursor": cursor}
+            method="get",
+            path=f"/users/{user_id}/reposts",
+            params={"cursor": cursor},
         )
 
     def iter_user_reposts(
-        self, user_id: str, *, max_items: Optional[int] = None
+        self, user_id: str, *, max_items: int | None = None
     ) -> Iterator[Any]:
-        def fetch(cursor: Optional[str]) -> Page:
+        def fetch(cursor: str | None) -> Page:
             return self.user_reposts(user_id, cursor=cursor)
 
         return paginate(fetch, item_key="items", max_items=max_items)
 
     def user_about(self, user_id: str) -> Any:
         """Get User About"""
-        return self._request("get", f"/users/{user_id}/about")
+        return self._request(method="get", path=f"/users/{user_id}/about")
 
     def post(self, post_id: str) -> Any:
         """Get Post"""
-        return self._request("get", f"/posts/{post_id}")
+        return self._request(method="get", path=f"/posts/{post_id}")
 
     def post_comments(
         self,
         post_id: str,
         *,
         user_id: str,
-        min_id: Optional[str] = None,
-        max_id: Optional[str] = None,
-        carousel_media_id: Optional[str] = None,
-        carousel_index: Optional[int] = None,
+        min_id: str | None = None,
+        max_id: str | None = None,
+        carousel_media_id: str | None = None,
+        carousel_index: int | None = None,
     ) -> Any:
         """Get Post Comments"""
         return self._request(
-            "get",
-            f"/posts/{post_id}/comments",
+            method="get",
+            path=f"/posts/{post_id}/comments",
             params={
                 "user_id": user_id,
                 "min_id": min_id,
@@ -170,7 +172,9 @@ class SyncEndpoints(BaseSyncClient):
     def post_likers(self, post_id: str, *, user_id: str) -> Any:
         """Get Post Likers"""
         return self._request(
-            "get", f"/posts/{post_id}/likers", params={"user_id": user_id}
+            method="get",
+            path=f"/posts/{post_id}/likers",
+            params={"user_id": user_id},
         )
 
     def comment_replies(
@@ -179,12 +183,12 @@ class SyncEndpoints(BaseSyncClient):
         *,
         media_id: str,
         user_id: str,
-        cursor: Optional[str] = None,
+        cursor: str | None = None,
     ) -> Any:
         """Get Comment Replies"""
         return self._request(
-            "get",
-            f"/comments/{comment_id}/replies",
+            method="get",
+            path=f"/comments/{comment_id}/replies",
             params={"media_id": media_id, "user_id": user_id, "cursor": cursor},
         )
 
@@ -194,9 +198,9 @@ class SyncEndpoints(BaseSyncClient):
         *,
         media_id: str,
         user_id: str,
-        max_items: Optional[int] = None,
+        max_items: int | None = None,
     ) -> Iterator[Any]:
-        def fetch(cursor: Optional[str]) -> Page:
+        def fetch(cursor: str | None) -> Page:
             return self.comment_replies(
                 comment_id, media_id=media_id, user_id=user_id, cursor=cursor
             )
@@ -205,15 +209,17 @@ class SyncEndpoints(BaseSyncClient):
 
     def comment_likers(self, comment_id: str) -> Any:
         """Get Comment Likers"""
-        return self._request("get", f"/comments/{comment_id}/likers")
+        return self._request(
+            method="get", path=f"/comments/{comment_id}/likers"
+        )
 
     def search_users(
         self,
         *,
-        search_session_id: Optional[str] = None,
-        serp_session_id: Optional[str] = None,
+        search_session_id: str | None = None,
+        serp_session_id: str | None = None,
         query: str,
-        cursor: Optional[str] = None,
+        cursor: str | None = None,
     ) -> Any:
         """Search Users"""
         if search_session_id is None:
@@ -221,8 +227,8 @@ class SyncEndpoints(BaseSyncClient):
         if serp_session_id is None:
             serp_session_id = _session_id()
         return self._request(
-            "get",
-            "/search/users",
+            method="get",
+            path="/search/users",
             params={
                 "search_session_id": search_session_id,
                 "serp_session_id": serp_session_id,
@@ -234,17 +240,17 @@ class SyncEndpoints(BaseSyncClient):
     def iter_search_users(
         self,
         *,
-        search_session_id: Optional[str] = None,
-        serp_session_id: Optional[str] = None,
+        search_session_id: str | None = None,
+        serp_session_id: str | None = None,
         query: str,
-        max_items: Optional[int] = None,
+        max_items: int | None = None,
     ) -> Iterator[Any]:
         if search_session_id is None:
             search_session_id = _session_id()
         if serp_session_id is None:
             serp_session_id = _session_id()
 
-        def fetch(cursor: Optional[str]) -> Page:
+        def fetch(cursor: str | None) -> Page:
             return self.search_users(
                 search_session_id=search_session_id,
                 serp_session_id=serp_session_id,
@@ -257,10 +263,10 @@ class SyncEndpoints(BaseSyncClient):
     def search_hashtags(
         self,
         *,
-        search_session_id: Optional[str] = None,
-        serp_session_id: Optional[str] = None,
+        search_session_id: str | None = None,
+        serp_session_id: str | None = None,
         query: str,
-        cursor: Optional[str] = None,
+        cursor: str | None = None,
     ) -> Any:
         """Search Hashtags"""
         if search_session_id is None:
@@ -268,8 +274,8 @@ class SyncEndpoints(BaseSyncClient):
         if serp_session_id is None:
             serp_session_id = _session_id()
         return self._request(
-            "get",
-            "/search/hashtags",
+            method="get",
+            path="/search/hashtags",
             params={
                 "search_session_id": search_session_id,
                 "serp_session_id": serp_session_id,
@@ -281,17 +287,17 @@ class SyncEndpoints(BaseSyncClient):
     def iter_search_hashtags(
         self,
         *,
-        search_session_id: Optional[str] = None,
-        serp_session_id: Optional[str] = None,
+        search_session_id: str | None = None,
+        serp_session_id: str | None = None,
         query: str,
-        max_items: Optional[int] = None,
+        max_items: int | None = None,
     ) -> Iterator[Any]:
         if search_session_id is None:
             search_session_id = _session_id()
         if serp_session_id is None:
             serp_session_id = _session_id()
 
-        def fetch(cursor: Optional[str]) -> Page:
+        def fetch(cursor: str | None) -> Page:
             return self.search_hashtags(
                 search_session_id=search_session_id,
                 serp_session_id=serp_session_id,
@@ -304,11 +310,11 @@ class SyncEndpoints(BaseSyncClient):
     def search_audio(
         self,
         *,
-        search_session_id: Optional[str] = None,
-        serp_session_id: Optional[str] = None,
-        browse_session_id: Optional[str] = None,
+        search_session_id: str | None = None,
+        serp_session_id: str | None = None,
+        browse_session_id: str | None = None,
         query: str,
-        cursor: Optional[str] = None,
+        cursor: str | None = None,
     ) -> Any:
         """Search Audio"""
         if search_session_id is None:
@@ -318,8 +324,8 @@ class SyncEndpoints(BaseSyncClient):
         if browse_session_id is None:
             browse_session_id = _session_id()
         return self._request(
-            "get",
-            "/search/audio",
+            method="get",
+            path="/search/audio",
             params={
                 "search_session_id": search_session_id,
                 "serp_session_id": serp_session_id,
@@ -332,11 +338,11 @@ class SyncEndpoints(BaseSyncClient):
     def iter_search_audio(
         self,
         *,
-        search_session_id: Optional[str] = None,
-        serp_session_id: Optional[str] = None,
-        browse_session_id: Optional[str] = None,
+        search_session_id: str | None = None,
+        serp_session_id: str | None = None,
+        browse_session_id: str | None = None,
         query: str,
-        max_items: Optional[int] = None,
+        max_items: int | None = None,
     ) -> Iterator[Any]:
         if search_session_id is None:
             search_session_id = _session_id()
@@ -345,7 +351,7 @@ class SyncEndpoints(BaseSyncClient):
         if browse_session_id is None:
             browse_session_id = _session_id()
 
-        def fetch(cursor: Optional[str]) -> Page:
+        def fetch(cursor: str | None) -> Page:
             return self.search_audio(
                 search_session_id=search_session_id,
                 serp_session_id=serp_session_id,
@@ -359,10 +365,10 @@ class SyncEndpoints(BaseSyncClient):
     def search_top(
         self,
         *,
-        search_session_id: Optional[str] = None,
-        serp_session_id: Optional[str] = None,
+        search_session_id: str | None = None,
+        serp_session_id: str | None = None,
         query: str,
-        cursor: Optional[str] = None,
+        cursor: str | None = None,
     ) -> Any:
         """Search Top"""
         if search_session_id is None:
@@ -370,8 +376,8 @@ class SyncEndpoints(BaseSyncClient):
         if serp_session_id is None:
             serp_session_id = _session_id()
         return self._request(
-            "get",
-            "/search/top",
+            method="get",
+            path="/search/top",
             params={
                 "search_session_id": search_session_id,
                 "serp_session_id": serp_session_id,
@@ -383,17 +389,17 @@ class SyncEndpoints(BaseSyncClient):
     def iter_search_top(
         self,
         *,
-        search_session_id: Optional[str] = None,
-        serp_session_id: Optional[str] = None,
+        search_session_id: str | None = None,
+        serp_session_id: str | None = None,
         query: str,
-        max_items: Optional[int] = None,
+        max_items: int | None = None,
     ) -> Iterator[Any]:
         if search_session_id is None:
             search_session_id = _session_id()
         if serp_session_id is None:
             serp_session_id = _session_id()
 
-        def fetch(cursor: Optional[str]) -> Page:
+        def fetch(cursor: str | None) -> Page:
             return self.search_top(
                 search_session_id=search_session_id,
                 serp_session_id=serp_session_id,
@@ -404,161 +410,167 @@ class SyncEndpoints(BaseSyncClient):
         return paginate(fetch, item_key="edges", max_items=max_items)
 
     def search_places(
-        self,
-        *,
-        query: str,
-        lat: Optional[float] = None,
-        lng: Optional[float] = None,
+        self, *, query: str, lat: float | None = None, lng: float | None = None
     ) -> Any:
         """Search Places"""
         return self._request(
-            "get",
-            "/search/places",
+            method="get",
+            path="/search/places",
             params={"query": query, "lat": lat, "lng": lng},
         )
 
     def hashtag(self, name: str) -> Any:
         """Get Hashtag"""
-        return self._request("get", f"/hashtags/{name}")
+        return self._request(method="get", path=f"/hashtags/{name}")
 
-    def hashtag_top(self, name: str, *, cursor: Optional[str] = None) -> Any:
+    def hashtag_top(self, name: str, *, cursor: str | None = None) -> Any:
         """Get Hashtag Top"""
         return self._request(
-            "get", f"/hashtags/{name}/top", params={"cursor": cursor}
+            method="get",
+            path=f"/hashtags/{name}/top",
+            params={"cursor": cursor},
         )
 
     def iter_hashtag_top(
-        self, name: str, *, max_items: Optional[int] = None
+        self, name: str, *, max_items: int | None = None
     ) -> Iterator[Any]:
-        def fetch(cursor: Optional[str]) -> Page:
+        def fetch(cursor: str | None) -> Page:
             return self.hashtag_top(name, cursor=cursor)
 
         return paginate(fetch, item_key="items", max_items=max_items)
 
-    def hashtag_recent(self, name: str, *, cursor: Optional[str] = None) -> Any:
+    def hashtag_recent(self, name: str, *, cursor: str | None = None) -> Any:
         """Get Hashtag Recent"""
         return self._request(
-            "get", f"/hashtags/{name}/recent", params={"cursor": cursor}
+            method="get",
+            path=f"/hashtags/{name}/recent",
+            params={"cursor": cursor},
         )
 
     def iter_hashtag_recent(
-        self, name: str, *, max_items: Optional[int] = None
+        self, name: str, *, max_items: int | None = None
     ) -> Iterator[Any]:
-        def fetch(cursor: Optional[str]) -> Page:
+        def fetch(cursor: str | None) -> Page:
             return self.hashtag_recent(name, cursor=cursor)
 
         return paginate(fetch, item_key="items", max_items=max_items)
 
-    def hashtag_reels(self, name: str, *, cursor: Optional[str] = None) -> Any:
+    def hashtag_reels(self, name: str, *, cursor: str | None = None) -> Any:
         """Get Hashtag Reels"""
         return self._request(
-            "get", f"/hashtags/{name}/reels", params={"cursor": cursor}
+            method="get",
+            path=f"/hashtags/{name}/reels",
+            params={"cursor": cursor},
         )
 
     def iter_hashtag_reels(
-        self, name: str, *, max_items: Optional[int] = None
+        self, name: str, *, max_items: int | None = None
     ) -> Iterator[Any]:
-        def fetch(cursor: Optional[str]) -> Page:
+        def fetch(cursor: str | None) -> Page:
             return self.hashtag_reels(name, cursor=cursor)
 
         return paginate(fetch, item_key="items", max_items=max_items)
 
     def location(self, location_id: str) -> Any:
         """Get Location"""
-        return self._request("get", f"/locations/{location_id}")
+        return self._request(method="get", path=f"/locations/{location_id}")
 
     def location_top(
-        self, location_id: str, *, cursor: Optional[str] = None
+        self, location_id: str, *, cursor: str | None = None
     ) -> Any:
         """Get Location Top"""
         return self._request(
-            "get", f"/locations/{location_id}/top", params={"cursor": cursor}
+            method="get",
+            path=f"/locations/{location_id}/top",
+            params={"cursor": cursor},
         )
 
     def iter_location_top(
-        self, location_id: str, *, max_items: Optional[int] = None
+        self, location_id: str, *, max_items: int | None = None
     ) -> Iterator[Any]:
-        def fetch(cursor: Optional[str]) -> Page:
+        def fetch(cursor: str | None) -> Page:
             return self.location_top(location_id, cursor=cursor)
 
         return paginate(fetch, item_key="items", max_items=max_items)
 
     def location_recent(
-        self, location_id: str, *, cursor: Optional[str] = None
+        self, location_id: str, *, cursor: str | None = None
     ) -> Any:
         """Get Location Recent"""
         return self._request(
-            "get", f"/locations/{location_id}/recent", params={"cursor": cursor}
+            method="get",
+            path=f"/locations/{location_id}/recent",
+            params={"cursor": cursor},
         )
 
     def iter_location_recent(
-        self, location_id: str, *, max_items: Optional[int] = None
+        self, location_id: str, *, max_items: int | None = None
     ) -> Iterator[Any]:
-        def fetch(cursor: Optional[str]) -> Page:
+        def fetch(cursor: str | None) -> Page:
             return self.location_recent(location_id, cursor=cursor)
 
         return paginate(fetch, item_key="items", max_items=max_items)
 
     def highlight(self, highlight_id: str) -> Any:
         """Get Highlight"""
-        return self._request("get", f"/highlights/{highlight_id}")
+        return self._request(method="get", path=f"/highlights/{highlight_id}")
 
     def story(self, reel_id: str) -> Any:
         """Get Story Reel"""
-        return self._request("get", f"/stories/{reel_id}")
+        return self._request(method="get", path=f"/stories/{reel_id}")
 
-    def audio_trending(self, *, cursor: Optional[str] = None) -> Any:
+    def audio_trending(self, *, cursor: str | None = None) -> Any:
         """Get Trending Audio"""
         return self._request(
-            "get", "/audio/trending", params={"cursor": cursor}
+            method="get", path="/audio/trending", params={"cursor": cursor}
         )
 
     def iter_audio_trending(
-        self, *, max_items: Optional[int] = None
+        self, *, max_items: int | None = None
     ) -> Iterator[Any]:
-        def fetch(cursor: Optional[str]) -> Page:
+        def fetch(cursor: str | None) -> Page:
             return self.audio_trending(cursor=cursor)
 
         return paginate(fetch, item_key="items", max_items=max_items)
 
     def audio(self, audio_id: str) -> Any:
         """Get Audio"""
-        return self._request("get", f"/audio/{audio_id}")
+        return self._request(method="get", path=f"/audio/{audio_id}")
 
-    def audio_medias(
-        self, audio_id: str, *, cursor: Optional[str] = None
-    ) -> Any:
+    def audio_medias(self, audio_id: str, *, cursor: str | None = None) -> Any:
         """Get Audio Medias"""
         return self._request(
-            "get", f"/audio/{audio_id}/medias", params={"cursor": cursor}
+            method="get",
+            path=f"/audio/{audio_id}/medias",
+            params={"cursor": cursor},
         )
 
     def iter_audio_medias(
-        self, audio_id: str, *, max_items: Optional[int] = None
+        self, audio_id: str, *, max_items: int | None = None
     ) -> Iterator[Any]:
-        def fetch(cursor: Optional[str]) -> Page:
+        def fetch(cursor: str | None) -> Page:
             return self.audio_medias(audio_id, cursor=cursor)
 
         return paginate(fetch, item_key="items", max_items=max_items)
 
     def resolve_media(
-        self, *, pk: Optional[str] = None, code: Optional[str] = None
+        self, *, pk: str | None = None, code: str | None = None
     ) -> MediaIdResolution:
         """Resolve Media"""
         if (pk is None) == (code is None):
             raise ValueError("resolve_media needs exactly one of pk or code")
         return self._request(
-            "get", "/resolve/media", params={"pk": pk, "code": code}
+            method="get", path="/resolve/media", params={"pk": pk, "code": code}
         )
 
     def oembed(self, *, url: str) -> Any:
         """Get Oembed"""
-        return self._request("get", "/oembed", params={"url": url})
+        return self._request(method="get", path="/oembed", params={"url": url})
 
     def health(self) -> Any:
         """Health"""
-        return self._request("get", "/system/health")
+        return self._request(method="get", path="/system/health")
 
     def balance(self) -> BalanceResponse:
         """Get Balance"""
-        return self._request("get", "/system/balance")
+        return self._request(method="get", path="/system/balance")
