@@ -1,3 +1,4 @@
+import math
 from collections.abc import Mapping
 from typing import Any, Optional, Union
 
@@ -222,8 +223,8 @@ async def test_async_rate_limiter_acquired_before_every_attempt():
     # then each later attempt queues one more second behind the last.
     assert len(sleeps) == 3
     _assert_backoff(sleeps[0], attempt=0)
-    assert sleeps[1] == pytest.approx(1.0, abs=0.1)
-    assert sleeps[2] == pytest.approx(2.0, abs=0.1)
+    assert math.isclose(sleeps[1], 1.0, abs_tol=0.1)
+    assert math.isclose(sleeps[2], 2.0, abs_tol=0.1)
 
 
 @pytest.mark.asyncio

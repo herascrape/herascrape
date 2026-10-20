@@ -25,7 +25,7 @@ classifiers = [
 dependencies = ["httpx>=0.24"]
 
 [project.optional-dependencies]
-dev = ["pytest", "pytest-asyncio", "ruff", "pyright"]
+dev = ["pytest", "pytest-asyncio", "ruff==0.15.10", "pyright==1.1.414"]
 
 [project.urls]
 Homepage = "https://herascrape.com"
@@ -39,13 +39,6 @@ packages = ["herascrape"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-
-[tool.ruff]
-line-length = 80
-target-version = "py39"
-
-[tool.ruff.lint]
-select = ["E", "F", "I", "B", "UP", "SIM", "RUF"]
 
 [tool.pyright]
 include = ["herascrape", "tests"]
