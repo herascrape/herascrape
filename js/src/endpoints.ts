@@ -6,19 +6,26 @@ import type { BalanceResponse, MediaIdResolution } from "./types";
 
 export class Endpoints extends BaseClient {
   userByUsername(opts: { username: string }): Promise<Record<string, unknown>> {
-    return this.request("get", `/users/username/${opts.username}`);
+    return this.request({
+      method: "get",
+      path: `/users/username/${opts.username}`,
+    });
   }
 
   user(opts: { userId: string }): Promise<Record<string, unknown>> {
-    return this.request("get", `/users/${opts.userId}`);
+    return this.request({ method: "get", path: `/users/${opts.userId}` });
   }
 
   userFollowers(opts: {
     userId: string;
     cursor?: string;
   }): Promise<Record<string, unknown>> {
-    return this.request("get", `/users/${opts.userId}/followers`, {
-      cursor: opts.cursor,
+    return this.request({
+      method: "get",
+      path: `/users/${opts.userId}/followers`,
+      searchParams: {
+        cursor: opts.cursor,
+      },
     });
   }
 
@@ -37,8 +44,12 @@ export class Endpoints extends BaseClient {
     userId: string;
     cursor?: string;
   }): Promise<Record<string, unknown>> {
-    return this.request("get", `/users/${opts.userId}/following`, {
-      cursor: opts.cursor,
+    return this.request({
+      method: "get",
+      path: `/users/${opts.userId}/following`,
+      searchParams: {
+        cursor: opts.cursor,
+      },
     });
   }
 
@@ -58,9 +69,13 @@ export class Endpoints extends BaseClient {
     cursor?: string;
     maxId?: string;
   }): Promise<Record<string, unknown>> {
-    return this.request("get", `/users/${opts.userId}/posts`, {
-      cursor: opts.cursor,
-      max_id: opts.maxId,
+    return this.request({
+      method: "get",
+      path: `/users/${opts.userId}/posts`,
+      searchParams: {
+        cursor: opts.cursor,
+        max_id: opts.maxId,
+      },
     });
   }
 
@@ -69,9 +84,13 @@ export class Endpoints extends BaseClient {
     cursor?: string;
     sortByViews?: boolean;
   }): Promise<Record<string, unknown>> {
-    return this.request("get", `/users/${opts.userId}/reels`, {
-      cursor: opts.cursor,
-      sort_by_views: opts.sortByViews,
+    return this.request({
+      method: "get",
+      path: `/users/${opts.userId}/reels`,
+      searchParams: {
+        cursor: opts.cursor,
+        sort_by_views: opts.sortByViews,
+      },
     });
   }
 
@@ -95,8 +114,12 @@ export class Endpoints extends BaseClient {
     userId: string;
     cursor?: string;
   }): Promise<Record<string, unknown>> {
-    return this.request("get", `/users/${opts.userId}/tagged`, {
-      cursor: opts.cursor,
+    return this.request({
+      method: "get",
+      path: `/users/${opts.userId}/tagged`,
+      searchParams: {
+        cursor: opts.cursor,
+      },
     });
   }
 
@@ -112,19 +135,29 @@ export class Endpoints extends BaseClient {
   }
 
   userStories(opts: { userId: string }): Promise<Record<string, unknown>> {
-    return this.request("get", `/users/${opts.userId}/stories`);
+    return this.request({
+      method: "get",
+      path: `/users/${opts.userId}/stories`,
+    });
   }
 
   userHighlights(opts: { userId: string }): Promise<Record<string, unknown>> {
-    return this.request("get", `/users/${opts.userId}/highlights`);
+    return this.request({
+      method: "get",
+      path: `/users/${opts.userId}/highlights`,
+    });
   }
 
   userReposts(opts: {
     userId: string;
     cursor?: string;
   }): Promise<Record<string, unknown>> {
-    return this.request("get", `/users/${opts.userId}/reposts`, {
-      cursor: opts.cursor,
+    return this.request({
+      method: "get",
+      path: `/users/${opts.userId}/reposts`,
+      searchParams: {
+        cursor: opts.cursor,
+      },
     });
   }
 
@@ -140,11 +173,11 @@ export class Endpoints extends BaseClient {
   }
 
   userAbout(opts: { userId: string }): Promise<Record<string, unknown>> {
-    return this.request("get", `/users/${opts.userId}/about`);
+    return this.request({ method: "get", path: `/users/${opts.userId}/about` });
   }
 
   post(opts: { postId: string }): Promise<Record<string, unknown>> {
-    return this.request("get", `/posts/${opts.postId}`);
+    return this.request({ method: "get", path: `/posts/${opts.postId}` });
   }
 
   postComments(opts: {
@@ -155,12 +188,16 @@ export class Endpoints extends BaseClient {
     carouselMediaId?: string;
     carouselIndex?: number;
   }): Promise<Record<string, unknown>> {
-    return this.request("get", `/posts/${opts.postId}/comments`, {
-      user_id: opts.userId,
-      min_id: opts.minId,
-      max_id: opts.maxId,
-      carousel_media_id: opts.carouselMediaId,
-      carousel_index: opts.carouselIndex,
+    return this.request({
+      method: "get",
+      path: `/posts/${opts.postId}/comments`,
+      searchParams: {
+        user_id: opts.userId,
+        min_id: opts.minId,
+        max_id: opts.maxId,
+        carousel_media_id: opts.carouselMediaId,
+        carousel_index: opts.carouselIndex,
+      },
     });
   }
 
@@ -168,8 +205,12 @@ export class Endpoints extends BaseClient {
     postId: string;
     userId: string;
   }): Promise<Record<string, unknown>> {
-    return this.request("get", `/posts/${opts.postId}/likers`, {
-      user_id: opts.userId,
+    return this.request({
+      method: "get",
+      path: `/posts/${opts.postId}/likers`,
+      searchParams: {
+        user_id: opts.userId,
+      },
     });
   }
 
@@ -179,10 +220,14 @@ export class Endpoints extends BaseClient {
     userId: string;
     cursor?: string;
   }): Promise<Record<string, unknown>> {
-    return this.request("get", `/comments/${opts.commentId}/replies`, {
-      media_id: opts.mediaId,
-      user_id: opts.userId,
-      cursor: opts.cursor,
+    return this.request({
+      method: "get",
+      path: `/comments/${opts.commentId}/replies`,
+      searchParams: {
+        media_id: opts.mediaId,
+        user_id: opts.userId,
+        cursor: opts.cursor,
+      },
     });
   }
 
@@ -205,7 +250,10 @@ export class Endpoints extends BaseClient {
   }
 
   commentLikers(opts: { commentId: string }): Promise<Record<string, unknown>> {
-    return this.request("get", `/comments/${opts.commentId}/likers`);
+    return this.request({
+      method: "get",
+      path: `/comments/${opts.commentId}/likers`,
+    });
   }
 
   searchUsers(opts: {
@@ -216,11 +264,15 @@ export class Endpoints extends BaseClient {
   }): Promise<Record<string, unknown>> {
     const searchSessionId = opts.searchSessionId ?? sessionId();
     const serpSessionId = opts.serpSessionId ?? sessionId();
-    return this.request("get", "/search/users", {
-      search_session_id: searchSessionId,
-      serp_session_id: serpSessionId,
-      query: opts.query,
-      cursor: opts.cursor,
+    return this.request({
+      method: "get",
+      path: "/search/users",
+      searchParams: {
+        search_session_id: searchSessionId,
+        serp_session_id: serpSessionId,
+        query: opts.query,
+        cursor: opts.cursor,
+      },
     });
   }
 
@@ -252,11 +304,15 @@ export class Endpoints extends BaseClient {
   }): Promise<Record<string, unknown>> {
     const searchSessionId = opts.searchSessionId ?? sessionId();
     const serpSessionId = opts.serpSessionId ?? sessionId();
-    return this.request("get", "/search/hashtags", {
-      search_session_id: searchSessionId,
-      serp_session_id: serpSessionId,
-      query: opts.query,
-      cursor: opts.cursor,
+    return this.request({
+      method: "get",
+      path: "/search/hashtags",
+      searchParams: {
+        search_session_id: searchSessionId,
+        serp_session_id: serpSessionId,
+        query: opts.query,
+        cursor: opts.cursor,
+      },
     });
   }
 
@@ -290,12 +346,16 @@ export class Endpoints extends BaseClient {
     const searchSessionId = opts.searchSessionId ?? sessionId();
     const serpSessionId = opts.serpSessionId ?? sessionId();
     const browseSessionId = opts.browseSessionId ?? sessionId();
-    return this.request("get", "/search/audio", {
-      search_session_id: searchSessionId,
-      serp_session_id: serpSessionId,
-      browse_session_id: browseSessionId,
-      query: opts.query,
-      cursor: opts.cursor,
+    return this.request({
+      method: "get",
+      path: "/search/audio",
+      searchParams: {
+        search_session_id: searchSessionId,
+        serp_session_id: serpSessionId,
+        browse_session_id: browseSessionId,
+        query: opts.query,
+        cursor: opts.cursor,
+      },
     });
   }
 
@@ -330,11 +390,15 @@ export class Endpoints extends BaseClient {
   }): Promise<Record<string, unknown>> {
     const searchSessionId = opts.searchSessionId ?? sessionId();
     const serpSessionId = opts.serpSessionId ?? sessionId();
-    return this.request("get", "/search/top", {
-      search_session_id: searchSessionId,
-      serp_session_id: serpSessionId,
-      query: opts.query,
-      cursor: opts.cursor,
+    return this.request({
+      method: "get",
+      path: "/search/top",
+      searchParams: {
+        search_session_id: searchSessionId,
+        serp_session_id: serpSessionId,
+        query: opts.query,
+        cursor: opts.cursor,
+      },
     });
   }
 
@@ -363,23 +427,31 @@ export class Endpoints extends BaseClient {
     lat?: number;
     lng?: number;
   }): Promise<Record<string, unknown>> {
-    return this.request("get", "/search/places", {
-      query: opts.query,
-      lat: opts.lat,
-      lng: opts.lng,
+    return this.request({
+      method: "get",
+      path: "/search/places",
+      searchParams: {
+        query: opts.query,
+        lat: opts.lat,
+        lng: opts.lng,
+      },
     });
   }
 
   hashtag(opts: { name: string }): Promise<Record<string, unknown>> {
-    return this.request("get", `/hashtags/${opts.name}`);
+    return this.request({ method: "get", path: `/hashtags/${opts.name}` });
   }
 
   hashtagTop(opts: {
     name: string;
     cursor?: string;
   }): Promise<Record<string, unknown>> {
-    return this.request("get", `/hashtags/${opts.name}/top`, {
-      cursor: opts.cursor,
+    return this.request({
+      method: "get",
+      path: `/hashtags/${opts.name}/top`,
+      searchParams: {
+        cursor: opts.cursor,
+      },
     });
   }
 
@@ -398,8 +470,12 @@ export class Endpoints extends BaseClient {
     name: string;
     cursor?: string;
   }): Promise<Record<string, unknown>> {
-    return this.request("get", `/hashtags/${opts.name}/recent`, {
-      cursor: opts.cursor,
+    return this.request({
+      method: "get",
+      path: `/hashtags/${opts.name}/recent`,
+      searchParams: {
+        cursor: opts.cursor,
+      },
     });
   }
 
@@ -418,8 +494,12 @@ export class Endpoints extends BaseClient {
     name: string;
     cursor?: string;
   }): Promise<Record<string, unknown>> {
-    return this.request("get", `/hashtags/${opts.name}/reels`, {
-      cursor: opts.cursor,
+    return this.request({
+      method: "get",
+      path: `/hashtags/${opts.name}/reels`,
+      searchParams: {
+        cursor: opts.cursor,
+      },
     });
   }
 
@@ -435,15 +515,22 @@ export class Endpoints extends BaseClient {
   }
 
   location(opts: { locationId: string }): Promise<Record<string, unknown>> {
-    return this.request("get", `/locations/${opts.locationId}`);
+    return this.request({
+      method: "get",
+      path: `/locations/${opts.locationId}`,
+    });
   }
 
   locationTop(opts: {
     locationId: string;
     cursor?: string;
   }): Promise<Record<string, unknown>> {
-    return this.request("get", `/locations/${opts.locationId}/top`, {
-      cursor: opts.cursor,
+    return this.request({
+      method: "get",
+      path: `/locations/${opts.locationId}/top`,
+      searchParams: {
+        cursor: opts.cursor,
+      },
     });
   }
 
@@ -462,8 +549,12 @@ export class Endpoints extends BaseClient {
     locationId: string;
     cursor?: string;
   }): Promise<Record<string, unknown>> {
-    return this.request("get", `/locations/${opts.locationId}/recent`, {
-      cursor: opts.cursor,
+    return this.request({
+      method: "get",
+      path: `/locations/${opts.locationId}/recent`,
+      searchParams: {
+        cursor: opts.cursor,
+      },
     });
   }
 
@@ -479,18 +570,25 @@ export class Endpoints extends BaseClient {
   }
 
   highlight(opts: { highlightId: string }): Promise<Record<string, unknown>> {
-    return this.request("get", `/highlights/${opts.highlightId}`);
+    return this.request({
+      method: "get",
+      path: `/highlights/${opts.highlightId}`,
+    });
   }
 
   story(opts: { reelId: string }): Promise<Record<string, unknown>> {
-    return this.request("get", `/stories/${opts.reelId}`);
+    return this.request({ method: "get", path: `/stories/${opts.reelId}` });
   }
 
   audioTrending(
     opts: { cursor?: string } = {},
   ): Promise<Record<string, unknown>> {
-    return this.request("get", "/audio/trending", {
-      cursor: opts.cursor,
+    return this.request({
+      method: "get",
+      path: "/audio/trending",
+      searchParams: {
+        cursor: opts.cursor,
+      },
     });
   }
 
@@ -504,15 +602,19 @@ export class Endpoints extends BaseClient {
   }
 
   audio(opts: { audioId: string }): Promise<Record<string, unknown>> {
-    return this.request("get", `/audio/${opts.audioId}`);
+    return this.request({ method: "get", path: `/audio/${opts.audioId}` });
   }
 
   audioMedias(opts: {
     audioId: string;
     cursor?: string;
   }): Promise<Record<string, unknown>> {
-    return this.request("get", `/audio/${opts.audioId}/medias`, {
-      cursor: opts.cursor,
+    return this.request({
+      method: "get",
+      path: `/audio/${opts.audioId}/medias`,
+      searchParams: {
+        cursor: opts.cursor,
+      },
     });
   }
 
@@ -533,23 +635,34 @@ export class Endpoints extends BaseClient {
     if ((opts.pk === undefined) === (opts.code === undefined)) {
       throw new TypeError("resolveMedia needs exactly one of pk or code");
     }
-    return this.request<MediaIdResolution>("get", "/resolve/media", {
-      pk: opts.pk,
-      code: opts.code,
+    return this.request<MediaIdResolution>({
+      method: "get",
+      path: "/resolve/media",
+      searchParams: {
+        pk: opts.pk,
+        code: opts.code,
+      },
     });
   }
 
   oembed(opts: { url: string }): Promise<Record<string, unknown>> {
-    return this.request("get", "/oembed", {
-      url: opts.url,
+    return this.request({
+      method: "get",
+      path: "/oembed",
+      searchParams: {
+        url: opts.url,
+      },
     });
   }
 
   health(): Promise<Record<string, unknown>> {
-    return this.request("get", "/system/health");
+    return this.request({ method: "get", path: "/system/health" });
   }
 
   balance(): Promise<BalanceResponse> {
-    return this.request<BalanceResponse>("get", "/system/balance");
+    return this.request<BalanceResponse>({
+      method: "get",
+      path: "/system/balance",
+    });
   }
 }

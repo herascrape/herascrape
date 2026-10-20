@@ -2,7 +2,7 @@
 
 import uuid
 from collections.abc import AsyncIterator
-from typing import Any, Optional
+from typing import Any
 
 from ._base import BaseAsyncClient
 from ._pagination import Page, apaginate
@@ -18,40 +18,46 @@ class AsyncEndpoints(BaseAsyncClient):
 
     async def user_by_username(self, username: str) -> Any:
         """Get User By Username"""
-        return await self._request("get", f"/users/username/{username}")
+        return await self._request(
+            method="get", path=f"/users/username/{username}"
+        )
 
     async def user(self, user_id: str) -> Any:
         """Get User"""
-        return await self._request("get", f"/users/{user_id}")
+        return await self._request(method="get", path=f"/users/{user_id}")
 
     async def user_followers(
-        self, user_id: str, *, cursor: Optional[str] = None
+        self, user_id: str, *, cursor: str | None = None
     ) -> Any:
         """Get User Followers"""
         return await self._request(
-            "get", f"/users/{user_id}/followers", params={"cursor": cursor}
+            method="get",
+            path=f"/users/{user_id}/followers",
+            params={"cursor": cursor},
         )
 
     def iter_user_followers(
-        self, user_id: str, *, max_items: Optional[int] = None
+        self, user_id: str, *, max_items: int | None = None
     ) -> AsyncIterator[Any]:
-        async def fetch(cursor: Optional[str]) -> Page:
+        async def fetch(cursor: str | None) -> Page:
             return await self.user_followers(user_id, cursor=cursor)
 
         return apaginate(fetch, item_key="items", max_items=max_items)
 
     async def user_following(
-        self, user_id: str, *, cursor: Optional[str] = None
+        self, user_id: str, *, cursor: str | None = None
     ) -> Any:
         """Get User Following"""
         return await self._request(
-            "get", f"/users/{user_id}/following", params={"cursor": cursor}
+            method="get",
+            path=f"/users/{user_id}/following",
+            params={"cursor": cursor},
         )
 
     def iter_user_following(
-        self, user_id: str, *, max_items: Optional[int] = None
+        self, user_id: str, *, max_items: int | None = None
     ) -> AsyncIterator[Any]:
-        async def fetch(cursor: Optional[str]) -> Page:
+        async def fetch(cursor: str | None) -> Page:
             return await self.user_following(user_id, cursor=cursor)
 
         return apaginate(fetch, item_key="items", max_items=max_items)
@@ -60,13 +66,13 @@ class AsyncEndpoints(BaseAsyncClient):
         self,
         user_id: str,
         *,
-        cursor: Optional[str] = None,
-        max_id: Optional[str] = None,
+        cursor: str | None = None,
+        max_id: str | None = None,
     ) -> Any:
         """Get User Posts"""
         return await self._request(
-            "get",
-            f"/users/{user_id}/posts",
+            method="get",
+            path=f"/users/{user_id}/posts",
             params={"cursor": cursor, "max_id": max_id},
         )
 
@@ -74,13 +80,13 @@ class AsyncEndpoints(BaseAsyncClient):
         self,
         user_id: str,
         *,
-        cursor: Optional[str] = None,
-        sort_by_views: Optional[bool] = None,
+        cursor: str | None = None,
+        sort_by_views: bool | None = None,
     ) -> Any:
         """Get User Reels"""
         return await self._request(
-            "get",
-            f"/users/{user_id}/reels",
+            method="get",
+            path=f"/users/{user_id}/reels",
             params={"cursor": cursor, "sort_by_views": sort_by_views},
         )
 
@@ -88,10 +94,10 @@ class AsyncEndpoints(BaseAsyncClient):
         self,
         user_id: str,
         *,
-        sort_by_views: Optional[bool] = None,
-        max_items: Optional[int] = None,
+        sort_by_views: bool | None = None,
+        max_items: int | None = None,
     ) -> AsyncIterator[Any]:
-        async def fetch(cursor: Optional[str]) -> Page:
+        async def fetch(cursor: str | None) -> Page:
             return await self.user_reels(
                 user_id, sort_by_views=sort_by_views, cursor=cursor
             )
@@ -99,67 +105,75 @@ class AsyncEndpoints(BaseAsyncClient):
         return apaginate(fetch, item_key="items", max_items=max_items)
 
     async def user_tagged(
-        self, user_id: str, *, cursor: Optional[str] = None
+        self, user_id: str, *, cursor: str | None = None
     ) -> Any:
         """Get User Tagged"""
         return await self._request(
-            "get", f"/users/{user_id}/tagged", params={"cursor": cursor}
+            method="get",
+            path=f"/users/{user_id}/tagged",
+            params={"cursor": cursor},
         )
 
     def iter_user_tagged(
-        self, user_id: str, *, max_items: Optional[int] = None
+        self, user_id: str, *, max_items: int | None = None
     ) -> AsyncIterator[Any]:
-        async def fetch(cursor: Optional[str]) -> Page:
+        async def fetch(cursor: str | None) -> Page:
             return await self.user_tagged(user_id, cursor=cursor)
 
         return apaginate(fetch, item_key="items", max_items=max_items)
 
     async def user_stories(self, user_id: str) -> Any:
         """Get User Stories"""
-        return await self._request("get", f"/users/{user_id}/stories")
+        return await self._request(
+            method="get", path=f"/users/{user_id}/stories"
+        )
 
     async def user_highlights(self, user_id: str) -> Any:
         """Get User Highlights"""
-        return await self._request("get", f"/users/{user_id}/highlights")
+        return await self._request(
+            method="get", path=f"/users/{user_id}/highlights"
+        )
 
     async def user_reposts(
-        self, user_id: str, *, cursor: Optional[str] = None
+        self, user_id: str, *, cursor: str | None = None
     ) -> Any:
         """Get User Reposts"""
         return await self._request(
-            "get", f"/users/{user_id}/reposts", params={"cursor": cursor}
+            method="get",
+            path=f"/users/{user_id}/reposts",
+            params={"cursor": cursor},
         )
 
     def iter_user_reposts(
-        self, user_id: str, *, max_items: Optional[int] = None
+        self, user_id: str, *, max_items: int | None = None
     ) -> AsyncIterator[Any]:
-        async def fetch(cursor: Optional[str]) -> Page:
+        async def fetch(cursor: str | None) -> Page:
             return await self.user_reposts(user_id, cursor=cursor)
 
         return apaginate(fetch, item_key="items", max_items=max_items)
 
     async def user_about(self, user_id: str) -> Any:
         """Get User About"""
-        return await self._request("get", f"/users/{user_id}/about")
+        return await self._request(method="get", path=f"/users/{user_id}/about")
 
     async def post(self, post_id: str) -> Any:
         """Get Post"""
-        return await self._request("get", f"/posts/{post_id}")
+        return await self._request(method="get", path=f"/posts/{post_id}")
 
     async def post_comments(
         self,
         post_id: str,
         *,
         user_id: str,
-        min_id: Optional[str] = None,
-        max_id: Optional[str] = None,
-        carousel_media_id: Optional[str] = None,
-        carousel_index: Optional[int] = None,
+        min_id: str | None = None,
+        max_id: str | None = None,
+        carousel_media_id: str | None = None,
+        carousel_index: int | None = None,
     ) -> Any:
         """Get Post Comments"""
         return await self._request(
-            "get",
-            f"/posts/{post_id}/comments",
+            method="get",
+            path=f"/posts/{post_id}/comments",
             params={
                 "user_id": user_id,
                 "min_id": min_id,
@@ -172,7 +186,9 @@ class AsyncEndpoints(BaseAsyncClient):
     async def post_likers(self, post_id: str, *, user_id: str) -> Any:
         """Get Post Likers"""
         return await self._request(
-            "get", f"/posts/{post_id}/likers", params={"user_id": user_id}
+            method="get",
+            path=f"/posts/{post_id}/likers",
+            params={"user_id": user_id},
         )
 
     async def comment_replies(
@@ -181,12 +197,12 @@ class AsyncEndpoints(BaseAsyncClient):
         *,
         media_id: str,
         user_id: str,
-        cursor: Optional[str] = None,
+        cursor: str | None = None,
     ) -> Any:
         """Get Comment Replies"""
         return await self._request(
-            "get",
-            f"/comments/{comment_id}/replies",
+            method="get",
+            path=f"/comments/{comment_id}/replies",
             params={"media_id": media_id, "user_id": user_id, "cursor": cursor},
         )
 
@@ -196,9 +212,9 @@ class AsyncEndpoints(BaseAsyncClient):
         *,
         media_id: str,
         user_id: str,
-        max_items: Optional[int] = None,
+        max_items: int | None = None,
     ) -> AsyncIterator[Any]:
-        async def fetch(cursor: Optional[str]) -> Page:
+        async def fetch(cursor: str | None) -> Page:
             return await self.comment_replies(
                 comment_id, media_id=media_id, user_id=user_id, cursor=cursor
             )
@@ -207,15 +223,17 @@ class AsyncEndpoints(BaseAsyncClient):
 
     async def comment_likers(self, comment_id: str) -> Any:
         """Get Comment Likers"""
-        return await self._request("get", f"/comments/{comment_id}/likers")
+        return await self._request(
+            method="get", path=f"/comments/{comment_id}/likers"
+        )
 
     async def search_users(
         self,
         *,
-        search_session_id: Optional[str] = None,
-        serp_session_id: Optional[str] = None,
+        search_session_id: str | None = None,
+        serp_session_id: str | None = None,
         query: str,
-        cursor: Optional[str] = None,
+        cursor: str | None = None,
     ) -> Any:
         """Search Users"""
         if search_session_id is None:
@@ -223,8 +241,8 @@ class AsyncEndpoints(BaseAsyncClient):
         if serp_session_id is None:
             serp_session_id = _session_id()
         return await self._request(
-            "get",
-            "/search/users",
+            method="get",
+            path="/search/users",
             params={
                 "search_session_id": search_session_id,
                 "serp_session_id": serp_session_id,
@@ -236,17 +254,17 @@ class AsyncEndpoints(BaseAsyncClient):
     def iter_search_users(
         self,
         *,
-        search_session_id: Optional[str] = None,
-        serp_session_id: Optional[str] = None,
+        search_session_id: str | None = None,
+        serp_session_id: str | None = None,
         query: str,
-        max_items: Optional[int] = None,
+        max_items: int | None = None,
     ) -> AsyncIterator[Any]:
         if search_session_id is None:
             search_session_id = _session_id()
         if serp_session_id is None:
             serp_session_id = _session_id()
 
-        async def fetch(cursor: Optional[str]) -> Page:
+        async def fetch(cursor: str | None) -> Page:
             return await self.search_users(
                 search_session_id=search_session_id,
                 serp_session_id=serp_session_id,
@@ -259,10 +277,10 @@ class AsyncEndpoints(BaseAsyncClient):
     async def search_hashtags(
         self,
         *,
-        search_session_id: Optional[str] = None,
-        serp_session_id: Optional[str] = None,
+        search_session_id: str | None = None,
+        serp_session_id: str | None = None,
         query: str,
-        cursor: Optional[str] = None,
+        cursor: str | None = None,
     ) -> Any:
         """Search Hashtags"""
         if search_session_id is None:
@@ -270,8 +288,8 @@ class AsyncEndpoints(BaseAsyncClient):
         if serp_session_id is None:
             serp_session_id = _session_id()
         return await self._request(
-            "get",
-            "/search/hashtags",
+            method="get",
+            path="/search/hashtags",
             params={
                 "search_session_id": search_session_id,
                 "serp_session_id": serp_session_id,
@@ -283,17 +301,17 @@ class AsyncEndpoints(BaseAsyncClient):
     def iter_search_hashtags(
         self,
         *,
-        search_session_id: Optional[str] = None,
-        serp_session_id: Optional[str] = None,
+        search_session_id: str | None = None,
+        serp_session_id: str | None = None,
         query: str,
-        max_items: Optional[int] = None,
+        max_items: int | None = None,
     ) -> AsyncIterator[Any]:
         if search_session_id is None:
             search_session_id = _session_id()
         if serp_session_id is None:
             serp_session_id = _session_id()
 
-        async def fetch(cursor: Optional[str]) -> Page:
+        async def fetch(cursor: str | None) -> Page:
             return await self.search_hashtags(
                 search_session_id=search_session_id,
                 serp_session_id=serp_session_id,
@@ -306,11 +324,11 @@ class AsyncEndpoints(BaseAsyncClient):
     async def search_audio(
         self,
         *,
-        search_session_id: Optional[str] = None,
-        serp_session_id: Optional[str] = None,
-        browse_session_id: Optional[str] = None,
+        search_session_id: str | None = None,
+        serp_session_id: str | None = None,
+        browse_session_id: str | None = None,
         query: str,
-        cursor: Optional[str] = None,
+        cursor: str | None = None,
     ) -> Any:
         """Search Audio"""
         if search_session_id is None:
@@ -320,8 +338,8 @@ class AsyncEndpoints(BaseAsyncClient):
         if browse_session_id is None:
             browse_session_id = _session_id()
         return await self._request(
-            "get",
-            "/search/audio",
+            method="get",
+            path="/search/audio",
             params={
                 "search_session_id": search_session_id,
                 "serp_session_id": serp_session_id,
@@ -334,11 +352,11 @@ class AsyncEndpoints(BaseAsyncClient):
     def iter_search_audio(
         self,
         *,
-        search_session_id: Optional[str] = None,
-        serp_session_id: Optional[str] = None,
-        browse_session_id: Optional[str] = None,
+        search_session_id: str | None = None,
+        serp_session_id: str | None = None,
+        browse_session_id: str | None = None,
         query: str,
-        max_items: Optional[int] = None,
+        max_items: int | None = None,
     ) -> AsyncIterator[Any]:
         if search_session_id is None:
             search_session_id = _session_id()
@@ -347,7 +365,7 @@ class AsyncEndpoints(BaseAsyncClient):
         if browse_session_id is None:
             browse_session_id = _session_id()
 
-        async def fetch(cursor: Optional[str]) -> Page:
+        async def fetch(cursor: str | None) -> Page:
             return await self.search_audio(
                 search_session_id=search_session_id,
                 serp_session_id=serp_session_id,
@@ -361,10 +379,10 @@ class AsyncEndpoints(BaseAsyncClient):
     async def search_top(
         self,
         *,
-        search_session_id: Optional[str] = None,
-        serp_session_id: Optional[str] = None,
+        search_session_id: str | None = None,
+        serp_session_id: str | None = None,
         query: str,
-        cursor: Optional[str] = None,
+        cursor: str | None = None,
     ) -> Any:
         """Search Top"""
         if search_session_id is None:
@@ -372,8 +390,8 @@ class AsyncEndpoints(BaseAsyncClient):
         if serp_session_id is None:
             serp_session_id = _session_id()
         return await self._request(
-            "get",
-            "/search/top",
+            method="get",
+            path="/search/top",
             params={
                 "search_session_id": search_session_id,
                 "serp_session_id": serp_session_id,
@@ -385,17 +403,17 @@ class AsyncEndpoints(BaseAsyncClient):
     def iter_search_top(
         self,
         *,
-        search_session_id: Optional[str] = None,
-        serp_session_id: Optional[str] = None,
+        search_session_id: str | None = None,
+        serp_session_id: str | None = None,
         query: str,
-        max_items: Optional[int] = None,
+        max_items: int | None = None,
     ) -> AsyncIterator[Any]:
         if search_session_id is None:
             search_session_id = _session_id()
         if serp_session_id is None:
             serp_session_id = _session_id()
 
-        async def fetch(cursor: Optional[str]) -> Page:
+        async def fetch(cursor: str | None) -> Page:
             return await self.search_top(
                 search_session_id=search_session_id,
                 serp_session_id=serp_session_id,
@@ -406,167 +424,179 @@ class AsyncEndpoints(BaseAsyncClient):
         return apaginate(fetch, item_key="edges", max_items=max_items)
 
     async def search_places(
-        self,
-        *,
-        query: str,
-        lat: Optional[float] = None,
-        lng: Optional[float] = None,
+        self, *, query: str, lat: float | None = None, lng: float | None = None
     ) -> Any:
         """Search Places"""
         return await self._request(
-            "get",
-            "/search/places",
+            method="get",
+            path="/search/places",
             params={"query": query, "lat": lat, "lng": lng},
         )
 
     async def hashtag(self, name: str) -> Any:
         """Get Hashtag"""
-        return await self._request("get", f"/hashtags/{name}")
+        return await self._request(method="get", path=f"/hashtags/{name}")
 
-    async def hashtag_top(
-        self, name: str, *, cursor: Optional[str] = None
-    ) -> Any:
+    async def hashtag_top(self, name: str, *, cursor: str | None = None) -> Any:
         """Get Hashtag Top"""
         return await self._request(
-            "get", f"/hashtags/{name}/top", params={"cursor": cursor}
+            method="get",
+            path=f"/hashtags/{name}/top",
+            params={"cursor": cursor},
         )
 
     def iter_hashtag_top(
-        self, name: str, *, max_items: Optional[int] = None
+        self, name: str, *, max_items: int | None = None
     ) -> AsyncIterator[Any]:
-        async def fetch(cursor: Optional[str]) -> Page:
+        async def fetch(cursor: str | None) -> Page:
             return await self.hashtag_top(name, cursor=cursor)
 
         return apaginate(fetch, item_key="items", max_items=max_items)
 
     async def hashtag_recent(
-        self, name: str, *, cursor: Optional[str] = None
+        self, name: str, *, cursor: str | None = None
     ) -> Any:
         """Get Hashtag Recent"""
         return await self._request(
-            "get", f"/hashtags/{name}/recent", params={"cursor": cursor}
+            method="get",
+            path=f"/hashtags/{name}/recent",
+            params={"cursor": cursor},
         )
 
     def iter_hashtag_recent(
-        self, name: str, *, max_items: Optional[int] = None
+        self, name: str, *, max_items: int | None = None
     ) -> AsyncIterator[Any]:
-        async def fetch(cursor: Optional[str]) -> Page:
+        async def fetch(cursor: str | None) -> Page:
             return await self.hashtag_recent(name, cursor=cursor)
 
         return apaginate(fetch, item_key="items", max_items=max_items)
 
     async def hashtag_reels(
-        self, name: str, *, cursor: Optional[str] = None
+        self, name: str, *, cursor: str | None = None
     ) -> Any:
         """Get Hashtag Reels"""
         return await self._request(
-            "get", f"/hashtags/{name}/reels", params={"cursor": cursor}
+            method="get",
+            path=f"/hashtags/{name}/reels",
+            params={"cursor": cursor},
         )
 
     def iter_hashtag_reels(
-        self, name: str, *, max_items: Optional[int] = None
+        self, name: str, *, max_items: int | None = None
     ) -> AsyncIterator[Any]:
-        async def fetch(cursor: Optional[str]) -> Page:
+        async def fetch(cursor: str | None) -> Page:
             return await self.hashtag_reels(name, cursor=cursor)
 
         return apaginate(fetch, item_key="items", max_items=max_items)
 
     async def location(self, location_id: str) -> Any:
         """Get Location"""
-        return await self._request("get", f"/locations/{location_id}")
+        return await self._request(
+            method="get", path=f"/locations/{location_id}"
+        )
 
     async def location_top(
-        self, location_id: str, *, cursor: Optional[str] = None
+        self, location_id: str, *, cursor: str | None = None
     ) -> Any:
         """Get Location Top"""
         return await self._request(
-            "get", f"/locations/{location_id}/top", params={"cursor": cursor}
+            method="get",
+            path=f"/locations/{location_id}/top",
+            params={"cursor": cursor},
         )
 
     def iter_location_top(
-        self, location_id: str, *, max_items: Optional[int] = None
+        self, location_id: str, *, max_items: int | None = None
     ) -> AsyncIterator[Any]:
-        async def fetch(cursor: Optional[str]) -> Page:
+        async def fetch(cursor: str | None) -> Page:
             return await self.location_top(location_id, cursor=cursor)
 
         return apaginate(fetch, item_key="items", max_items=max_items)
 
     async def location_recent(
-        self, location_id: str, *, cursor: Optional[str] = None
+        self, location_id: str, *, cursor: str | None = None
     ) -> Any:
         """Get Location Recent"""
         return await self._request(
-            "get", f"/locations/{location_id}/recent", params={"cursor": cursor}
+            method="get",
+            path=f"/locations/{location_id}/recent",
+            params={"cursor": cursor},
         )
 
     def iter_location_recent(
-        self, location_id: str, *, max_items: Optional[int] = None
+        self, location_id: str, *, max_items: int | None = None
     ) -> AsyncIterator[Any]:
-        async def fetch(cursor: Optional[str]) -> Page:
+        async def fetch(cursor: str | None) -> Page:
             return await self.location_recent(location_id, cursor=cursor)
 
         return apaginate(fetch, item_key="items", max_items=max_items)
 
     async def highlight(self, highlight_id: str) -> Any:
         """Get Highlight"""
-        return await self._request("get", f"/highlights/{highlight_id}")
+        return await self._request(
+            method="get", path=f"/highlights/{highlight_id}"
+        )
 
     async def story(self, reel_id: str) -> Any:
         """Get Story Reel"""
-        return await self._request("get", f"/stories/{reel_id}")
+        return await self._request(method="get", path=f"/stories/{reel_id}")
 
-    async def audio_trending(self, *, cursor: Optional[str] = None) -> Any:
+    async def audio_trending(self, *, cursor: str | None = None) -> Any:
         """Get Trending Audio"""
         return await self._request(
-            "get", "/audio/trending", params={"cursor": cursor}
+            method="get", path="/audio/trending", params={"cursor": cursor}
         )
 
     def iter_audio_trending(
-        self, *, max_items: Optional[int] = None
+        self, *, max_items: int | None = None
     ) -> AsyncIterator[Any]:
-        async def fetch(cursor: Optional[str]) -> Page:
+        async def fetch(cursor: str | None) -> Page:
             return await self.audio_trending(cursor=cursor)
 
         return apaginate(fetch, item_key="items", max_items=max_items)
 
     async def audio(self, audio_id: str) -> Any:
         """Get Audio"""
-        return await self._request("get", f"/audio/{audio_id}")
+        return await self._request(method="get", path=f"/audio/{audio_id}")
 
     async def audio_medias(
-        self, audio_id: str, *, cursor: Optional[str] = None
+        self, audio_id: str, *, cursor: str | None = None
     ) -> Any:
         """Get Audio Medias"""
         return await self._request(
-            "get", f"/audio/{audio_id}/medias", params={"cursor": cursor}
+            method="get",
+            path=f"/audio/{audio_id}/medias",
+            params={"cursor": cursor},
         )
 
     def iter_audio_medias(
-        self, audio_id: str, *, max_items: Optional[int] = None
+        self, audio_id: str, *, max_items: int | None = None
     ) -> AsyncIterator[Any]:
-        async def fetch(cursor: Optional[str]) -> Page:
+        async def fetch(cursor: str | None) -> Page:
             return await self.audio_medias(audio_id, cursor=cursor)
 
         return apaginate(fetch, item_key="items", max_items=max_items)
 
     async def resolve_media(
-        self, *, pk: Optional[str] = None, code: Optional[str] = None
+        self, *, pk: str | None = None, code: str | None = None
     ) -> MediaIdResolution:
         """Resolve Media"""
         if (pk is None) == (code is None):
             raise ValueError("resolve_media needs exactly one of pk or code")
         return await self._request(
-            "get", "/resolve/media", params={"pk": pk, "code": code}
+            method="get", path="/resolve/media", params={"pk": pk, "code": code}
         )
 
     async def oembed(self, *, url: str) -> Any:
         """Get Oembed"""
-        return await self._request("get", "/oembed", params={"url": url})
+        return await self._request(
+            method="get", path="/oembed", params={"url": url}
+        )
 
     async def health(self) -> Any:
         """Health"""
-        return await self._request("get", "/system/health")
+        return await self._request(method="get", path="/system/health")
 
     async def balance(self) -> BalanceResponse:
         """Get Balance"""
-        return await self._request("get", "/system/balance")
+        return await self._request(method="get", path="/system/balance")
