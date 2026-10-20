@@ -1,0 +1,64 @@
+{
+  "name": "herascrape",
+  "version": "0.1.0",
+  "description": "Official TypeScript/JavaScript client for the herascrape Instagram API.",
+  "license": "MIT",
+  "author": "herascrape",
+  "homepage": "https://herascrape.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/herascrape/herascrape.git",
+    "directory": "js"
+  },
+  "bugs": {
+    "url": "https://github.com/herascrape/herascrape/issues"
+  },
+  "keywords": [
+    "instagram",
+    "instagram api",
+    "instagram scraper",
+    "instagram private api",
+    "scraping",
+    "hikerapi"
+  ],
+  "type": "module",
+  "engines": {
+    "node": ">=18"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . && prettier --check \"**/*.ts\"",
+    "format": "prettier --write \"**/*.ts\"",
+    "test": "vitest run --minWorkers=1 --maxWorkers=2",
+    "generate": "python3 -m codegen.generate"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@eslint/js": "9.15.0",
+    "@types/node": "20.17.6",
+    "eslint": "9.15.0",
+    "prettier": "3.4.2",
+    "tsup": "8.3.5",
+    "typescript": "5.6.3",
+    "typescript-eslint": "8.18.0",
+    "vitest": "2.1.8"
+  }
+}

@@ -1,0 +1,19 @@
+# Published tarball ships dist/ + README + LICENSE only.
+src/
+test/
+node_modules/
+
+# Config and tooling
+tsconfig.json
+tsup.config.ts
+vitest.config.ts
+eslint.config.js
+.prettierrc.json
+.prettierignore
+.eslintcache
+
+# Never leak these
+*.map
+.env
+.env.*
+.DS_Store

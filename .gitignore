@@ -21,3 +21,6 @@ htmlcov/
 # Local tooling
 .superpowers/
 .DS_Store
+
+# Node
+node_modules/
