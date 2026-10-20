@@ -70,18 +70,6 @@ class SyncEndpoints(BaseSyncClient):
             params={"cursor": cursor, "max_id": max_id},
         )
 
-    def iter_user_posts(
-        self,
-        user_id: str,
-        *,
-        max_id: Optional[str] = None,
-        max_items: Optional[int] = None,
-    ) -> Iterator[Any]:
-        def fetch(cursor: Optional[str]) -> Page:
-            return self.user_posts(user_id, max_id=max_id, cursor=cursor)
-
-        return paginate(fetch, item_key="items", max_items=max_items)
-
     def user_reels(
         self,
         user_id: str,

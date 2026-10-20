@@ -53,6 +53,21 @@ def _page(
     )
 
 
+def _search_top_page(
+    edges: list[Any],
+    *,
+    next_cursor: Optional[str] = None,
+) -> httpx.Response:
+    """Real ``/search/top`` shape: ``edges`` + ``next_cursor``, NO has_more."""
+    return _ok(
+        {
+            "edges": edges,
+            "next_cursor": next_cursor,
+            "search_context": {},
+        }
+    )
+
+
 def _client(script: Script) -> Client:
     return Client(api_key=API_KEY, transport=httpx.MockTransport(script))
 
@@ -81,22 +96,23 @@ def test_search_users_autogenerates_session_ids():
     assert "cursor" not in params
 
 
-def test_iter_user_posts_paginates():
-    script = Script(
-        _page([{"pk": "1"}, {"pk": "2"}], next_cursor="c2"),
-        _page([{"pk": "3"}]),
-    )
-    posts = list(_client(script).iter_user_posts("123"))
-    assert posts == [{"pk": "1"}, {"pk": "2"}, {"pk": "3"}]
-    first, second = script.requests
-    assert "cursor" not in first.url.params
-    assert second.url.params["cursor"] == "c2"
+def test_user_posts_returns_feed_dict():
+    feed = {
+        "items": [{"pk": "1"}, {"pk": "2"}],
+        "profile_grid_items_cursor": "c2",
+        "more_available": True,
+    }
+    script = Script(_ok(feed))
+    assert _client(script).user_posts("123") == feed
+    request = script.requests[0]
+    assert request.url.path == "/users/123/posts"
+    assert "cursor" not in request.url.params
 
 
 def test_iter_search_top_replays_query_and_session_ids():
     script = Script(
-        _page([{"id": "a"}], next_cursor="c2", key="edges"),
-        _page([{"id": "b"}], key="edges"),
+        _search_top_page([{"id": "a"}], next_cursor="c2"),
+        _search_top_page([{"id": "b"}]),
     )
     edges = list(_client(script).iter_search_top(query="nike"))
     assert edges == [{"id": "a"}, {"id": "b"}]
@@ -125,15 +141,16 @@ async def test_async_user():
 
 
 @pytest.mark.asyncio
-async def test_async_iter_user_posts_paginates():
-    script = Script(
-        _page([{"pk": "1"}], next_cursor="c2"),
-        _page([{"pk": "2"}]),
-    )
+async def test_async_user_posts_returns_feed_dict():
+    feed = {
+        "items": [{"pk": "1"}],
+        "profile_grid_items_cursor": None,
+        "more_available": False,
+    }
+    script = Script(_ok(feed))
     async with _async_client(script) as client:
-        posts = [post async for post in client.iter_user_posts("123")]
-    assert posts == [{"pk": "1"}, {"pk": "2"}]
-    assert script.requests[1].url.params["cursor"] == "c2"
+        assert await client.user_posts("123") == feed
+    assert script.requests[0].url.path == "/users/123/posts"
 
 
 @pytest.mark.asyncio
