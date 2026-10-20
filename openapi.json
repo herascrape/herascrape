@@ -1,0 +1,2248 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "herascrape",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/users/username/{username}": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "summary": "Get User By Username",
+        "description": "Full profile by username (resolves the id via typeahead first).",
+        "operationId": "get_user_by_username_users_username__username__get",
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Username"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Get User By Username Users Username  Username  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{user_id}": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "summary": "Get User",
+        "description": "Full profile by numeric id.",
+        "operationId": "get_user_users__user_id__get",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "User Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Get User Users  User Id  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{user_id}/followers": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "summary": "Get User Followers",
+        "description": "A page of the user's followers. Note: for business accounts Instagram\ncaps pagination depth, so the full list may not be reachable.",
+        "operationId": "get_user_followers_users__user_id__followers_get",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "User Id"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Opaque pagination cursor from a previous next_cursor",
+              "title": "Cursor"
+            },
+            "description": "Opaque pagination cursor from a previous next_cursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{user_id}/following": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "summary": "Get User Following",
+        "description": "A page of the accounts this user follows.",
+        "operationId": "get_user_following_users__user_id__following_get",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "User Id"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Opaque pagination cursor from a previous next_cursor",
+              "title": "Cursor"
+            },
+            "description": "Opaque pagination cursor from a previous next_cursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{user_id}/posts": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "summary": "Get User Posts",
+        "description": "The profile grid. Page with ``cursor``, not ``max_id``.\n\nInstagram serves this from the GraphQL profile timeline, which keys paging\non ``profile_grid_items_cursor``. It accepts ``max_id`` and ignores it, so\nfeeding ``feed.next_max_id`` back returns the first page forever \u2014 a silent\nloop rather than an error. We reject it instead of reproducing that.",
+        "operationId": "get_user_posts_users__user_id__posts_get",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "User Id"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Opaque pagination cursor from a previous next_cursor",
+              "title": "Cursor"
+            },
+            "description": "Opaque pagination cursor from a previous next_cursor"
+          },
+          {
+            "name": "max_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Not supported here. Page with 'cursor', taking the value from feed.profile_grid_items_cursor.",
+              "deprecated": true,
+              "title": "Max Id"
+            },
+            "description": "Not supported here. Page with 'cursor', taking the value from feed.profile_grid_items_cursor.",
+            "deprecated": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Get User Posts Users  User Id  Posts Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{user_id}/reels": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "summary": "Get User Reels",
+        "description": "A page of the user's reels (clips).",
+        "operationId": "get_user_reels_users__user_id__reels_get",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "User Id"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Opaque pagination cursor from a previous next_cursor",
+              "title": "Cursor"
+            },
+            "description": "Opaque pagination cursor from a previous next_cursor"
+          },
+          {
+            "name": "sort_by_views",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "description": "Sort profile reels by view count",
+              "default": false,
+              "title": "Sort By Views"
+            },
+            "description": "Sort profile reels by view count"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{user_id}/tagged": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "summary": "Get User Tagged",
+        "description": "A page of media the user is tagged in.",
+        "operationId": "get_user_tagged_users__user_id__tagged_get",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "User Id"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Opaque pagination cursor from a previous next_cursor",
+              "title": "Cursor"
+            },
+            "description": "Opaque pagination cursor from a previous next_cursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{user_id}/stories": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "summary": "Get User Stories",
+        "description": "The user's currently-active story items (empty if none live).",
+        "operationId": "get_user_stories_users__user_id__stories_get",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "User Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{user_id}/highlights": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "summary": "Get User Highlights",
+        "description": "The profile's highlight reels (tray).",
+        "operationId": "get_user_highlights_users__user_id__highlights_get",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "User Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{user_id}/reposts": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "summary": "Get User Reposts",
+        "description": "A page of the media this user has reposted.",
+        "operationId": "get_user_reposts_users__user_id__reposts_get",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "User Id"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Opaque pagination cursor from a previous next_cursor",
+              "title": "Cursor"
+            },
+            "description": "Opaque pagination cursor from a previous next_cursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{user_id}/about": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "summary": "Get User About",
+        "description": "The \"About this account\" panel (date joined, former usernames, \u2026),\nparsed from Instagram's Bloks render tree \u2014 best-effort text extraction.",
+        "operationId": "get_user_about_users__user_id__about_get",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "User Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Get User About Users  User Id  About Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/posts/{post_id}": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "summary": "Get Post",
+        "description": "Fetch a single post.\n\n``post_id`` accepts the shortcode from the URL (``DQSPu0hE_pP``), the bare\nnumeric ``media_id``, or the composite ``<media_id>_<owner_id>`` pk.",
+        "operationId": "get_post_posts__post_id__get",
+        "parameters": [
+          {
+            "name": "post_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Post Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Get Post Posts  Post Id  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/posts/{post_id}/comments": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "summary": "Get Post Comments",
+        "description": "Comments on a post. ``post_id`` accepts a shortcode, the bare media pk\nor the composite pk; ``user_id`` is the post's owner.",
+        "operationId": "get_post_comments_posts__post_id__comments_get",
+        "parameters": [
+          {
+            "name": "post_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Post Id"
+            }
+          },
+          {
+            "name": "user_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d+$",
+              "description": "Numeric id of the post's owner (the post's user.pk)",
+              "title": "User Id"
+            },
+            "description": "Numeric id of the post's owner (the post's user.pk)"
+          },
+          {
+            "name": "min_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Min Id"
+            }
+          },
+          {
+            "name": "max_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Walk toward older comments",
+              "title": "Max Id"
+            },
+            "description": "Walk toward older comments"
+          },
+          {
+            "name": "carousel_media_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Carousel Media Id"
+            }
+          },
+          {
+            "name": "carousel_index",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0,
+              "title": "Carousel Index"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Get Post Comments Posts  Post Id  Comments Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/posts/{post_id}/likers": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "summary": "Get Post Likers",
+        "description": "Accounts that liked a post (single capped page \u2014 Instagram does not\npaginate likers).",
+        "operationId": "get_post_likers_posts__post_id__likers_get",
+        "parameters": [
+          {
+            "name": "post_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Post Id"
+            }
+          },
+          {
+            "name": "user_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d+$",
+              "description": "Numeric id of the post's owner (the post's user.pk)",
+              "title": "User Id"
+            },
+            "description": "Numeric id of the post's owner (the post's user.pk)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/comments/{comment_id}/replies": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "summary": "Get Comment Replies",
+        "description": "Threaded replies to a comment. Requires the parent ``media_id`` and its\nowner's ``user_id``.",
+        "operationId": "get_comment_replies_comments__comment_id__replies_get",
+        "parameters": [
+          {
+            "name": "comment_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Comment Id"
+            }
+          },
+          {
+            "name": "media_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Parent post id: shortcode, bare or composite pk",
+              "title": "Media Id"
+            },
+            "description": "Parent post id: shortcode, bare or composite pk"
+          },
+          {
+            "name": "user_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d+$",
+              "description": "Numeric id of the post's owner (the post's user.pk)",
+              "title": "User Id"
+            },
+            "description": "Numeric id of the post's owner (the post's user.pk)"
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Opaque pagination cursor from a previous next_cursor",
+              "title": "Cursor"
+            },
+            "description": "Opaque pagination cursor from a previous next_cursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/comments/{comment_id}/likers": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "summary": "Get Comment Likers",
+        "description": "Accounts that liked a comment (single page).",
+        "operationId": "get_comment_likers_comments__comment_id__likers_get",
+        "parameters": [
+          {
+            "name": "comment_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Comment Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/search/users": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "summary": "Search Users",
+        "description": "Account search.",
+        "operationId": "search_users_search_users_get",
+        "parameters": [
+          {
+            "name": "search_session_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Client-created UUID reused for one search journey",
+              "title": "Search Session Id"
+            },
+            "description": "Client-created UUID reused for one search journey"
+          },
+          {
+            "name": "serp_session_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Client-created UUID reused for one SERP journey",
+              "title": "Serp Session Id"
+            },
+            "description": "Client-created UUID reused for one SERP journey"
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Search query",
+              "title": "Query"
+            },
+            "description": "Search query"
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Opaque pagination cursor from a previous next_cursor",
+              "title": "Cursor"
+            },
+            "description": "Opaque pagination cursor from a previous next_cursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/search/hashtags": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "summary": "Search Hashtags",
+        "description": "Hashtag search.",
+        "operationId": "search_hashtags_search_hashtags_get",
+        "parameters": [
+          {
+            "name": "search_session_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Client-created UUID reused for one search journey",
+              "title": "Search Session Id"
+            },
+            "description": "Client-created UUID reused for one search journey"
+          },
+          {
+            "name": "serp_session_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Client-created UUID reused for one SERP journey",
+              "title": "Serp Session Id"
+            },
+            "description": "Client-created UUID reused for one SERP journey"
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Search query",
+              "title": "Query"
+            },
+            "description": "Search query"
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Opaque pagination cursor from a previous next_cursor",
+              "title": "Cursor"
+            },
+            "description": "Opaque pagination cursor from a previous next_cursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/search/audio": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "summary": "Search Audio",
+        "description": "Music / audio search.",
+        "operationId": "search_audio_search_audio_get",
+        "parameters": [
+          {
+            "name": "search_session_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Client-created UUID reused for one search journey",
+              "title": "Search Session Id"
+            },
+            "description": "Client-created UUID reused for one search journey"
+          },
+          {
+            "name": "serp_session_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Client-created UUID reused for one SERP journey",
+              "title": "Serp Session Id"
+            },
+            "description": "Client-created UUID reused for one SERP journey"
+          },
+          {
+            "name": "browse_session_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Client-created UUID reused for one audio browse journey",
+              "title": "Browse Session Id"
+            },
+            "description": "Client-created UUID reused for one audio browse journey"
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Search query",
+              "title": "Query"
+            },
+            "description": "Search query"
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Opaque pagination cursor from a previous next_cursor",
+              "title": "Cursor"
+            },
+            "description": "Opaque pagination cursor from a previous next_cursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/search/top": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "summary": "Search Top",
+        "description": "Blended top search \u2014 heterogeneous result units returned as Instagram\nsends them.",
+        "operationId": "search_top_search_top_get",
+        "parameters": [
+          {
+            "name": "search_session_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Client-created UUID reused for one search journey",
+              "title": "Search Session Id"
+            },
+            "description": "Client-created UUID reused for one search journey"
+          },
+          {
+            "name": "serp_session_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "description": "Client-created UUID reused for one SERP journey",
+              "title": "Serp Session Id"
+            },
+            "description": "Client-created UUID reused for one SERP journey"
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Search query",
+              "title": "Query"
+            },
+            "description": "Search query"
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Pagination cursor from next_cursor",
+              "title": "Cursor"
+            },
+            "description": "Pagination cursor from next_cursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/search/places": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "summary": "Search Places",
+        "description": "Venue search. Instagram retired the standalone location-search screen,\nbut the capability survives in the composer's place picker, which is what\nthis calls. Single page \u2014 Instagram returns a typeahead-style list with no\ncursor, so ``has_more`` is always false.",
+        "operationId": "search_places_search_places_get",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Place name to search for",
+              "title": "Query"
+            },
+            "description": "Place name to search for"
+          },
+          {
+            "name": "lat",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "maximum": 90,
+                  "minimum": -90
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Bias results toward this latitude",
+              "title": "Lat"
+            },
+            "description": "Bias results toward this latitude"
+          },
+          {
+            "name": "lng",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "number",
+                  "maximum": 180,
+                  "minimum": -180
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Bias results toward this longitude",
+              "title": "Lng"
+            },
+            "description": "Bias results toward this longitude"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/hashtags/{name}": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "summary": "Get Hashtag",
+        "description": "Hashtag info (post count, trending state).",
+        "operationId": "get_hashtag_hashtags__name__get",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Name"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Get Hashtag Hashtags  Name  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/hashtags/{name}/top": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "summary": "Get Hashtag Top",
+        "description": "Top media for a hashtag.",
+        "operationId": "get_hashtag_top_hashtags__name__top_get",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Name"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Opaque pagination cursor from a previous next_cursor",
+              "title": "Cursor"
+            },
+            "description": "Opaque pagination cursor from a previous next_cursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/hashtags/{name}/recent": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "summary": "Get Hashtag Recent",
+        "description": "Most-recent media for a hashtag.",
+        "operationId": "get_hashtag_recent_hashtags__name__recent_get",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Name"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Opaque pagination cursor from a previous next_cursor",
+              "title": "Cursor"
+            },
+            "description": "Opaque pagination cursor from a previous next_cursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/hashtags/{name}/reels": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "summary": "Get Hashtag Reels",
+        "description": "Reels/clips for a hashtag.",
+        "operationId": "get_hashtag_reels_hashtags__name__reels_get",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Name"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Opaque pagination cursor from a previous next_cursor",
+              "title": "Cursor"
+            },
+            "description": "Opaque pagination cursor from a previous next_cursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/locations/{location_id}": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "summary": "Get Location",
+        "description": "Location / place metadata (name, category, city, hours).",
+        "operationId": "get_location_locations__location_id__get",
+        "parameters": [
+          {
+            "name": "location_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Location Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Get Location Locations  Location Id  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/locations/{location_id}/top": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "summary": "Get Location Top",
+        "description": "Top media at a location.",
+        "operationId": "get_location_top_locations__location_id__top_get",
+        "parameters": [
+          {
+            "name": "location_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Location Id"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Opaque pagination cursor from a previous next_cursor",
+              "title": "Cursor"
+            },
+            "description": "Opaque pagination cursor from a previous next_cursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/locations/{location_id}/recent": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "summary": "Get Location Recent",
+        "description": "Most-recent media at a location.",
+        "operationId": "get_location_recent_locations__location_id__recent_get",
+        "parameters": [
+          {
+            "name": "location_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Location Id"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Opaque pagination cursor from a previous next_cursor",
+              "title": "Cursor"
+            },
+            "description": "Opaque pagination cursor from a previous next_cursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/highlights/{highlight_id}": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "summary": "Get Highlight",
+        "description": "The media items of a single highlight reel.",
+        "operationId": "get_highlight_highlights__highlight_id__get",
+        "parameters": [
+          {
+            "name": "highlight_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Highlight Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/stories/{reel_id}": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "summary": "Get Story Reel",
+        "description": "A story reel's media items. ``reel_id`` is the story owner's user id\n(equivalent to `/users/{id}/stories`, via the reel-stream endpoint).",
+        "operationId": "get_story_reel_stories__reel_id__get",
+        "parameters": [
+          {
+            "name": "reel_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Reel Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/audio/trending": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "summary": "Get Trending Audio",
+        "description": "The trending-audio list.",
+        "operationId": "get_trending_audio_audio_trending_get",
+        "parameters": [
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Opaque pagination cursor from a previous next_cursor",
+              "title": "Cursor"
+            },
+            "description": "Opaque pagination cursor from a previous next_cursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/audio/{audio_id}": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "summary": "Get Audio",
+        "description": "Audio (track / original sound) page metadata.",
+        "operationId": "get_audio_audio__audio_id__get",
+        "parameters": [
+          {
+            "name": "audio_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Audio Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Get Audio Audio  Audio Id  Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/audio/{audio_id}/medias": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "summary": "Get Audio Medias",
+        "description": "A page of reels that use this audio.",
+        "operationId": "get_audio_medias_audio__audio_id__medias_get",
+        "parameters": [
+          {
+            "name": "audio_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Audio Id"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Opaque pagination cursor from a previous next_cursor",
+              "title": "Cursor"
+            },
+            "description": "Opaque pagination cursor from a previous next_cursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/resolve/media": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "summary": "Resolve Media",
+        "description": "Convert a media pk \u21c4 shortcode. Pure base64 arithmetic \u2014 no Instagram\nrequest, so it's free and instant. Pass exactly one of ``pk`` or ``code``.",
+        "operationId": "resolve_media_resolve_media_get",
+        "parameters": [
+          {
+            "name": "pk",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Numeric media pk",
+              "title": "Pk"
+            },
+            "description": "Numeric media pk"
+          },
+          {
+            "name": "code",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Media shortcode",
+              "title": "Code"
+            },
+            "description": "Media shortcode"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/oembed": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "summary": "Get Oembed",
+        "description": "oEmbed for a post/reel URL \u2014 and the resolver for `/s/` share links\n(returns the `reel_id` / `author_id` a highlight or story link points to).",
+        "operationId": "get_oembed_oembed_get",
+        "parameters": [
+          {
+            "name": "url",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Post/reel URL, or a /s/ share link",
+              "title": "Url"
+            },
+            "description": "Post/reel URL, or a /s/ share link"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Get Oembed Oembed Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/system/health": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "summary": "Health",
+        "description": "Unauthenticated liveness check.",
+        "operationId": "health_system_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": {
+                    "type": "string"
+                  },
+                  "type": "object",
+                  "title": "Response Health System Health Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/system/balance": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "summary": "Get Balance",
+        "description": "Remaining USD balance for the account this key belongs to.\n\nFree \u2014 it never touches Instagram. Read live from the ledger rather than\nfrom the key cache, so a top-up shows up immediately.",
+        "operationId": "get_balance_system_balance_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-api-key"
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.herascrape.com",
+      "description": "herascrape"
+    }
+  ],
+  "security": [
+    {
+      "ApiKeyAuth": []
+    }
+  ]
+}
