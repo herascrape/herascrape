@@ -1,7 +1,6 @@
 import copy
 import pickle
 from collections.abc import Callable
-from typing import Optional
 
 import pytest
 
@@ -57,10 +56,10 @@ _CLONES: list[_Clone] = [_pickled, copy.copy, copy.deepcopy]
 def _map(
     *,
     status_code: int,
-    error_code: Optional[str] = None,
+    error_code: str | None = None,
     detail: JSON = "",
-    request_id: Optional[str] = None,
-    retry_after: Optional[float] = None,
+    request_id: str | None = None,
+    retry_after: float | None = None,
 ) -> HerascrapeAPIError:
     return error_from_response(
         status_code=status_code,

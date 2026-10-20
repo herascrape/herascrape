@@ -5,7 +5,7 @@ import os
 import random
 import time
 from collections.abc import Awaitable, Callable, Mapping
-from typing import Any, Optional, TypeVar, Union, cast
+from typing import Any, Literal, TypeVar, cast
 
 import httpx
 
@@ -24,8 +24,8 @@ from .ratelimit import DEFAULT_RATE_LIMIT, RateLimit, RateLimiter
 DEFAULT_BASE_URL = "https://api.herascrape.com"
 API_KEY_ENV_VAR = "HERASCRAPE_API_KEY"
 
-Param = Union[str, int, float, bool]
-ClientError = Union[HerascrapeAPIError, HerascrapeTransportError]
+Param = str | int | float | bool
+ClientError = HerascrapeAPIError | HerascrapeTransportError
 
 _BACKOFF_BASE = 0.5
 _BACKOFF_CAP = 8.0
@@ -45,16 +45,14 @@ def unwrap(payload: Any) -> Any:
     return payload["data"]
 
 
-def drop_none(
-    params: Optional[Mapping[str, Optional[Param]]],
-) -> dict[str, Param]:
+def drop_none(params: Mapping[str, Param | None] | None) -> dict[str, Param]:
     """Query parameters without the unset (`None`) ones."""
     if params is None:
         return {}
     return {name: value for name, value in params.items() if value is not None}
 
 
-def _parse_retry_after(value: Optional[str]) -> Optional[float]:
+def _parse_retry_after(value: str | None) -> float | None:
     """Seconds from a numeric `Retry-After`; `None` if absent or not usable."""
     if value is None:
         return None
@@ -105,7 +103,7 @@ def backoff_delay(
     return delay * (1 - _BACKOFF_JITTER * rng())
 
 
-def retry_delay(exc: ClientError, *, attempt: int) -> Optional[float]:
+def retry_delay(exc: ClientError, *, attempt: int) -> float | None:
     """Seconds to wait before retrying `exc`, or `None` if it is final."""
     if isinstance(exc, RateLimitError):
         if exc.retry_after is not None:
@@ -138,13 +136,13 @@ class BaseSyncClient:
 
     def __init__(
         self,
-        api_key: Optional[str] = None,
+        api_key: str | None = None,
         *,
         base_url: str = DEFAULT_BASE_URL,
         timeout: float = 10.0,
         max_retries: int = 3,
-        rate_limit: Optional[RateLimit] = DEFAULT_RATE_LIMIT,
-        transport: Optional[httpx.BaseTransport] = None,
+        rate_limit: RateLimit | None = DEFAULT_RATE_LIMIT,
+        transport: httpx.BaseTransport | None = None,
         sleep: Callable[[float], None] = time.sleep,
     ) -> None:
         key = api_key or os.environ.get(API_KEY_ENV_VAR)
@@ -165,10 +163,10 @@ class BaseSyncClient:
 
     def _request(
         self,
-        method: str,
-        path: str,
         *,
-        params: Optional[Mapping[str, Optional[Param]]] = None,
+        method: Literal["get"],
+        path: str,
+        params: Mapping[str, Param | None] | None = None,
     ) -> Any:
         """Send a request and return the unwrapped `data`, retrying."""
         query = drop_none(params)
@@ -184,7 +182,9 @@ class BaseSyncClient:
                 self._sleep(delay)
                 attempt += 1
 
-    def _send(self, *, method: str, path: str, params: dict[str, Param]) -> Any:
+    def _send(
+        self, *, method: Literal["get"], path: str, params: dict[str, Param]
+    ) -> Any:
         try:
             response = self._client.request(method, path, params=params)
         except httpx.TransportError as exc:
@@ -210,13 +210,13 @@ class BaseAsyncClient:
 
     def __init__(
         self,
-        api_key: Optional[str] = None,
+        api_key: str | None = None,
         *,
         base_url: str = DEFAULT_BASE_URL,
         timeout: float = 10.0,
         max_retries: int = 3,
-        rate_limit: Optional[RateLimit] = DEFAULT_RATE_LIMIT,
-        transport: Optional[httpx.AsyncBaseTransport] = None,
+        rate_limit: RateLimit | None = DEFAULT_RATE_LIMIT,
+        transport: httpx.AsyncBaseTransport | None = None,
         asleep: Callable[[float], Awaitable[None]] = asyncio.sleep,
     ) -> None:
         key = api_key or os.environ.get(API_KEY_ENV_VAR)
@@ -237,10 +237,10 @@ class BaseAsyncClient:
 
     async def _request(
         self,
-        method: str,
-        path: str,
         *,
-        params: Optional[Mapping[str, Optional[Param]]] = None,
+        method: Literal["get"],
+        path: str,
+        params: Mapping[str, Param | None] | None = None,
     ) -> Any:
         """Send a request and return the unwrapped `data`, retrying."""
         query = drop_none(params)
@@ -257,7 +257,7 @@ class BaseAsyncClient:
                 attempt += 1
 
     async def _send(
-        self, *, method: str, path: str, params: dict[str, Param]
+        self, *, method: Literal["get"], path: str, params: dict[str, Param]
     ) -> Any:
         try:
             response = await self._client.request(method, path, params=params)

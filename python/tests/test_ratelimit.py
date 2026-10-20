@@ -30,7 +30,7 @@ def _limiter(clock: FakeClock, limit: RateLimit) -> RateLimiter:
 
 def _assert_slept(clock: FakeClock, expected: list[float]) -> None:
     assert len(clock.slept) == len(expected)
-    for got, want in zip(clock.slept, expected):
+    for got, want in zip(clock.slept, expected, strict=True):
         assert math.isclose(got, want, rel_tol=1e-6)
 
 

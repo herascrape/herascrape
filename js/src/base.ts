@@ -15,6 +15,7 @@ import { DEFAULT_RATE_LIMIT, RateLimiter, type RateLimit } from "./ratelimit";
 export const DEFAULT_BASE_URL = "https://api.herascrape.com";
 export const API_KEY_ENV_VAR = "HERASCRAPE_API_KEY";
 
+export type HttpMethod = "get";
 export type QueryValue = string | number | boolean;
 export type QueryParams = Record<string, QueryValue | null | undefined>;
 
@@ -165,17 +166,21 @@ export class BaseClient {
     this.limiter = new RateLimiter(rateLimit, { sleep: this.sleep });
   }
 
-  protected async request<T = Record<string, unknown>>(
-    method: string,
-    path: string,
-    params?: QueryParams,
-  ): Promise<T> {
-    const query = dropNone(params);
+  protected async request<T = Record<string, unknown>>(opts: {
+    method: HttpMethod;
+    path: string;
+    searchParams?: QueryParams;
+  }): Promise<T> {
+    const query = dropNone(opts.searchParams);
     let attempt = 0;
     for (;;) {
       await this.limiter.acquire();
       try {
-        return (await this.send(method, path, query)) as T;
+        return (await this.send({
+          method: opts.method,
+          path: opts.path,
+          searchParams: query,
+        })) as T;
       } catch (exc) {
         if (
           !(
@@ -193,16 +198,16 @@ export class BaseClient {
     }
   }
 
-  private async send(
-    method: string,
-    path: string,
-    params: Record<string, QueryValue>,
-  ): Promise<Record<string, unknown>> {
-    const url = this.buildUrl(path, params);
+  private async send(opts: {
+    method: HttpMethod;
+    path: string;
+    searchParams: Record<string, QueryValue>;
+  }): Promise<Record<string, unknown>> {
+    const url = this.buildUrl(opts.path, opts.searchParams);
     let response: Response;
     try {
       response = await this.fetchImpl(url, {
-        method: method.toUpperCase(),
+        method: opts.method.toUpperCase(),
         headers: { "x-api-key": this.apiKey, accept: "application/json" },
         signal: AbortSignal.timeout(this.timeoutMs),
       });

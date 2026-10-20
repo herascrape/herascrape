@@ -1,5 +1,4 @@
-from collections.abc import AsyncIterator
-from typing import Any, Optional
+from typing import Any
 
 import pytest
 
@@ -11,7 +10,7 @@ Page = dict[str, Any]
 def _page(
     items: list[int],
     *,
-    cursor: Optional[str],
+    cursor: str | None,
     more: bool,
     key: str = "items",
 ) -> Page:
@@ -25,7 +24,7 @@ def _page(
 def _search_page(
     items: list[int],
     *,
-    cursor: Optional[str],
+    cursor: str | None,
     key: str = "edges",
 ) -> Page:
     """A search/top page: ``edges`` + ``next_cursor``, NO ``has_more``."""
@@ -41,16 +40,16 @@ class Script:
 
     def __init__(self, *pages: Page) -> None:
         self._pages = pages
-        self.cursors: list[Optional[str]] = []
+        self.cursors: list[str | None] = []
 
-    def _next(self, cursor: Optional[str]) -> Page:
+    def _next(self, cursor: str | None) -> Page:
         self.cursors.append(cursor)
         return self._pages[len(self.cursors) - 1]
 
-    def __call__(self, cursor: Optional[str]) -> Page:
+    def __call__(self, cursor: str | None) -> Page:
         return self._next(cursor)
 
-    async def afetch(self, cursor: Optional[str]) -> Page:
+    async def afetch(self, cursor: str | None) -> Page:
         return self._next(cursor)
 
 
@@ -58,14 +57,10 @@ async def _acollect(
     script: Script,
     *,
     item_key: str = "items",
-    max_items: Optional[int] = None,
+    max_items: int | None = None,
 ) -> list[Page]:
     items = apaginate(script.afetch, item_key=item_key, max_items=max_items)
     return [item async for item in items]
-
-
-async def _anext(items: AsyncIterator[Page]) -> Page:
-    return await items.__anext__()
 
 
 def test_walks_two_pages():
@@ -213,5 +208,5 @@ async def test_async_is_lazy():
     )
     items = apaginate(fetch.afetch)
     assert fetch.cursors == []
-    assert await _anext(items) == {"id": 1}
+    assert await anext(items) == {"id": 1}
     assert fetch.cursors == [None]
