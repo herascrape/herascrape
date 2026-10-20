@@ -48,5 +48,6 @@ select = ["E", "F", "I", "B", "UP", "SIM", "RUF"]
 
 [tool.pyright]
 include = ["herascrape", "tests"]
+extraPaths = [".."]
 pythonVersion = "3.9"
 typeCheckingMode = "strict"
