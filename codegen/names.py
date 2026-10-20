@@ -1,0 +1,45 @@
+"""Authoritative OpenAPI path to public method-name map (37 GET endpoints).
+
+Hand-maintained public surface, consumed by ``generate.py``. Keep in sync
+with ``openapi.json``; the generator asserts full coverage.
+"""
+
+PATH_METHOD_NAMES: dict[str, str] = {
+    "/users/username/{username}": "user_by_username",
+    "/users/{user_id}": "user",
+    "/users/{user_id}/followers": "user_followers",
+    "/users/{user_id}/following": "user_following",
+    "/users/{user_id}/posts": "user_posts",
+    "/users/{user_id}/reels": "user_reels",
+    "/users/{user_id}/tagged": "user_tagged",
+    "/users/{user_id}/stories": "user_stories",
+    "/users/{user_id}/highlights": "user_highlights",
+    "/users/{user_id}/reposts": "user_reposts",
+    "/users/{user_id}/about": "user_about",
+    "/posts/{post_id}": "post",
+    "/posts/{post_id}/comments": "post_comments",
+    "/posts/{post_id}/likers": "post_likers",
+    "/comments/{comment_id}/replies": "comment_replies",
+    "/comments/{comment_id}/likers": "comment_likers",
+    "/search/users": "search_users",
+    "/search/hashtags": "search_hashtags",
+    "/search/audio": "search_audio",
+    "/search/top": "search_top",
+    "/search/places": "search_places",
+    "/hashtags/{name}": "hashtag",
+    "/hashtags/{name}/top": "hashtag_top",
+    "/hashtags/{name}/recent": "hashtag_recent",
+    "/hashtags/{name}/reels": "hashtag_reels",
+    "/locations/{location_id}": "location",
+    "/locations/{location_id}/top": "location_top",
+    "/locations/{location_id}/recent": "location_recent",
+    "/highlights/{highlight_id}": "highlight",
+    "/stories/{reel_id}": "story",
+    "/audio/trending": "audio_trending",
+    "/audio/{audio_id}": "audio",
+    "/audio/{audio_id}/medias": "audio_medias",
+    "/resolve/media": "resolve_media",
+    "/oembed": "oembed",
+    "/system/health": "health",
+    "/system/balance": "balance",
+}
