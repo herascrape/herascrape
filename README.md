@@ -1,11 +1,11 @@
 # herascrape: Instagram API client for Python & TypeScript
 
-`herascrape` is the official Python and TypeScript/JavaScript client for the
-[herascrape](https://herascrape.com) Instagram API — an Instagram scraper API
-that reads Instagram's private API for you and returns Instagram's own JSON:
+`herascrape` is the official Python and TypeScript/JavaScript client for
+[herascrape](https://herascrape.com), a hosted Instagram scraper API. It reads
+Instagram's private API for you and returns Instagram's own JSON:
 **profiles, followers and following, posts, reels, stories, highlights,
 comments, hashtags, locations, audio, and search.** You bring an API key; the
-service handles the Instagram accounts, devices and proxies.
+service runs the accounts, devices and proxies.
 
 - `pip install herascrape` · `npm i herascrape`
 - 37 `GET` endpoints, one method each, plus lazy `iter_*` paginators for lists.

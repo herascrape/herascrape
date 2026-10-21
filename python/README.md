@@ -1,10 +1,10 @@
 # herascrape: Instagram API client for Python
 
-`herascrape` is the official Python client for the
-[herascrape](https://herascrape.com) Instagram API. It is an Instagram scraper
-API that reads Instagram's private API for you and hands back Instagram's own
-JSON: profiles, followers, posts, reels, comments, hashtags, locations, audio,
-stories and search. You do not manage Instagram accounts, devices or proxies.
+`herascrape` is the official Python client for
+[herascrape](https://herascrape.com), a hosted Instagram scraper API. It reads
+Instagram's private API for you and hands back Instagram's own JSON: profiles,
+followers, posts, reels, comments, hashtags, locations, audio, stories and
+search. You do not manage the accounts, devices or proxies.
 
 ```python
 from herascrape import Client
