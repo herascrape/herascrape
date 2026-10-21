@@ -22,7 +22,7 @@ def main(username: str) -> int:
         print("Set HERASCRAPE_API_KEY first.", file=sys.stderr)
         return 1
 
-    with Client() as client:
+    with Client(api_key=os.environ["HERASCRAPE_API_KEY"]) as client:
         try:
             user = client.user_by_username(username=username)
             print(f"@{user['username']}: {user['follower_count']} followers")

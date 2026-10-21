@@ -35,19 +35,18 @@ pip install herascrape
 
 ## Authentication
 
-Create a key in the [dashboard](https://herascrape.com/api-keys). The client
-sends it in the `x-api-key` header. Pass it directly, or leave it out and set
-`HERASCRAPE_API_KEY`:
-
-```bash
-export HERASCRAPE_API_KEY="hs_live_xxxxxxxx"
-```
+Create a key in the [dashboard](https://herascrape.com/api-keys); the client
+sends it in the `x-api-key` header. Pass it to the constructor:
 
 ```python
 from herascrape import Client
 
-client = Client()  # reads HERASCRAPE_API_KEY
+client = Client(api_key="hs_live_xxxxxxxx")
 ```
+
+Or leave it out and the client reads `HERASCRAPE_API_KEY` from the environment.
+With no key in either place, constructing a client raises `AuthenticationError`.
+Keep keys out of source control.
 
 Billing is per successful call, and failed calls are not billed. See
 [pricing](https://herascrape.com/docs/getting-started/pricing).

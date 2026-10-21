@@ -75,4 +75,5 @@ def test_readme_uses_placeholder_key_only(readme: Path):
 def test_quickstart_reads_key_from_env():
     source = _text(PYTHON_DIR / "examples" / "quickstart.py")
     assert "HERASCRAPE_API_KEY" in source
-    assert "api_key=" not in source
+    assert "os.environ" in source  # key comes from the environment
+    assert not KEY_PATTERN.findall(source)  # never a hardcoded key

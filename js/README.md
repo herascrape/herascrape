@@ -39,20 +39,16 @@ npm install herascrape
 
 ## Authentication
 
-Create a key in the [dashboard](https://herascrape.com/api-keys). The client
-sends it in the `x-api-key` header. Pass it directly, or leave it out and set
-`HERASCRAPE_API_KEY`:
-
-```bash
-export HERASCRAPE_API_KEY="hs_live_xxxxxxxx"
-```
+Create a key in the [dashboard](https://herascrape.com/api-keys); the client
+sends it in the `x-api-key` header. Pass it to the constructor:
 
 ```ts
 import { Client } from "herascrape";
 
-const client = new Client(); // reads HERASCRAPE_API_KEY
+const client = new Client({ apiKey: "hs_live_xxxxxxxx" });
 ```
 
+Or leave it out and the client reads `HERASCRAPE_API_KEY` from the environment.
 With no key in either place, constructing a client throws
 `AuthenticationError`. Keep keys out of source control.
 
@@ -67,7 +63,7 @@ plain object, exactly as Instagram sent it.
 ```ts
 import { Client } from "herascrape";
 
-const client = new Client();
+const client = new Client({ apiKey: "hs_live_xxxxxxxx" });
 
 // Profiles: look a username up once, then use the numeric pk.
 const user = await client.userByUsername({ username: "instagram" });
@@ -109,7 +105,7 @@ and `requestId`.
 ```ts
 import { Client, PrivateAccountError, ProfileNotFoundError } from "herascrape";
 
-const client = new Client();
+const client = new Client({ apiKey: "hs_live_xxxxxxxx" });
 
 try {
   await client.userFollowers({ userId: "25025320" });
@@ -178,4 +174,4 @@ terms.
 
 ## License
 
-MIT
+[MIT](LICENSE)
