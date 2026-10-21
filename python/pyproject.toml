@@ -24,12 +24,13 @@ classifiers = [
 ]
 dependencies = ["httpx>=0.24"]
 
-[project.optional-dependencies]
-dev = ["pytest", "pytest-asyncio", "ruff==0.15.10", "pyright==1.1.414"]
-
-# uv installs this group by default on `uv run`/`uv sync`; the extra above is for pip/CI.
+# Dev tooling lives in a PEP 735 group so `uv run`/`uv sync` install it by default.
 [dependency-groups]
 dev = ["pytest", "pytest-asyncio", "ruff==0.15.10", "pyright==1.1.414"]
+
+# Build + install the project itself (editable) into uv's env.
+[tool.uv]
+package = true
 
 [project.urls]
 Homepage = "https://herascrape.com"
