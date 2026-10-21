@@ -1,4 +1,5 @@
 import re
+import subprocess
 from pathlib import Path
 
 import pytest
@@ -6,36 +7,23 @@ import pytest
 PYTHON_DIR = Path(__file__).resolve().parents[1]
 REPO_ROOT = PYTHON_DIR.parent
 READMES = [REPO_ROOT / "README.md", PYTHON_DIR / "README.md"]
-SKIPPED_DIRS = {
-    ".git",
-    ".venv",
-    "venv",
-    "__pycache__",
-    ".pytest_cache",
-    ".ruff_cache",
-    ".pyright",
-    "node_modules",
-    "build",
-    "dist",
-}
 KEY_PATTERN = re.compile(r"hs_(?:live|test)_[A-Za-z0-9]{16,}")
 LOCAL_PATH_PATTERN = re.compile(r"/(?:Users|home)/\w")
 PLACEHOLDER_KEY = "hs_live_xxxxxxxx"
 
 
-def _skipped(path: Path) -> bool:
-    return any(
-        part in SKIPPED_DIRS or part.endswith(".egg-info")
-        for part in path.relative_to(REPO_ROOT).parts
-    )
-
-
-def _source_files() -> list[Path]:
-    return [
-        path
-        for path in REPO_ROOT.rglob("*")
-        if path.is_file() and not _skipped(path)
-    ]
+def _tracked_files() -> list[Path]:
+    # Scan what git tracks: everything that is (or will be) committed. Git
+    # applies .gitignore for us, so .venv/node_modules/build output are never
+    # scanned, and there's no hardcoded skip list to keep in sync.
+    names = subprocess.run(
+        ["git", "ls-files", "-z"],
+        cwd=REPO_ROOT,
+        capture_output=True,
+        text=True,
+        check=True,
+    ).stdout.split("\0")
+    return [REPO_ROOT / name for name in names if name]
 
 
 def _text(path: Path) -> str:
@@ -45,7 +33,7 @@ def _text(path: Path) -> str:
 def test_no_real_key_pattern_committed():
     found = [
         f"{path.relative_to(REPO_ROOT)}: {match}"
-        for path in _source_files()
+        for path in _tracked_files()
         for match in KEY_PATTERN.findall(_text(path))
         if match != PLACEHOLDER_KEY
     ]
@@ -55,7 +43,7 @@ def test_no_real_key_pattern_committed():
 def test_no_local_paths_committed():
     found = [
         str(path.relative_to(REPO_ROOT))
-        for path in _source_files()
+        for path in _tracked_files()
         if LOCAL_PATH_PATTERN.search(_text(path))
     ]
     assert found == []
