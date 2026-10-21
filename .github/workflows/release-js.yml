@@ -69,7 +69,9 @@ jobs:
 
       - name: Verify tarball is clean
         run: |
-          npm pack --dry-run --json > pack.json
+          # --ignore-scripts: prepack's build logs would otherwise land on
+          # stdout and corrupt the JSON. dist/ is already built above.
+          npm pack --dry-run --json --ignore-scripts > pack.json
           files="$(node -e "const p=require('./pack.json');for(const f of p[0].files)console.log(f.path)")"
           rm -f pack.json
           echo "$files"
