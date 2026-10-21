@@ -2,7 +2,7 @@
 
 ## Reporting a vulnerability
 
-Email **security@herascrape.com** with a description of the issue and steps to
+Email **support@herascrape.com** with a description of the issue and steps to
 reproduce it. Please do not open a public issue for security reports.
 
 We aim to acknowledge reports within 3 business days.
