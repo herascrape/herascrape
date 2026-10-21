@@ -69,11 +69,13 @@ jobs:
 
       - name: Verify tarball is clean
         run: |
-          # --ignore-scripts: prepack's build logs would otherwise land on
-          # stdout and corrupt the JSON. dist/ is already built above.
-          npm pack --dry-run --json --ignore-scripts > pack.json
-          files="$(node -e "const p=require('./pack.json');for(const f of p[0].files)console.log(f.path)")"
-          rm -f pack.json
+          # Pack and read the tarball itself: version-robust, and avoids
+          # prepack build logs polluting a parsed stream. dist/ is built above,
+          # so --ignore-scripts skips a redundant rebuild.
+          npm pack --ignore-scripts >/dev/null 2>&1
+          tgz="$(ls -1 herascrape-*.tgz | head -1)"
+          files="$(tar -tzf "$tgz" | sed 's#^package/##' | sed '/^$/d')"
+          rm -f "$tgz"
           echo "$files"
           if echo "$files" | grep -Ev '^(dist/|README\.md$|LICENSE$|package\.json$)'; then
             echo "::error::unexpected files in the npm tarball"
