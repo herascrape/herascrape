@@ -150,7 +150,6 @@ class SyncEndpoints(BaseSyncClient):
         self,
         post_id: str,
         *,
-        user_id: str | None = None,
         min_id: str | None = None,
         max_id: str | None = None,
         carousel_media_id: str | None = None,
@@ -161,7 +160,6 @@ class SyncEndpoints(BaseSyncClient):
             method="get",
             path=f"/posts/{post_id}/comments",
             params={
-                "user_id": user_id,
                 "min_id": min_id,
                 "max_id": max_id,
                 "carousel_media_id": carousel_media_id,
@@ -169,40 +167,26 @@ class SyncEndpoints(BaseSyncClient):
             },
         )
 
-    def post_likers(self, post_id: str, *, user_id: str | None = None) -> Any:
+    def post_likers(self, post_id: str) -> Any:
         """Get Post Likers"""
-        return self._request(
-            method="get",
-            path=f"/posts/{post_id}/likers",
-            params={"user_id": user_id},
-        )
+        return self._request(method="get", path=f"/posts/{post_id}/likers")
 
     def comment_replies(
-        self,
-        comment_id: str,
-        *,
-        media_id: str,
-        user_id: str | None = None,
-        cursor: str | None = None,
+        self, comment_id: str, *, media_id: str, cursor: str | None = None
     ) -> Any:
         """Get Comment Replies"""
         return self._request(
             method="get",
             path=f"/comments/{comment_id}/replies",
-            params={"media_id": media_id, "user_id": user_id, "cursor": cursor},
+            params={"media_id": media_id, "cursor": cursor},
         )
 
     def iter_comment_replies(
-        self,
-        comment_id: str,
-        *,
-        media_id: str,
-        user_id: str | None = None,
-        max_items: int | None = None,
+        self, comment_id: str, *, media_id: str, max_items: int | None = None
     ) -> Iterator[Any]:
         def fetch(cursor: str | None) -> Page:
             return self.comment_replies(
-                comment_id, media_id=media_id, user_id=user_id, cursor=cursor
+                comment_id, media_id=media_id, cursor=cursor
             )
 
         return paginate(fetch, item_key="items", max_items=max_items)
