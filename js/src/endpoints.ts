@@ -182,7 +182,7 @@ export class Endpoints extends BaseClient {
 
   postComments(opts: {
     postId: string;
-    userId: string;
+    userId?: string;
     minId?: string;
     maxId?: string;
     carouselMediaId?: string;
@@ -203,7 +203,7 @@ export class Endpoints extends BaseClient {
 
   postLikers(opts: {
     postId: string;
-    userId: string;
+    userId?: string;
   }): Promise<Record<string, unknown>> {
     return this.request({
       method: "get",
@@ -217,7 +217,7 @@ export class Endpoints extends BaseClient {
   commentReplies(opts: {
     commentId: string;
     mediaId: string;
-    userId: string;
+    userId?: string;
     cursor?: string;
   }): Promise<Record<string, unknown>> {
     return this.request({
@@ -234,7 +234,7 @@ export class Endpoints extends BaseClient {
   iterCommentReplies(opts: {
     commentId: string;
     mediaId: string;
-    userId: string;
+    userId?: string;
     maxItems?: number | null;
   }): AsyncIterable<Record<string, unknown>> {
     const fetchPage = (

@@ -1,6 +1,6 @@
 {
   "name": "herascrape",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Official TypeScript/JavaScript client for the herascrape Instagram API.",
   "license": "MIT",
   "author": "herascrape",
