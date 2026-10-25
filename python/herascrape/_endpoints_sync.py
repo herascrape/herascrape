@@ -150,7 +150,7 @@ class SyncEndpoints(BaseSyncClient):
         self,
         post_id: str,
         *,
-        user_id: str,
+        user_id: str | None = None,
         min_id: str | None = None,
         max_id: str | None = None,
         carousel_media_id: str | None = None,
@@ -169,7 +169,7 @@ class SyncEndpoints(BaseSyncClient):
             },
         )
 
-    def post_likers(self, post_id: str, *, user_id: str) -> Any:
+    def post_likers(self, post_id: str, *, user_id: str | None = None) -> Any:
         """Get Post Likers"""
         return self._request(
             method="get",
@@ -182,7 +182,7 @@ class SyncEndpoints(BaseSyncClient):
         comment_id: str,
         *,
         media_id: str,
-        user_id: str,
+        user_id: str | None = None,
         cursor: str | None = None,
     ) -> Any:
         """Get Comment Replies"""
@@ -197,7 +197,7 @@ class SyncEndpoints(BaseSyncClient):
         comment_id: str,
         *,
         media_id: str,
-        user_id: str,
+        user_id: str | None = None,
         max_items: int | None = None,
     ) -> Iterator[Any]:
         def fetch(cursor: str | None) -> Page:

@@ -164,7 +164,7 @@ class AsyncEndpoints(BaseAsyncClient):
         self,
         post_id: str,
         *,
-        user_id: str,
+        user_id: str | None = None,
         min_id: str | None = None,
         max_id: str | None = None,
         carousel_media_id: str | None = None,
@@ -183,7 +183,9 @@ class AsyncEndpoints(BaseAsyncClient):
             },
         )
 
-    async def post_likers(self, post_id: str, *, user_id: str) -> Any:
+    async def post_likers(
+        self, post_id: str, *, user_id: str | None = None
+    ) -> Any:
         """Get Post Likers"""
         return await self._request(
             method="get",
@@ -196,7 +198,7 @@ class AsyncEndpoints(BaseAsyncClient):
         comment_id: str,
         *,
         media_id: str,
-        user_id: str,
+        user_id: str | None = None,
         cursor: str | None = None,
     ) -> Any:
         """Get Comment Replies"""
@@ -211,7 +213,7 @@ class AsyncEndpoints(BaseAsyncClient):
         comment_id: str,
         *,
         media_id: str,
-        user_id: str,
+        user_id: str | None = None,
         max_items: int | None = None,
     ) -> AsyncIterator[Any]:
         async def fetch(cursor: str | None) -> Page:

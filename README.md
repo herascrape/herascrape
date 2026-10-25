@@ -149,7 +149,7 @@ envelope, so page them by hand:
 post = client.post("B4XpqViUFUI")  # pk or shortcode
 print(post["like_count"], post["comment_count"])
 
-comments = client.post_comments(post["pk"], user_id=post["user"]["pk"])
+comments = client.post_comments(post["pk"])  # user_id (post owner) is optional
 for comment in comments["comments"]:
     print(comment["user"]["username"], comment["text"])
 ```
@@ -355,7 +355,7 @@ that walks every page lazily. `user_posts` and `post_comments` page by hand (see
 | Python | TypeScript | Endpoint | Returns | iter |
 | --- | --- | --- | --- | --- |
 | `post` | `post` | `/posts/{post_id}` | A post or reel, by pk or shortcode | |
-| `post_comments` | `postComments` | `/posts/{post_id}/comments` | Comments (`user_id` is the post owner) | |
+| `post_comments` | `postComments` | `/posts/{post_id}/comments` | Comments (`user_id`, the post owner, is optional) | |
 | `post_likers` | `postLikers` | `/posts/{post_id}/likers` | Users who liked the post | |
 | `comment_replies` | `commentReplies` | `/comments/{comment_id}/replies` | Replies to a comment | yes |
 | `comment_likers` | `commentLikers` | `/comments/{comment_id}/likers` | Users who liked a comment | |

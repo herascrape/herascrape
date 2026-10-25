@@ -692,14 +692,21 @@
           {
             "name": "user_id",
             "in": "query",
-            "required": true,
+            "required": false,
             "schema": {
-              "type": "string",
-              "pattern": "^\\d+$",
-              "description": "Numeric id of the post's owner (the post's user.pk)",
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^\\d+$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Optional. Numeric id of the post's owner (the post's user.pk). No longer required: Instagram resolves the owner from the media id, so a bare post id is enough.",
               "title": "User Id"
             },
-            "description": "Numeric id of the post's owner (the post's user.pk)"
+            "description": "Optional. Numeric id of the post's owner (the post's user.pk). No longer required: Instagram resolves the owner from the media id, so a bare post id is enough."
           },
           {
             "name": "min_id",
@@ -809,14 +816,21 @@
           {
             "name": "user_id",
             "in": "query",
-            "required": true,
+            "required": false,
             "schema": {
-              "type": "string",
-              "pattern": "^\\d+$",
-              "description": "Numeric id of the post's owner (the post's user.pk)",
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^\\d+$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Optional. Numeric id of the post's owner (the post's user.pk). No longer required: Instagram resolves the owner from the media id, so a bare post id is enough.",
               "title": "User Id"
             },
-            "description": "Numeric id of the post's owner (the post's user.pk)"
+            "description": "Optional. Numeric id of the post's owner (the post's user.pk). No longer required: Instagram resolves the owner from the media id, so a bare post id is enough."
           }
         ],
         "responses": {
@@ -875,14 +889,21 @@
           {
             "name": "user_id",
             "in": "query",
-            "required": true,
+            "required": false,
             "schema": {
-              "type": "string",
-              "pattern": "^\\d+$",
-              "description": "Numeric id of the post's owner (the post's user.pk)",
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^\\d+$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Optional. Numeric id of the post's owner (the post's user.pk). No longer required: Instagram resolves the owner from the media id, so a bare post id is enough.",
               "title": "User Id"
             },
-            "description": "Numeric id of the post's owner (the post's user.pk)"
+            "description": "Optional. Numeric id of the post's owner (the post's user.pk). No longer required: Instagram resolves the owner from the media id, so a bare post id is enough."
           },
           {
             "name": "cursor",
