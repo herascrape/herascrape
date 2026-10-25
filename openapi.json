@@ -690,25 +690,6 @@
             }
           },
           {
-            "name": "user_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "pattern": "^\\d+$"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "description": "Optional. Numeric id of the post's owner (the post's user.pk). No longer required: Instagram resolves the owner from the media id, so a bare post id is enough.",
-              "title": "User Id"
-            },
-            "description": "Optional. Numeric id of the post's owner (the post's user.pk). No longer required: Instagram resolves the owner from the media id, so a bare post id is enough."
-          },
-          {
             "name": "min_id",
             "in": "query",
             "required": false,
@@ -812,25 +793,6 @@
               "type": "string",
               "title": "Post Id"
             }
-          },
-          {
-            "name": "user_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "pattern": "^\\d+$"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "description": "Optional. Numeric id of the post's owner (the post's user.pk). No longer required: Instagram resolves the owner from the media id, so a bare post id is enough.",
-              "title": "User Id"
-            },
-            "description": "Optional. Numeric id of the post's owner (the post's user.pk). No longer required: Instagram resolves the owner from the media id, so a bare post id is enough."
           }
         ],
         "responses": {
@@ -885,25 +847,6 @@
               "title": "Media Id"
             },
             "description": "Parent post id: shortcode, bare or composite pk"
-          },
-          {
-            "name": "user_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string",
-                  "pattern": "^\\d+$"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "description": "Optional. Numeric id of the post's owner (the post's user.pk). No longer required: Instagram resolves the owner from the media id, so a bare post id is enough.",
-              "title": "User Id"
-            },
-            "description": "Optional. Numeric id of the post's owner (the post's user.pk). No longer required: Instagram resolves the owner from the media id, so a bare post id is enough."
           },
           {
             "name": "cursor",

@@ -182,7 +182,6 @@ export class Endpoints extends BaseClient {
 
   postComments(opts: {
     postId: string;
-    userId?: string;
     minId?: string;
     maxId?: string;
     carouselMediaId?: string;
@@ -192,7 +191,6 @@ export class Endpoints extends BaseClient {
       method: "get",
       path: `/posts/${opts.postId}/comments`,
       searchParams: {
-        user_id: opts.userId,
         min_id: opts.minId,
         max_id: opts.maxId,
         carousel_media_id: opts.carouselMediaId,
@@ -201,23 +199,16 @@ export class Endpoints extends BaseClient {
     });
   }
 
-  postLikers(opts: {
-    postId: string;
-    userId?: string;
-  }): Promise<Record<string, unknown>> {
+  postLikers(opts: { postId: string }): Promise<Record<string, unknown>> {
     return this.request({
       method: "get",
       path: `/posts/${opts.postId}/likers`,
-      searchParams: {
-        user_id: opts.userId,
-      },
     });
   }
 
   commentReplies(opts: {
     commentId: string;
     mediaId: string;
-    userId?: string;
     cursor?: string;
   }): Promise<Record<string, unknown>> {
     return this.request({
@@ -225,7 +216,6 @@ export class Endpoints extends BaseClient {
       path: `/comments/${opts.commentId}/replies`,
       searchParams: {
         media_id: opts.mediaId,
-        user_id: opts.userId,
         cursor: opts.cursor,
       },
     });
@@ -234,7 +224,6 @@ export class Endpoints extends BaseClient {
   iterCommentReplies(opts: {
     commentId: string;
     mediaId: string;
-    userId?: string;
     maxItems?: number | null;
   }): AsyncIterable<Record<string, unknown>> {
     const fetchPage = (
@@ -243,7 +232,6 @@ export class Endpoints extends BaseClient {
       this.commentReplies({
         commentId: opts.commentId,
         mediaId: opts.mediaId,
-        userId: opts.userId,
         cursor,
       });
     return paginate(fetchPage, { itemKey: "items", maxItems: opts.maxItems });
