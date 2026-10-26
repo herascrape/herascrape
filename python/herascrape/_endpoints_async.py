@@ -63,17 +63,13 @@ class AsyncEndpoints(BaseAsyncClient):
         return apaginate(fetch, item_key="items", max_items=max_items)
 
     async def user_posts(
-        self,
-        user_id: str,
-        *,
-        cursor: str | None = None,
-        max_id: str | None = None,
+        self, user_id: str, *, cursor: str | None = None
     ) -> Any:
         """Get User Posts"""
         return await self._request(
             method="get",
             path=f"/users/{user_id}/posts",
-            params={"cursor": cursor, "max_id": max_id},
+            params={"cursor": cursor},
         )
 
     async def user_reels(
@@ -523,9 +519,9 @@ class AsyncEndpoints(BaseAsyncClient):
             method="get", path=f"/highlights/{highlight_id}"
         )
 
-    async def story(self, reel_id: str) -> Any:
-        """Get Story Reel"""
-        return await self._request(method="get", path=f"/stories/{reel_id}")
+    async def story(self, story_id: str) -> Any:
+        """Get Story"""
+        return await self._request(method="get", path=f"/stories/{story_id}")
 
     async def audio_trending(self, *, cursor: str | None = None) -> Any:
         """Get Trending Audio"""
