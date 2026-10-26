@@ -7,6 +7,7 @@ venv/
 uv.lock
 build/
 dist/
+_build/
 
 # Tooling caches
 .pytest_cache/

@@ -24,7 +24,9 @@ service runs the accounts, devices and proxies.
   Node 18+.
 
 Docs: [herascrape.com/docs](https://herascrape.com/docs) · interactive
-reference: [api.herascrape.com/docs](https://api.herascrape.com/docs).
+reference: [api.herascrape.com/docs](https://api.herascrape.com/docs) ·
+Python library reference:
+[herascrape.readthedocs.io](https://herascrape.readthedocs.io/).
 Also from herascrape: [herascrape-mcp](https://github.com/herascrape/herascrape-mcp),
 the Instagram MCP server for AI agents, and
 [hikerapi-to-herascrape](https://github.com/herascrape/hikerapi-to-herascrape) to

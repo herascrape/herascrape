@@ -25,7 +25,9 @@ for follower in client.iter_user_followers(user["pk"], max_items=100):
 - Retries with backoff, `Retry-After` handling and a client-side rate limiter.
 - Typed package (`py.typed`), Python 3.10+, one dependency: `httpx`.
 
-Documentation: [herascrape.com/docs](https://herascrape.com/docs).
+Documentation: [herascrape.com/docs](https://herascrape.com/docs) for the
+API, [herascrape.readthedocs.io](https://herascrape.readthedocs.io/) for
+this library's reference.
 
 ## Install
 
