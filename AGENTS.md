@@ -17,6 +17,7 @@ openapi.json         # the API surface — source of truth for endpoints + types
 codegen/             # generate.py + names.py → emit the endpoint/type files
 python/herascrape/   # Python client   (PyPI: herascrape)
 js/                  # TypeScript/JS client (npm: herascrape)
+python/docs/         # Sphinx reference, published to Read the Docs
 ruff.toml            # Python lint/format config (line-length 80, py310)
 .github/workflows/   # ci.yml, release-python.yml, release-js.yml
 ```
@@ -68,6 +69,28 @@ npx tsc --noEmit
 npx vitest run --minWorkers=1 --maxWorkers=2    # always cap workers
 npm run build
 ```
+
+## Docs (`python/docs/`)
+
+The Python client reference: Sphinx + MyST markdown + autodoc, built from
+`.readthedocs.yaml` at the repo root and published at
+[herascrape.readthedocs.io](https://herascrape.readthedocs.io/). Narrative
+pages are hand-written; `reference/` is autodoc over the installed package, so
+endpoint method docs come from the generated docstrings, which come from
+`openapi.json`.
+
+```bash
+uv run --isolated --no-project --python 3.13 --with-editable ./python \
+  --with-requirements python/docs/requirements.txt \
+  -- sphinx-build -W -b html python/docs python/docs/_build/html
+```
+
+Read the Docs builds with `fail_on_warning` and CI runs the same `-W` build, so
+a dead reference breaks the gate. Three rules: the docs site is the **library
+reference only** (never mirror `herascrape.com/docs` into it, a higher-authority
+copy of our own content can outrank us), `requirements.txt` is pinned, so bump
+it deliberately, and **Read the Docs is for the Python client only** (TS docs
+belong in TypeDoc on GitHub Pages, where TS developers look).
 
 ## Regenerate the clients
 
