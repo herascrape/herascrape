@@ -404,7 +404,7 @@ that walks every page lazily. `user_posts` and `post_comments` page by hand (see
 | `audio` | `audio` | `/audio/{audio_id}` | Track info | |
 | `audio_medias` | `audioMedias` | `/audio/{audio_id}/medias` | Reels using the audio | yes |
 | `highlight` | `highlight` | `/highlights/{highlight_id}` | Media in a highlight | |
-| `story` | `story` | `/stories/{reel_id}` | Media in a story reel | |
+| `story` | `story` | `/stories/{story_id}` | A single story by media pk | |
 
 ### Utility
 
