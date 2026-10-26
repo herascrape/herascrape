@@ -4,6 +4,7 @@
 [![npm](https://img.shields.io/npm/v/herascrape?label=npm)](https://www.npmjs.com/package/herascrape)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![Docs](https://img.shields.io/badge/docs-herascrape.com-4f46e5)](https://herascrape.com/docs)
+[![Python docs](https://img.shields.io/readthedocs/herascrape?label=python%20docs)](https://herascrape.readthedocs.io/)
 
 `herascrape` is the official Python and TypeScript/JavaScript client for
 [herascrape](https://herascrape.com), a hosted Instagram scraper API. It reads
