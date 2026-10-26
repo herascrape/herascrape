@@ -17,19 +17,29 @@ class AsyncEndpoints(BaseAsyncClient):
     """Generated GET endpoints for the async client."""
 
     async def user_by_username(self, username: str) -> Any:
-        """Get User By Username"""
+        """Full profile by username, in one request.
+
+        ``GET /users/username/{username}``
+        """
         return await self._request(
             method="get", path=f"/users/username/{username}"
         )
 
     async def user(self, user_id: str) -> Any:
-        """Get User"""
+        """Full profile by numeric id.
+
+        ``GET /users/{user_id}``
+        """
         return await self._request(method="get", path=f"/users/{user_id}")
 
     async def user_followers(
         self, user_id: str, *, cursor: str | None = None
     ) -> Any:
-        """Get User Followers"""
+        """A page of the user's followers. Note: for business accounts Instagram
+        caps pagination depth, so the full list may not be reachable.
+
+        ``GET /users/{user_id}/followers``
+        """
         return await self._request(
             method="get",
             path=f"/users/{user_id}/followers",
@@ -39,6 +49,8 @@ class AsyncEndpoints(BaseAsyncClient):
     def iter_user_followers(
         self, user_id: str, *, max_items: int | None = None
     ) -> AsyncIterator[Any]:
+        """Lazily yield items from every page of ``user_followers``."""
+
         async def fetch(cursor: str | None) -> Page:
             return await self.user_followers(user_id, cursor=cursor)
 
@@ -47,7 +59,10 @@ class AsyncEndpoints(BaseAsyncClient):
     async def user_following(
         self, user_id: str, *, cursor: str | None = None
     ) -> Any:
-        """Get User Following"""
+        """A page of the accounts this user follows.
+
+        ``GET /users/{user_id}/following``
+        """
         return await self._request(
             method="get",
             path=f"/users/{user_id}/following",
@@ -57,6 +72,8 @@ class AsyncEndpoints(BaseAsyncClient):
     def iter_user_following(
         self, user_id: str, *, max_items: int | None = None
     ) -> AsyncIterator[Any]:
+        """Lazily yield items from every page of ``user_following``."""
+
         async def fetch(cursor: str | None) -> Page:
             return await self.user_following(user_id, cursor=cursor)
 
@@ -65,7 +82,11 @@ class AsyncEndpoints(BaseAsyncClient):
     async def user_posts(
         self, user_id: str, *, cursor: str | None = None
     ) -> Any:
-        """Get User Posts"""
+        """The profile grid. Page with ``cursor`` taken from
+        ``feed.profile_grid_items_cursor`` of the previous response.
+
+        ``GET /users/{user_id}/posts``
+        """
         return await self._request(
             method="get",
             path=f"/users/{user_id}/posts",
@@ -79,7 +100,10 @@ class AsyncEndpoints(BaseAsyncClient):
         cursor: str | None = None,
         sort_by_views: bool | None = None,
     ) -> Any:
-        """Get User Reels"""
+        """A page of the user's reels (clips).
+
+        ``GET /users/{user_id}/reels``
+        """
         return await self._request(
             method="get",
             path=f"/users/{user_id}/reels",
@@ -93,6 +117,8 @@ class AsyncEndpoints(BaseAsyncClient):
         sort_by_views: bool | None = None,
         max_items: int | None = None,
     ) -> AsyncIterator[Any]:
+        """Lazily yield items from every page of ``user_reels``."""
+
         async def fetch(cursor: str | None) -> Page:
             return await self.user_reels(
                 user_id, sort_by_views=sort_by_views, cursor=cursor
@@ -103,7 +129,10 @@ class AsyncEndpoints(BaseAsyncClient):
     async def user_tagged(
         self, user_id: str, *, cursor: str | None = None
     ) -> Any:
-        """Get User Tagged"""
+        """A page of media the user is tagged in.
+
+        ``GET /users/{user_id}/tagged``
+        """
         return await self._request(
             method="get",
             path=f"/users/{user_id}/tagged",
@@ -113,19 +142,27 @@ class AsyncEndpoints(BaseAsyncClient):
     def iter_user_tagged(
         self, user_id: str, *, max_items: int | None = None
     ) -> AsyncIterator[Any]:
+        """Lazily yield items from every page of ``user_tagged``."""
+
         async def fetch(cursor: str | None) -> Page:
             return await self.user_tagged(user_id, cursor=cursor)
 
         return apaginate(fetch, item_key="items", max_items=max_items)
 
     async def user_stories(self, user_id: str) -> Any:
-        """Get User Stories"""
+        """The user's currently-active story items (empty if none live).
+
+        ``GET /users/{user_id}/stories``
+        """
         return await self._request(
             method="get", path=f"/users/{user_id}/stories"
         )
 
     async def user_highlights(self, user_id: str) -> Any:
-        """Get User Highlights"""
+        """The profile's highlight reels (tray).
+
+        ``GET /users/{user_id}/highlights``
+        """
         return await self._request(
             method="get", path=f"/users/{user_id}/highlights"
         )
@@ -133,7 +170,10 @@ class AsyncEndpoints(BaseAsyncClient):
     async def user_reposts(
         self, user_id: str, *, cursor: str | None = None
     ) -> Any:
-        """Get User Reposts"""
+        """A page of the media this user has reposted.
+
+        ``GET /users/{user_id}/reposts``
+        """
         return await self._request(
             method="get",
             path=f"/users/{user_id}/reposts",
@@ -143,17 +183,31 @@ class AsyncEndpoints(BaseAsyncClient):
     def iter_user_reposts(
         self, user_id: str, *, max_items: int | None = None
     ) -> AsyncIterator[Any]:
+        """Lazily yield items from every page of ``user_reposts``."""
+
         async def fetch(cursor: str | None) -> Page:
             return await self.user_reposts(user_id, cursor=cursor)
 
         return apaginate(fetch, item_key="items", max_items=max_items)
 
     async def user_about(self, user_id: str) -> Any:
-        """Get User About"""
+        """The "About this account" panel (date joined, former usernames, …),
+        parsed from Instagram's Bloks render tree — best-effort text
+        extraction.
+
+        ``GET /users/{user_id}/about``
+        """
         return await self._request(method="get", path=f"/users/{user_id}/about")
 
     async def post(self, post_id: str) -> Any:
-        """Get Post"""
+        """Fetch a single post.
+
+        ``post_id`` accepts the shortcode from the URL (``DQSPu0hE_pP``), the
+        bare numeric ``media_id``, or the composite ``<media_id>_<owner_id>``
+        pk.
+
+        ``GET /posts/{post_id}``
+        """
         return await self._request(method="get", path=f"/posts/{post_id}")
 
     async def post_comments(
@@ -165,7 +219,11 @@ class AsyncEndpoints(BaseAsyncClient):
         carousel_media_id: str | None = None,
         carousel_index: int | None = None,
     ) -> Any:
-        """Get Post Comments"""
+        """Comments on a post. ``post_id`` accepts a shortcode, the bare media
+        pk or the composite pk.
+
+        ``GET /posts/{post_id}/comments``
+        """
         return await self._request(
             method="get",
             path=f"/posts/{post_id}/comments",
@@ -178,7 +236,11 @@ class AsyncEndpoints(BaseAsyncClient):
         )
 
     async def post_likers(self, post_id: str) -> Any:
-        """Get Post Likers"""
+        """Accounts that liked a post (single capped page — Instagram does not
+        paginate likers).
+
+        ``GET /posts/{post_id}/likers``
+        """
         return await self._request(
             method="get", path=f"/posts/{post_id}/likers"
         )
@@ -186,7 +248,10 @@ class AsyncEndpoints(BaseAsyncClient):
     async def comment_replies(
         self, comment_id: str, *, media_id: str, cursor: str | None = None
     ) -> Any:
-        """Get Comment Replies"""
+        """Threaded replies to a comment. Requires the parent ``media_id``.
+
+        ``GET /comments/{comment_id}/replies``
+        """
         return await self._request(
             method="get",
             path=f"/comments/{comment_id}/replies",
@@ -196,6 +261,8 @@ class AsyncEndpoints(BaseAsyncClient):
     def iter_comment_replies(
         self, comment_id: str, *, media_id: str, max_items: int | None = None
     ) -> AsyncIterator[Any]:
+        """Lazily yield items from every page of ``comment_replies``."""
+
         async def fetch(cursor: str | None) -> Page:
             return await self.comment_replies(
                 comment_id, media_id=media_id, cursor=cursor
@@ -204,7 +271,10 @@ class AsyncEndpoints(BaseAsyncClient):
         return apaginate(fetch, item_key="items", max_items=max_items)
 
     async def comment_likers(self, comment_id: str) -> Any:
-        """Get Comment Likers"""
+        """Accounts that liked a comment (single page).
+
+        ``GET /comments/{comment_id}/likers``
+        """
         return await self._request(
             method="get", path=f"/comments/{comment_id}/likers"
         )
@@ -217,7 +287,10 @@ class AsyncEndpoints(BaseAsyncClient):
         query: str,
         cursor: str | None = None,
     ) -> Any:
-        """Search Users"""
+        """Account search.
+
+        ``GET /search/users``
+        """
         if search_session_id is None:
             search_session_id = _session_id()
         if serp_session_id is None:
@@ -241,6 +314,7 @@ class AsyncEndpoints(BaseAsyncClient):
         query: str,
         max_items: int | None = None,
     ) -> AsyncIterator[Any]:
+        """Lazily yield items from every page of ``search_users``."""
         if search_session_id is None:
             search_session_id = _session_id()
         if serp_session_id is None:
@@ -264,7 +338,10 @@ class AsyncEndpoints(BaseAsyncClient):
         query: str,
         cursor: str | None = None,
     ) -> Any:
-        """Search Hashtags"""
+        """Hashtag search.
+
+        ``GET /search/hashtags``
+        """
         if search_session_id is None:
             search_session_id = _session_id()
         if serp_session_id is None:
@@ -288,6 +365,7 @@ class AsyncEndpoints(BaseAsyncClient):
         query: str,
         max_items: int | None = None,
     ) -> AsyncIterator[Any]:
+        """Lazily yield items from every page of ``search_hashtags``."""
         if search_session_id is None:
             search_session_id = _session_id()
         if serp_session_id is None:
@@ -312,7 +390,10 @@ class AsyncEndpoints(BaseAsyncClient):
         query: str,
         cursor: str | None = None,
     ) -> Any:
-        """Search Audio"""
+        """Music / audio search.
+
+        ``GET /search/audio``
+        """
         if search_session_id is None:
             search_session_id = _session_id()
         if serp_session_id is None:
@@ -340,6 +421,7 @@ class AsyncEndpoints(BaseAsyncClient):
         query: str,
         max_items: int | None = None,
     ) -> AsyncIterator[Any]:
+        """Lazily yield items from every page of ``search_audio``."""
         if search_session_id is None:
             search_session_id = _session_id()
         if serp_session_id is None:
@@ -366,7 +448,11 @@ class AsyncEndpoints(BaseAsyncClient):
         query: str,
         cursor: str | None = None,
     ) -> Any:
-        """Search Top"""
+        """Blended top search — heterogeneous result units returned as Instagram
+        sends them.
+
+        ``GET /search/top``
+        """
         if search_session_id is None:
             search_session_id = _session_id()
         if serp_session_id is None:
@@ -390,6 +476,7 @@ class AsyncEndpoints(BaseAsyncClient):
         query: str,
         max_items: int | None = None,
     ) -> AsyncIterator[Any]:
+        """Lazily yield items from every page of ``search_top``."""
         if search_session_id is None:
             search_session_id = _session_id()
         if serp_session_id is None:
@@ -408,7 +495,13 @@ class AsyncEndpoints(BaseAsyncClient):
     async def search_places(
         self, *, query: str, lat: float | None = None, lng: float | None = None
     ) -> Any:
-        """Search Places"""
+        """Venue search. Instagram retired the standalone location-search
+        screen, but the capability survives in the composer's place picker,
+        which is what this calls. Single page — Instagram returns a
+        typeahead-style list with no cursor, so ``has_more`` is always false.
+
+        ``GET /search/places``
+        """
         return await self._request(
             method="get",
             path="/search/places",
@@ -416,11 +509,17 @@ class AsyncEndpoints(BaseAsyncClient):
         )
 
     async def hashtag(self, name: str) -> Any:
-        """Get Hashtag"""
+        """Hashtag info (post count, trending state).
+
+        ``GET /hashtags/{name}``
+        """
         return await self._request(method="get", path=f"/hashtags/{name}")
 
     async def hashtag_top(self, name: str, *, cursor: str | None = None) -> Any:
-        """Get Hashtag Top"""
+        """Top media for a hashtag.
+
+        ``GET /hashtags/{name}/top``
+        """
         return await self._request(
             method="get",
             path=f"/hashtags/{name}/top",
@@ -430,6 +529,8 @@ class AsyncEndpoints(BaseAsyncClient):
     def iter_hashtag_top(
         self, name: str, *, max_items: int | None = None
     ) -> AsyncIterator[Any]:
+        """Lazily yield items from every page of ``hashtag_top``."""
+
         async def fetch(cursor: str | None) -> Page:
             return await self.hashtag_top(name, cursor=cursor)
 
@@ -438,7 +539,10 @@ class AsyncEndpoints(BaseAsyncClient):
     async def hashtag_recent(
         self, name: str, *, cursor: str | None = None
     ) -> Any:
-        """Get Hashtag Recent"""
+        """Most-recent media for a hashtag.
+
+        ``GET /hashtags/{name}/recent``
+        """
         return await self._request(
             method="get",
             path=f"/hashtags/{name}/recent",
@@ -448,6 +552,8 @@ class AsyncEndpoints(BaseAsyncClient):
     def iter_hashtag_recent(
         self, name: str, *, max_items: int | None = None
     ) -> AsyncIterator[Any]:
+        """Lazily yield items from every page of ``hashtag_recent``."""
+
         async def fetch(cursor: str | None) -> Page:
             return await self.hashtag_recent(name, cursor=cursor)
 
@@ -456,7 +562,10 @@ class AsyncEndpoints(BaseAsyncClient):
     async def hashtag_reels(
         self, name: str, *, cursor: str | None = None
     ) -> Any:
-        """Get Hashtag Reels"""
+        """Reels/clips for a hashtag.
+
+        ``GET /hashtags/{name}/reels``
+        """
         return await self._request(
             method="get",
             path=f"/hashtags/{name}/reels",
@@ -466,13 +575,18 @@ class AsyncEndpoints(BaseAsyncClient):
     def iter_hashtag_reels(
         self, name: str, *, max_items: int | None = None
     ) -> AsyncIterator[Any]:
+        """Lazily yield items from every page of ``hashtag_reels``."""
+
         async def fetch(cursor: str | None) -> Page:
             return await self.hashtag_reels(name, cursor=cursor)
 
         return apaginate(fetch, item_key="items", max_items=max_items)
 
     async def location(self, location_id: str) -> Any:
-        """Get Location"""
+        """Location / place metadata (name, category, city, hours).
+
+        ``GET /locations/{location_id}``
+        """
         return await self._request(
             method="get", path=f"/locations/{location_id}"
         )
@@ -480,7 +594,10 @@ class AsyncEndpoints(BaseAsyncClient):
     async def location_top(
         self, location_id: str, *, cursor: str | None = None
     ) -> Any:
-        """Get Location Top"""
+        """Top media at a location.
+
+        ``GET /locations/{location_id}/top``
+        """
         return await self._request(
             method="get",
             path=f"/locations/{location_id}/top",
@@ -490,6 +607,8 @@ class AsyncEndpoints(BaseAsyncClient):
     def iter_location_top(
         self, location_id: str, *, max_items: int | None = None
     ) -> AsyncIterator[Any]:
+        """Lazily yield items from every page of ``location_top``."""
+
         async def fetch(cursor: str | None) -> Page:
             return await self.location_top(location_id, cursor=cursor)
 
@@ -498,7 +617,10 @@ class AsyncEndpoints(BaseAsyncClient):
     async def location_recent(
         self, location_id: str, *, cursor: str | None = None
     ) -> Any:
-        """Get Location Recent"""
+        """Most-recent media at a location.
+
+        ``GET /locations/{location_id}/recent``
+        """
         return await self._request(
             method="get",
             path=f"/locations/{location_id}/recent",
@@ -508,23 +630,39 @@ class AsyncEndpoints(BaseAsyncClient):
     def iter_location_recent(
         self, location_id: str, *, max_items: int | None = None
     ) -> AsyncIterator[Any]:
+        """Lazily yield items from every page of ``location_recent``."""
+
         async def fetch(cursor: str | None) -> Page:
             return await self.location_recent(location_id, cursor=cursor)
 
         return apaginate(fetch, item_key="items", max_items=max_items)
 
     async def highlight(self, highlight_id: str) -> Any:
-        """Get Highlight"""
+        """The media items of a single highlight reel.
+
+        ``GET /highlights/{highlight_id}``
+        """
         return await self._request(
             method="get", path=f"/highlights/{highlight_id}"
         )
 
     async def story(self, story_id: str) -> Any:
-        """Get Story"""
+        """A single story by its media pk, while it is live.
+
+        ``story_id`` accepts the bare media pk, the shortcode, or the
+        composite ``<media_id>_<owner_id>`` pk; the owner is resolved
+        server-side. An expired or missing story is a 404. A user's whole
+        active story tray is ``/users/{id}/stories``.
+
+        ``GET /stories/{story_id}``
+        """
         return await self._request(method="get", path=f"/stories/{story_id}")
 
     async def audio_trending(self, *, cursor: str | None = None) -> Any:
-        """Get Trending Audio"""
+        """The trending-audio list.
+
+        ``GET /audio/trending``
+        """
         return await self._request(
             method="get", path="/audio/trending", params={"cursor": cursor}
         )
@@ -532,19 +670,27 @@ class AsyncEndpoints(BaseAsyncClient):
     def iter_audio_trending(
         self, *, max_items: int | None = None
     ) -> AsyncIterator[Any]:
+        """Lazily yield items from every page of ``audio_trending``."""
+
         async def fetch(cursor: str | None) -> Page:
             return await self.audio_trending(cursor=cursor)
 
         return apaginate(fetch, item_key="items", max_items=max_items)
 
     async def audio(self, audio_id: str) -> Any:
-        """Get Audio"""
+        """Audio (track / original sound) page metadata.
+
+        ``GET /audio/{audio_id}``
+        """
         return await self._request(method="get", path=f"/audio/{audio_id}")
 
     async def audio_medias(
         self, audio_id: str, *, cursor: str | None = None
     ) -> Any:
-        """Get Audio Medias"""
+        """A page of reels that use this audio.
+
+        ``GET /audio/{audio_id}/medias``
+        """
         return await self._request(
             method="get",
             path=f"/audio/{audio_id}/medias",
@@ -554,6 +700,8 @@ class AsyncEndpoints(BaseAsyncClient):
     def iter_audio_medias(
         self, audio_id: str, *, max_items: int | None = None
     ) -> AsyncIterator[Any]:
+        """Lazily yield items from every page of ``audio_medias``."""
+
         async def fetch(cursor: str | None) -> Page:
             return await self.audio_medias(audio_id, cursor=cursor)
 
@@ -562,7 +710,12 @@ class AsyncEndpoints(BaseAsyncClient):
     async def resolve_media(
         self, *, pk: str | None = None, code: str | None = None
     ) -> MediaIdResolution:
-        """Resolve Media"""
+        """Convert a media pk ⇄ shortcode. Pure base64 arithmetic — no Instagram
+        request, so it's free and instant. Pass exactly one of ``pk`` or
+        ``code``.
+
+        ``GET /resolve/media``
+        """
         if (pk is None) == (code is None):
             raise ValueError("resolve_media needs exactly one of pk or code")
         return await self._request(
@@ -570,15 +723,29 @@ class AsyncEndpoints(BaseAsyncClient):
         )
 
     async def oembed(self, *, url: str) -> Any:
-        """Get Oembed"""
+        """oEmbed for a post/reel URL — and the resolver for `/s/` share links
+        (returns the `reel_id` / `author_id` a highlight or story link points
+        to).
+
+        ``GET /oembed``
+        """
         return await self._request(
             method="get", path="/oembed", params={"url": url}
         )
 
     async def health(self) -> Any:
-        """Health"""
+        """Unauthenticated liveness check.
+
+        ``GET /system/health``
+        """
         return await self._request(method="get", path="/system/health")
 
     async def balance(self) -> BalanceResponse:
-        """Get Balance"""
+        """Remaining USD balance for the account this key belongs to.
+
+        Free — it never touches Instagram. Read live from the ledger rather
+        than from the key cache, so a top-up shows up immediately.
+
+        ``GET /system/balance``
+        """
         return await self._request(method="get", path="/system/balance")
