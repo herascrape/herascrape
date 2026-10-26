@@ -67,14 +67,12 @@ export class Endpoints extends BaseClient {
   userPosts(opts: {
     userId: string;
     cursor?: string;
-    maxId?: string;
   }): Promise<Record<string, unknown>> {
     return this.request({
       method: "get",
       path: `/users/${opts.userId}/posts`,
       searchParams: {
         cursor: opts.cursor,
-        max_id: opts.maxId,
       },
     });
   }
@@ -564,8 +562,8 @@ export class Endpoints extends BaseClient {
     });
   }
 
-  story(opts: { reelId: string }): Promise<Record<string, unknown>> {
-    return this.request({ method: "get", path: `/stories/${opts.reelId}` });
+  story(opts: { storyId: string }): Promise<Record<string, unknown>> {
+    return this.request({ method: "get", path: `/stories/${opts.storyId}` });
   }
 
   audioTrending(

@@ -34,7 +34,7 @@ PATH_METHOD_NAMES: dict[str, str] = {
     "/locations/{location_id}/top": "location_top",
     "/locations/{location_id}/recent": "location_recent",
     "/highlights/{highlight_id}": "highlight",
-    "/stories/{reel_id}": "story",
+    "/stories/{story_id}": "story",
     "/audio/trending": "audio_trending",
     "/audio/{audio_id}": "audio",
     "/audio/{audio_id}/medias": "audio_medias",

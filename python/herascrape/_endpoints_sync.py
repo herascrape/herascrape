@@ -56,18 +56,12 @@ class SyncEndpoints(BaseSyncClient):
 
         return paginate(fetch, item_key="items", max_items=max_items)
 
-    def user_posts(
-        self,
-        user_id: str,
-        *,
-        cursor: str | None = None,
-        max_id: str | None = None,
-    ) -> Any:
+    def user_posts(self, user_id: str, *, cursor: str | None = None) -> Any:
         """Get User Posts"""
         return self._request(
             method="get",
             path=f"/users/{user_id}/posts",
-            params={"cursor": cursor, "max_id": max_id},
+            params={"cursor": cursor},
         )
 
     def user_reels(
@@ -499,9 +493,9 @@ class SyncEndpoints(BaseSyncClient):
         """Get Highlight"""
         return self._request(method="get", path=f"/highlights/{highlight_id}")
 
-    def story(self, reel_id: str) -> Any:
-        """Get Story Reel"""
-        return self._request(method="get", path=f"/stories/{reel_id}")
+    def story(self, story_id: str) -> Any:
+        """Get Story"""
+        return self._request(method="get", path=f"/stories/{story_id}")
 
     def audio_trending(self, *, cursor: str | None = None) -> Any:
         """Get Trending Audio"""

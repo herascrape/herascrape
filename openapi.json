@@ -11,7 +11,7 @@
           "public"
         ],
         "summary": "Get User By Username",
-        "description": "Full profile by username (resolves the id via typeahead first).",
+        "description": "Full profile by username, in one request.",
         "operationId": "get_user_by_username_users_username__username__get",
         "parameters": [
           {
@@ -65,8 +65,11 @@
             "required": true,
             "schema": {
               "type": "string",
+              "pattern": "^\\d+$",
+              "description": "Numeric Instagram user id (pk)",
               "title": "User Id"
-            }
+            },
+            "description": "Numeric Instagram user id (pk)"
           }
         ],
         "responses": {
@@ -110,8 +113,11 @@
             "required": true,
             "schema": {
               "type": "string",
+              "pattern": "^\\d+$",
+              "description": "Numeric Instagram user id (pk)",
               "title": "User Id"
-            }
+            },
+            "description": "Numeric Instagram user id (pk)"
           },
           {
             "name": "cursor",
@@ -171,8 +177,11 @@
             "required": true,
             "schema": {
               "type": "string",
+              "pattern": "^\\d+$",
+              "description": "Numeric Instagram user id (pk)",
               "title": "User Id"
-            }
+            },
+            "description": "Numeric Instagram user id (pk)"
           },
           {
             "name": "cursor",
@@ -223,7 +232,7 @@
           "public"
         ],
         "summary": "Get User Posts",
-        "description": "The profile grid. Page with ``cursor``, not ``max_id``.\n\nInstagram serves this from the GraphQL profile timeline, which keys paging\non ``profile_grid_items_cursor``. It accepts ``max_id`` and ignores it, so\nfeeding ``feed.next_max_id`` back returns the first page forever \u2014 a silent\nloop rather than an error. We reject it instead of reproducing that.",
+        "description": "The profile grid. Page with ``cursor`` taken from\n``feed.profile_grid_items_cursor`` of the previous response.",
         "operationId": "get_user_posts_users__user_id__posts_get",
         "parameters": [
           {
@@ -232,8 +241,11 @@
             "required": true,
             "schema": {
               "type": "string",
+              "pattern": "^\\d+$",
+              "description": "Numeric Instagram user id (pk)",
               "title": "User Id"
-            }
+            },
+            "description": "Numeric Instagram user id (pk)"
           },
           {
             "name": "cursor",
@@ -252,26 +264,6 @@
               "title": "Cursor"
             },
             "description": "Opaque pagination cursor from a previous next_cursor"
-          },
-          {
-            "name": "max_id",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "description": "Not supported here. Page with 'cursor', taking the value from feed.profile_grid_items_cursor.",
-              "deprecated": true,
-              "title": "Max Id"
-            },
-            "description": "Not supported here. Page with 'cursor', taking the value from feed.profile_grid_items_cursor.",
-            "deprecated": true
           }
         ],
         "responses": {
@@ -315,8 +307,11 @@
             "required": true,
             "schema": {
               "type": "string",
+              "pattern": "^\\d+$",
+              "description": "Numeric Instagram user id (pk)",
               "title": "User Id"
-            }
+            },
+            "description": "Numeric Instagram user id (pk)"
           },
           {
             "name": "cursor",
@@ -388,8 +383,11 @@
             "required": true,
             "schema": {
               "type": "string",
+              "pattern": "^\\d+$",
+              "description": "Numeric Instagram user id (pk)",
               "title": "User Id"
-            }
+            },
+            "description": "Numeric Instagram user id (pk)"
           },
           {
             "name": "cursor",
@@ -449,8 +447,11 @@
             "required": true,
             "schema": {
               "type": "string",
+              "pattern": "^\\d+$",
+              "description": "Numeric Instagram user id (pk)",
               "title": "User Id"
-            }
+            },
+            "description": "Numeric Instagram user id (pk)"
           }
         ],
         "responses": {
@@ -492,8 +493,11 @@
             "required": true,
             "schema": {
               "type": "string",
+              "pattern": "^\\d+$",
+              "description": "Numeric Instagram user id (pk)",
               "title": "User Id"
-            }
+            },
+            "description": "Numeric Instagram user id (pk)"
           }
         ],
         "responses": {
@@ -535,8 +539,11 @@
             "required": true,
             "schema": {
               "type": "string",
+              "pattern": "^\\d+$",
+              "description": "Numeric Instagram user id (pk)",
               "title": "User Id"
-            }
+            },
+            "description": "Numeric Instagram user id (pk)"
           },
           {
             "name": "cursor",
@@ -596,8 +603,11 @@
             "required": true,
             "schema": {
               "type": "string",
+              "pattern": "^\\d+$",
+              "description": "Numeric Instagram user id (pk)",
               "title": "User Id"
-            }
+            },
+            "description": "Numeric Instagram user id (pk)"
           }
         ],
         "responses": {
@@ -677,7 +687,7 @@
           "public"
         ],
         "summary": "Get Post Comments",
-        "description": "Comments on a post. ``post_id`` accepts a shortcode, the bare media pk\nor the composite pk; ``user_id`` is the post's owner.",
+        "description": "Comments on a post. ``post_id`` accepts a shortcode, the bare media pk\nor the composite pk.",
         "operationId": "get_post_comments_posts__post_id__comments_get",
         "parameters": [
           {
@@ -825,7 +835,7 @@
           "public"
         ],
         "summary": "Get Comment Replies",
-        "description": "Threaded replies to a comment. Requires the parent ``media_id`` and its\nowner's ``user_id``.",
+        "description": "Threaded replies to a comment. Requires the parent ``media_id``.",
         "operationId": "get_comment_replies_comments__comment_id__replies_get",
         "parameters": [
           {
@@ -1822,22 +1832,22 @@
         }
       }
     },
-    "/stories/{reel_id}": {
+    "/stories/{story_id}": {
       "get": {
         "tags": [
           "public"
         ],
-        "summary": "Get Story Reel",
-        "description": "A story reel's media items. ``reel_id`` is the story owner's user id\n(equivalent to `/users/{id}/stories`, via the reel-stream endpoint).",
-        "operationId": "get_story_reel_stories__reel_id__get",
+        "summary": "Get Story",
+        "description": "A single story by its media pk, while it is live.\n\n``story_id`` accepts the bare media pk, the shortcode, or the composite\n``<media_id>_<owner_id>`` pk; the owner is resolved server-side. An expired\nor missing story is a 404. A user's whole active story tray is\n``/users/{id}/stories``.",
+        "operationId": "get_story_stories__story_id__get",
         "parameters": [
           {
-            "name": "reel_id",
+            "name": "story_id",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string",
-              "title": "Reel Id"
+              "title": "Story Id"
             }
           }
         ],
@@ -1847,7 +1857,9 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Get Story Stories  Story Id  Get"
                 }
               }
             }
@@ -2194,7 +2206,8 @@
       "ApiKeyAuth": {
         "type": "apiKey",
         "in": "header",
-        "name": "x-api-key"
+        "name": "x-api-key",
+        "description": "Optional. Signed in at herascrape.com? Leave this empty \u2014 your console session authenticates every call automatically. Set a key only to try a specific one."
       }
     }
   },
@@ -2205,6 +2218,7 @@
     }
   ],
   "security": [
+    {},
     {
       "ApiKeyAuth": []
     }
