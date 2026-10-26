@@ -1,5 +1,10 @@
 # herascrape: Instagram API client for Python & TypeScript
 
+[![PyPI](https://img.shields.io/pypi/v/herascrape?label=pypi)](https://pypi.org/project/herascrape/)
+[![npm](https://img.shields.io/npm/v/herascrape?label=npm)](https://www.npmjs.com/package/herascrape)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[![Docs](https://img.shields.io/badge/docs-herascrape.com-4f46e5)](https://herascrape.com/docs)
+
 `herascrape` is the official Python and TypeScript/JavaScript client for
 [herascrape](https://herascrape.com), a hosted Instagram scraper API. It reads
 Instagram's private API for you and returns Instagram's own JSON:
@@ -9,6 +14,8 @@ service runs the accounts, devices and proxies.
 
 - `pip install herascrape` · `npm i herascrape`
 - 37 `GET` endpoints, one method each, plus lazy `iter_*` paginators for lists.
+- Real-time: every call fetches live from Instagram. Flat $0.0004 per
+  successful call; failed calls are not billed.
 - **Python**: sync (`Client`) and async (`AsyncClient`). **TypeScript**: one
   async `Client`, ESM + CJS, bundled `.d.ts` types.
 - Typed errors, retries with backoff and `Retry-After`, and a client-side rate
@@ -18,6 +25,10 @@ service runs the accounts, devices and proxies.
 
 Docs: [herascrape.com/docs](https://herascrape.com/docs) · interactive
 reference: [api.herascrape.com/docs](https://api.herascrape.com/docs).
+Also from herascrape: [herascrape-mcp](https://github.com/herascrape/herascrape-mcp),
+the Instagram MCP server for AI agents, and
+[hikerapi-to-herascrape](https://github.com/herascrape/hikerapi-to-herascrape) to
+migrate from HikerAPI.
 
 ## Install
 
