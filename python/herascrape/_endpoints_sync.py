@@ -17,15 +17,25 @@ class SyncEndpoints(BaseSyncClient):
     """Generated GET endpoints for the sync client."""
 
     def user_by_username(self, username: str) -> Any:
-        """Get User By Username"""
+        """Full profile by username, in one request.
+
+        ``GET /users/username/{username}``
+        """
         return self._request(method="get", path=f"/users/username/{username}")
 
     def user(self, user_id: str) -> Any:
-        """Get User"""
+        """Full profile by numeric id.
+
+        ``GET /users/{user_id}``
+        """
         return self._request(method="get", path=f"/users/{user_id}")
 
     def user_followers(self, user_id: str, *, cursor: str | None = None) -> Any:
-        """Get User Followers"""
+        """A page of the user's followers. Note: for business accounts Instagram
+        caps pagination depth, so the full list may not be reachable.
+
+        ``GET /users/{user_id}/followers``
+        """
         return self._request(
             method="get",
             path=f"/users/{user_id}/followers",
@@ -35,13 +45,18 @@ class SyncEndpoints(BaseSyncClient):
     def iter_user_followers(
         self, user_id: str, *, max_items: int | None = None
     ) -> Iterator[Any]:
+        """Lazily yield items from every page of ``user_followers``."""
+
         def fetch(cursor: str | None) -> Page:
             return self.user_followers(user_id, cursor=cursor)
 
         return paginate(fetch, item_key="items", max_items=max_items)
 
     def user_following(self, user_id: str, *, cursor: str | None = None) -> Any:
-        """Get User Following"""
+        """A page of the accounts this user follows.
+
+        ``GET /users/{user_id}/following``
+        """
         return self._request(
             method="get",
             path=f"/users/{user_id}/following",
@@ -51,13 +66,19 @@ class SyncEndpoints(BaseSyncClient):
     def iter_user_following(
         self, user_id: str, *, max_items: int | None = None
     ) -> Iterator[Any]:
+        """Lazily yield items from every page of ``user_following``."""
+
         def fetch(cursor: str | None) -> Page:
             return self.user_following(user_id, cursor=cursor)
 
         return paginate(fetch, item_key="items", max_items=max_items)
 
     def user_posts(self, user_id: str, *, cursor: str | None = None) -> Any:
-        """Get User Posts"""
+        """The profile grid. Page with ``cursor`` taken from
+        ``feed.profile_grid_items_cursor`` of the previous response.
+
+        ``GET /users/{user_id}/posts``
+        """
         return self._request(
             method="get",
             path=f"/users/{user_id}/posts",
@@ -71,7 +92,10 @@ class SyncEndpoints(BaseSyncClient):
         cursor: str | None = None,
         sort_by_views: bool | None = None,
     ) -> Any:
-        """Get User Reels"""
+        """A page of the user's reels (clips).
+
+        ``GET /users/{user_id}/reels``
+        """
         return self._request(
             method="get",
             path=f"/users/{user_id}/reels",
@@ -85,6 +109,8 @@ class SyncEndpoints(BaseSyncClient):
         sort_by_views: bool | None = None,
         max_items: int | None = None,
     ) -> Iterator[Any]:
+        """Lazily yield items from every page of ``user_reels``."""
+
         def fetch(cursor: str | None) -> Page:
             return self.user_reels(
                 user_id, sort_by_views=sort_by_views, cursor=cursor
@@ -93,7 +119,10 @@ class SyncEndpoints(BaseSyncClient):
         return paginate(fetch, item_key="items", max_items=max_items)
 
     def user_tagged(self, user_id: str, *, cursor: str | None = None) -> Any:
-        """Get User Tagged"""
+        """A page of media the user is tagged in.
+
+        ``GET /users/{user_id}/tagged``
+        """
         return self._request(
             method="get",
             path=f"/users/{user_id}/tagged",
@@ -103,21 +132,32 @@ class SyncEndpoints(BaseSyncClient):
     def iter_user_tagged(
         self, user_id: str, *, max_items: int | None = None
     ) -> Iterator[Any]:
+        """Lazily yield items from every page of ``user_tagged``."""
+
         def fetch(cursor: str | None) -> Page:
             return self.user_tagged(user_id, cursor=cursor)
 
         return paginate(fetch, item_key="items", max_items=max_items)
 
     def user_stories(self, user_id: str) -> Any:
-        """Get User Stories"""
+        """The user's currently-active story items (empty if none live).
+
+        ``GET /users/{user_id}/stories``
+        """
         return self._request(method="get", path=f"/users/{user_id}/stories")
 
     def user_highlights(self, user_id: str) -> Any:
-        """Get User Highlights"""
+        """The profile's highlight reels (tray).
+
+        ``GET /users/{user_id}/highlights``
+        """
         return self._request(method="get", path=f"/users/{user_id}/highlights")
 
     def user_reposts(self, user_id: str, *, cursor: str | None = None) -> Any:
-        """Get User Reposts"""
+        """A page of the media this user has reposted.
+
+        ``GET /users/{user_id}/reposts``
+        """
         return self._request(
             method="get",
             path=f"/users/{user_id}/reposts",
@@ -127,17 +167,31 @@ class SyncEndpoints(BaseSyncClient):
     def iter_user_reposts(
         self, user_id: str, *, max_items: int | None = None
     ) -> Iterator[Any]:
+        """Lazily yield items from every page of ``user_reposts``."""
+
         def fetch(cursor: str | None) -> Page:
             return self.user_reposts(user_id, cursor=cursor)
 
         return paginate(fetch, item_key="items", max_items=max_items)
 
     def user_about(self, user_id: str) -> Any:
-        """Get User About"""
+        """The "About this account" panel (date joined, former usernames, …),
+        parsed from Instagram's Bloks render tree — best-effort text
+        extraction.
+
+        ``GET /users/{user_id}/about``
+        """
         return self._request(method="get", path=f"/users/{user_id}/about")
 
     def post(self, post_id: str) -> Any:
-        """Get Post"""
+        """Fetch a single post.
+
+        ``post_id`` accepts the shortcode from the URL (``DQSPu0hE_pP``), the
+        bare numeric ``media_id``, or the composite ``<media_id>_<owner_id>``
+        pk.
+
+        ``GET /posts/{post_id}``
+        """
         return self._request(method="get", path=f"/posts/{post_id}")
 
     def post_comments(
@@ -149,7 +203,11 @@ class SyncEndpoints(BaseSyncClient):
         carousel_media_id: str | None = None,
         carousel_index: int | None = None,
     ) -> Any:
-        """Get Post Comments"""
+        """Comments on a post. ``post_id`` accepts a shortcode, the bare media
+        pk or the composite pk.
+
+        ``GET /posts/{post_id}/comments``
+        """
         return self._request(
             method="get",
             path=f"/posts/{post_id}/comments",
@@ -162,13 +220,20 @@ class SyncEndpoints(BaseSyncClient):
         )
 
     def post_likers(self, post_id: str) -> Any:
-        """Get Post Likers"""
+        """Accounts that liked a post (single capped page — Instagram does not
+        paginate likers).
+
+        ``GET /posts/{post_id}/likers``
+        """
         return self._request(method="get", path=f"/posts/{post_id}/likers")
 
     def comment_replies(
         self, comment_id: str, *, media_id: str, cursor: str | None = None
     ) -> Any:
-        """Get Comment Replies"""
+        """Threaded replies to a comment. Requires the parent ``media_id``.
+
+        ``GET /comments/{comment_id}/replies``
+        """
         return self._request(
             method="get",
             path=f"/comments/{comment_id}/replies",
@@ -178,6 +243,8 @@ class SyncEndpoints(BaseSyncClient):
     def iter_comment_replies(
         self, comment_id: str, *, media_id: str, max_items: int | None = None
     ) -> Iterator[Any]:
+        """Lazily yield items from every page of ``comment_replies``."""
+
         def fetch(cursor: str | None) -> Page:
             return self.comment_replies(
                 comment_id, media_id=media_id, cursor=cursor
@@ -186,7 +253,10 @@ class SyncEndpoints(BaseSyncClient):
         return paginate(fetch, item_key="items", max_items=max_items)
 
     def comment_likers(self, comment_id: str) -> Any:
-        """Get Comment Likers"""
+        """Accounts that liked a comment (single page).
+
+        ``GET /comments/{comment_id}/likers``
+        """
         return self._request(
             method="get", path=f"/comments/{comment_id}/likers"
         )
@@ -199,7 +269,10 @@ class SyncEndpoints(BaseSyncClient):
         query: str,
         cursor: str | None = None,
     ) -> Any:
-        """Search Users"""
+        """Account search.
+
+        ``GET /search/users``
+        """
         if search_session_id is None:
             search_session_id = _session_id()
         if serp_session_id is None:
@@ -223,6 +296,7 @@ class SyncEndpoints(BaseSyncClient):
         query: str,
         max_items: int | None = None,
     ) -> Iterator[Any]:
+        """Lazily yield items from every page of ``search_users``."""
         if search_session_id is None:
             search_session_id = _session_id()
         if serp_session_id is None:
@@ -246,7 +320,10 @@ class SyncEndpoints(BaseSyncClient):
         query: str,
         cursor: str | None = None,
     ) -> Any:
-        """Search Hashtags"""
+        """Hashtag search.
+
+        ``GET /search/hashtags``
+        """
         if search_session_id is None:
             search_session_id = _session_id()
         if serp_session_id is None:
@@ -270,6 +347,7 @@ class SyncEndpoints(BaseSyncClient):
         query: str,
         max_items: int | None = None,
     ) -> Iterator[Any]:
+        """Lazily yield items from every page of ``search_hashtags``."""
         if search_session_id is None:
             search_session_id = _session_id()
         if serp_session_id is None:
@@ -294,7 +372,10 @@ class SyncEndpoints(BaseSyncClient):
         query: str,
         cursor: str | None = None,
     ) -> Any:
-        """Search Audio"""
+        """Music / audio search.
+
+        ``GET /search/audio``
+        """
         if search_session_id is None:
             search_session_id = _session_id()
         if serp_session_id is None:
@@ -322,6 +403,7 @@ class SyncEndpoints(BaseSyncClient):
         query: str,
         max_items: int | None = None,
     ) -> Iterator[Any]:
+        """Lazily yield items from every page of ``search_audio``."""
         if search_session_id is None:
             search_session_id = _session_id()
         if serp_session_id is None:
@@ -348,7 +430,11 @@ class SyncEndpoints(BaseSyncClient):
         query: str,
         cursor: str | None = None,
     ) -> Any:
-        """Search Top"""
+        """Blended top search — heterogeneous result units returned as Instagram
+        sends them.
+
+        ``GET /search/top``
+        """
         if search_session_id is None:
             search_session_id = _session_id()
         if serp_session_id is None:
@@ -372,6 +458,7 @@ class SyncEndpoints(BaseSyncClient):
         query: str,
         max_items: int | None = None,
     ) -> Iterator[Any]:
+        """Lazily yield items from every page of ``search_top``."""
         if search_session_id is None:
             search_session_id = _session_id()
         if serp_session_id is None:
@@ -390,7 +477,13 @@ class SyncEndpoints(BaseSyncClient):
     def search_places(
         self, *, query: str, lat: float | None = None, lng: float | None = None
     ) -> Any:
-        """Search Places"""
+        """Venue search. Instagram retired the standalone location-search
+        screen, but the capability survives in the composer's place picker,
+        which is what this calls. Single page — Instagram returns a
+        typeahead-style list with no cursor, so ``has_more`` is always false.
+
+        ``GET /search/places``
+        """
         return self._request(
             method="get",
             path="/search/places",
@@ -398,11 +491,17 @@ class SyncEndpoints(BaseSyncClient):
         )
 
     def hashtag(self, name: str) -> Any:
-        """Get Hashtag"""
+        """Hashtag info (post count, trending state).
+
+        ``GET /hashtags/{name}``
+        """
         return self._request(method="get", path=f"/hashtags/{name}")
 
     def hashtag_top(self, name: str, *, cursor: str | None = None) -> Any:
-        """Get Hashtag Top"""
+        """Top media for a hashtag.
+
+        ``GET /hashtags/{name}/top``
+        """
         return self._request(
             method="get",
             path=f"/hashtags/{name}/top",
@@ -412,13 +511,18 @@ class SyncEndpoints(BaseSyncClient):
     def iter_hashtag_top(
         self, name: str, *, max_items: int | None = None
     ) -> Iterator[Any]:
+        """Lazily yield items from every page of ``hashtag_top``."""
+
         def fetch(cursor: str | None) -> Page:
             return self.hashtag_top(name, cursor=cursor)
 
         return paginate(fetch, item_key="items", max_items=max_items)
 
     def hashtag_recent(self, name: str, *, cursor: str | None = None) -> Any:
-        """Get Hashtag Recent"""
+        """Most-recent media for a hashtag.
+
+        ``GET /hashtags/{name}/recent``
+        """
         return self._request(
             method="get",
             path=f"/hashtags/{name}/recent",
@@ -428,13 +532,18 @@ class SyncEndpoints(BaseSyncClient):
     def iter_hashtag_recent(
         self, name: str, *, max_items: int | None = None
     ) -> Iterator[Any]:
+        """Lazily yield items from every page of ``hashtag_recent``."""
+
         def fetch(cursor: str | None) -> Page:
             return self.hashtag_recent(name, cursor=cursor)
 
         return paginate(fetch, item_key="items", max_items=max_items)
 
     def hashtag_reels(self, name: str, *, cursor: str | None = None) -> Any:
-        """Get Hashtag Reels"""
+        """Reels/clips for a hashtag.
+
+        ``GET /hashtags/{name}/reels``
+        """
         return self._request(
             method="get",
             path=f"/hashtags/{name}/reels",
@@ -444,19 +553,27 @@ class SyncEndpoints(BaseSyncClient):
     def iter_hashtag_reels(
         self, name: str, *, max_items: int | None = None
     ) -> Iterator[Any]:
+        """Lazily yield items from every page of ``hashtag_reels``."""
+
         def fetch(cursor: str | None) -> Page:
             return self.hashtag_reels(name, cursor=cursor)
 
         return paginate(fetch, item_key="items", max_items=max_items)
 
     def location(self, location_id: str) -> Any:
-        """Get Location"""
+        """Location / place metadata (name, category, city, hours).
+
+        ``GET /locations/{location_id}``
+        """
         return self._request(method="get", path=f"/locations/{location_id}")
 
     def location_top(
         self, location_id: str, *, cursor: str | None = None
     ) -> Any:
-        """Get Location Top"""
+        """Top media at a location.
+
+        ``GET /locations/{location_id}/top``
+        """
         return self._request(
             method="get",
             path=f"/locations/{location_id}/top",
@@ -466,6 +583,8 @@ class SyncEndpoints(BaseSyncClient):
     def iter_location_top(
         self, location_id: str, *, max_items: int | None = None
     ) -> Iterator[Any]:
+        """Lazily yield items from every page of ``location_top``."""
+
         def fetch(cursor: str | None) -> Page:
             return self.location_top(location_id, cursor=cursor)
 
@@ -474,7 +593,10 @@ class SyncEndpoints(BaseSyncClient):
     def location_recent(
         self, location_id: str, *, cursor: str | None = None
     ) -> Any:
-        """Get Location Recent"""
+        """Most-recent media at a location.
+
+        ``GET /locations/{location_id}/recent``
+        """
         return self._request(
             method="get",
             path=f"/locations/{location_id}/recent",
@@ -484,21 +606,37 @@ class SyncEndpoints(BaseSyncClient):
     def iter_location_recent(
         self, location_id: str, *, max_items: int | None = None
     ) -> Iterator[Any]:
+        """Lazily yield items from every page of ``location_recent``."""
+
         def fetch(cursor: str | None) -> Page:
             return self.location_recent(location_id, cursor=cursor)
 
         return paginate(fetch, item_key="items", max_items=max_items)
 
     def highlight(self, highlight_id: str) -> Any:
-        """Get Highlight"""
+        """The media items of a single highlight reel.
+
+        ``GET /highlights/{highlight_id}``
+        """
         return self._request(method="get", path=f"/highlights/{highlight_id}")
 
     def story(self, story_id: str) -> Any:
-        """Get Story"""
+        """A single story by its media pk, while it is live.
+
+        ``story_id`` accepts the bare media pk, the shortcode, or the
+        composite ``<media_id>_<owner_id>`` pk; the owner is resolved
+        server-side. An expired or missing story is a 404. A user's whole
+        active story tray is ``/users/{id}/stories``.
+
+        ``GET /stories/{story_id}``
+        """
         return self._request(method="get", path=f"/stories/{story_id}")
 
     def audio_trending(self, *, cursor: str | None = None) -> Any:
-        """Get Trending Audio"""
+        """The trending-audio list.
+
+        ``GET /audio/trending``
+        """
         return self._request(
             method="get", path="/audio/trending", params={"cursor": cursor}
         )
@@ -506,17 +644,25 @@ class SyncEndpoints(BaseSyncClient):
     def iter_audio_trending(
         self, *, max_items: int | None = None
     ) -> Iterator[Any]:
+        """Lazily yield items from every page of ``audio_trending``."""
+
         def fetch(cursor: str | None) -> Page:
             return self.audio_trending(cursor=cursor)
 
         return paginate(fetch, item_key="items", max_items=max_items)
 
     def audio(self, audio_id: str) -> Any:
-        """Get Audio"""
+        """Audio (track / original sound) page metadata.
+
+        ``GET /audio/{audio_id}``
+        """
         return self._request(method="get", path=f"/audio/{audio_id}")
 
     def audio_medias(self, audio_id: str, *, cursor: str | None = None) -> Any:
-        """Get Audio Medias"""
+        """A page of reels that use this audio.
+
+        ``GET /audio/{audio_id}/medias``
+        """
         return self._request(
             method="get",
             path=f"/audio/{audio_id}/medias",
@@ -526,6 +672,8 @@ class SyncEndpoints(BaseSyncClient):
     def iter_audio_medias(
         self, audio_id: str, *, max_items: int | None = None
     ) -> Iterator[Any]:
+        """Lazily yield items from every page of ``audio_medias``."""
+
         def fetch(cursor: str | None) -> Page:
             return self.audio_medias(audio_id, cursor=cursor)
 
@@ -534,7 +682,12 @@ class SyncEndpoints(BaseSyncClient):
     def resolve_media(
         self, *, pk: str | None = None, code: str | None = None
     ) -> MediaIdResolution:
-        """Resolve Media"""
+        """Convert a media pk ⇄ shortcode. Pure base64 arithmetic — no Instagram
+        request, so it's free and instant. Pass exactly one of ``pk`` or
+        ``code``.
+
+        ``GET /resolve/media``
+        """
         if (pk is None) == (code is None):
             raise ValueError("resolve_media needs exactly one of pk or code")
         return self._request(
@@ -542,13 +695,27 @@ class SyncEndpoints(BaseSyncClient):
         )
 
     def oembed(self, *, url: str) -> Any:
-        """Get Oembed"""
+        """oEmbed for a post/reel URL — and the resolver for `/s/` share links
+        (returns the `reel_id` / `author_id` a highlight or story link points
+        to).
+
+        ``GET /oembed``
+        """
         return self._request(method="get", path="/oembed", params={"url": url})
 
     def health(self) -> Any:
-        """Health"""
+        """Unauthenticated liveness check.
+
+        ``GET /system/health``
+        """
         return self._request(method="get", path="/system/health")
 
     def balance(self) -> BalanceResponse:
-        """Get Balance"""
+        """Remaining USD balance for the account this key belongs to.
+
+        Free — it never touches Instagram. Read live from the ledger rather
+        than from the key cache, so a top-up shows up immediately.
+
+        ``GET /system/balance``
+        """
         return self._request(method="get", path="/system/balance")
