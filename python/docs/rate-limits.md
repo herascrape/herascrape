@@ -42,7 +42,7 @@ calls are.
 
 Requests are also throttled before they are sent, by a token bucket that holds
 `rate` tokens and starts full. The default is 50 requests per second, which
-mirrors the per-key server limit, so steady use does not trip a server-side
+mirrors the server limit, so steady use does not trip a server-side
 `429`. The bucket is shared across threads and across tasks on one client, so
 a pool of workers sharing a client shares one budget.
 
@@ -63,9 +63,10 @@ Client(rate_limit=None)
 it. `RateLimit(rate=600, period_length=5, period="m")` is 600 requests per
 five minutes.
 
-Lower the rate if you run several clients against one key, because each client
-has its own bucket and the server sees their sum. Raise it only to match what
-your key is actually allowed.
+The server limit is per account, shared by all of its API keys. Lower the rate
+if you run several clients on one account, because each client has its own
+bucket and the server sees their sum. Raise it only to match what your account
+is actually allowed.
 
 The limiter delays requests, it never drops them. `Client` blocks the calling
 thread while it waits, `AsyncClient` awaits without blocking the event loop.

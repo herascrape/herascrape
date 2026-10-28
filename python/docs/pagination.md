@@ -6,8 +6,8 @@ myst:
 
 # Pagination
 
-One call fetches one Instagram page. List endpoints answer with the same
-envelope:
+One call fetches one Instagram page. Most list endpoints answer in the same
+shape:
 
 ```python
 {"items": [...], "next_cursor": "QVFE...", "has_more": True}
@@ -79,8 +79,8 @@ for tag in client.iter_search_hashtags(query="travel", max_items=20):
 ```
 
 If you page a search by hand, pass the same session ids back with each
-`cursor=` call, or Instagram treats every page as a new search and the results
-drift.
+`cursor=` call. A cursor sent with other session ids is rejected as
+`invalid_cursor`.
 
 ```python
 first = client.search_users(query="nike")
@@ -94,10 +94,12 @@ more = client.search_users(
 
 ## The two exceptions
 
-Two endpoints keep Instagram's own paging shape instead of the envelope, so
-they have no `iter_` twin and are paged by hand.
+Two endpoints keep Instagram's own paging shape instead, so they have no
+`iter_` twin and are paged by hand. A third, `search_top`, returns `edges` and
+`next_cursor` with no `has_more`; its `iter_search_top` twin handles that.
 
-`user_posts` returns `{"feed": ..., "posts": [...]}`. Pass
+`user_posts` returns `{"feed": ..., "posts": {...}}`, with `posts` keyed by
+media id and the grid order in `feed.profile_grid_items`. Pass
 `feed.profile_grid_items_cursor` back as `cursor=` while
 `feed.more_available` is true:
 
@@ -105,7 +107,7 @@ they have no `iter_` twin and are paged by hand.
 cursor = None
 while True:
     page = client.user_posts("25025320", cursor=cursor)
-    for post in page["posts"]:
+    for post in page["posts"].values():
         print(post["code"])
     feed = page["feed"]
     if not feed.get("more_available"):
@@ -131,5 +133,7 @@ while True:
 
 Some endpoints have no cursor at all because Instagram does not paginate them:
 `post_likers`, `comment_likers` and `search_places` return one capped page.
-`user_followers` and `user_following` do paginate, but Instagram caps the depth
-on business accounts, so a full follower list is not always reachable.
+`user_followers` and `user_following` do paginate, but Instagram reshuffles
+the list on every request, so one walk sees about 70-90% of it; walk it again
+and merge by `pk` to fill the gaps. Some business and verified accounts list
+only about 45-49 followers before `has_more` goes false.
