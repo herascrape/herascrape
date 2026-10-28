@@ -22,7 +22,7 @@ from .client import Client
 from .ratelimit import RateLimit
 from .types import BalanceResponse, MediaIdResolution, Page
 
-__version__ = "0.1.5"
+__version__ = "0.1.6"
 
 __all__ = [
     "AsyncClient",
