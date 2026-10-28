@@ -35,7 +35,7 @@ class ClosingTransport(httpx.MockTransport):
 
 
 def _ok(data: object) -> httpx.Response:
-    return httpx.Response(200, json=data)
+    return httpx.Response(200, json={"status": "success", "data": data})
 
 
 def _page(
@@ -76,7 +76,7 @@ def _async_client(script: Script) -> AsyncClient:
     return AsyncClient(api_key=API_KEY, transport=httpx.MockTransport(script))
 
 
-def test_object_endpoint_returns_body_dict():
+def test_object_endpoint_returns_unwrapped_dict():
     script = Script(_ok({"pk": "123", "username": "nike"}))
     assert _client(script).user("123") == {"pk": "123", "username": "nike"}
     request = script.requests[0]

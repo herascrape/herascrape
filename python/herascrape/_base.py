@@ -41,8 +41,8 @@ _RETRYABLE = (
 
 
 def unwrap(payload: Any) -> Any:
-    """Return a success body as-is: the API sends resources bare."""
-    return payload
+    """Return the `data` member of a success envelope."""
+    return payload["data"]
 
 
 def drop_none(params: Mapping[str, Param | None] | None) -> dict[str, Param]:
@@ -118,7 +118,7 @@ def transport_failure(exc: httpx.TransportError) -> HerascrapeTransportError:
 
 
 def response_data(response: httpx.Response) -> Any:
-    """The body of a success response; raises on an error one."""
+    """The unwrapped `data` of a success response; raises on an error one."""
     if response.is_success:
         return unwrap(response.json())
     raise parse_error(
@@ -168,7 +168,7 @@ class BaseSyncClient:
         path: str,
         params: Mapping[str, Param | None] | None = None,
     ) -> Any:
-        """Send a request and return the response body, retrying."""
+        """Send a request and return the unwrapped `data`, retrying."""
         query = drop_none(params)
         attempt = 0
         while True:
@@ -242,7 +242,7 @@ class BaseAsyncClient:
         path: str,
         params: Mapping[str, Param | None] | None = None,
     ) -> Any:
-        """Send a request and return the response body, retrying."""
+        """Send a request and return the unwrapped `data`, retrying."""
         query = drop_none(params)
         attempt = 0
         while True:
