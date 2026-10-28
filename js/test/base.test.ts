@@ -73,7 +73,7 @@ function make(
 }
 
 function ok(data: unknown = null): Response {
-  return new Response(JSON.stringify(data), {
+  return new Response(JSON.stringify({ status: "success", data }), {
     status: 200,
   });
 }
@@ -105,13 +105,13 @@ afterEach(() => {
 });
 
 describe("transport", () => {
-  it("returns the response body", async () => {
+  it("unwraps the data envelope", async () => {
     const { client } = make([ok({ pk: "1" })]);
     expect(await client.get("/users/1")).toEqual({ pk: "1" });
   });
 
-  it("unwrap returns the body unchanged", () => {
-    expect(unwrap({ items: [1], data: 5 })).toEqual({ items: [1], data: 5 });
+  it("unwrap returns the data member", () => {
+    expect(unwrap({ status: "success", data: { a: 1 } })).toEqual({ a: 1 });
   });
 
   it("sends the api key and accept headers to the right url", async () => {

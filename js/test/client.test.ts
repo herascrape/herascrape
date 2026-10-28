@@ -20,7 +20,7 @@ class Script {
 }
 
 function ok(data: unknown): Response {
-  return new Response(JSON.stringify(data), {
+  return new Response(JSON.stringify({ status: "success", data }), {
     status: 200,
   });
 }
