@@ -67,7 +67,7 @@ const user = await client.userByUsername({ username: "instagram" });
 console.log(user.username, user.follower_count);
 
 for await (const follower of client.iterUserFollowers({
-  userId: user.pk,
+  userId: user.pk as string,
   maxItems: 100,
 })) {
   console.log(follower.username);
@@ -124,7 +124,7 @@ print(len(page["items"]), page["has_more"], page["next_cursor"])
 
 ### Pagination
 
-One call fetches one Instagram page. List responses carry `items`,
+One call fetches one Instagram page. Most list responses carry `items`,
 `next_cursor` and `has_more`. Pass `next_cursor` back as `cursor=` and stop
 when `has_more` is false:
 
@@ -149,13 +149,17 @@ for reel in client.iter_user_reels(user["pk"], max_items=50):
 
 Treat cursors as opaque and use each one only with the endpoint that issued it.
 
-Two endpoints keep Instagram's own paging shape instead of the standard
-envelope, so page them by hand:
+Three endpoints keep Instagram's own shape instead:
 
 - `post_comments` returns `comments`, `has_more` and `next_min_id`. Pass
   `next_min_id` back as `min_id=` until `has_more` is false.
-- `user_posts` returns `{feed, posts}`. Pass `feed.profile_grid_items_cursor`
-  back as `cursor=` while `feed.more_available` is true.
+- `user_posts` returns `{feed, posts}`, with `posts` keyed by media id. Pass
+  `feed.profile_grid_items_cursor` back as `cursor=` while
+  `feed.more_available` is true.
+- `search_top` returns `edges` and `next_cursor`, with no `has_more`. Its
+  `iter_search_top` twin pages it for you.
+
+The first two have no `iter_*` twin, so page them by hand.
 
 ### Posts and comments
 
@@ -182,7 +186,8 @@ for tag in client.iter_search_hashtags(query="travel", max_items=20):
 Search needs session UUIDs (`search_session_id`, `serp_session_id`, and
 `browse_session_id` for audio). The client generates them, and the `iter_*`
 helpers reuse the same ones on every page. If you continue a search by hand
-with `cursor=`, pass the same IDs back.
+with `cursor=`, pass the same IDs back, or the cursor is rejected as
+`invalid_cursor`.
 
 ### Convert and check
 
@@ -245,7 +250,7 @@ const client = new Client({ apiKey: process.env.HERASCRAPE_API_KEY });
 
 // one page
 const page = await client.userFollowers({ userId: "25025320" });
-console.log(page.items.length, page.has_more, page.next_cursor);
+console.log((page.items as unknown[]).length, page.has_more, page.next_cursor);
 
 // lazy pagination
 for await (const reel of client.iterUserReels({
@@ -325,7 +330,7 @@ off exponentially from 0.5 s to a cap of 8 s, with jitter. A 429 with a
 
 Requests are also throttled on the client before they are sent, with a token
 bucket that defaults to **50 requests per second**, shared across threads and
-tasks. Match it to your account's limit:
+tasks. Match it to your account's limit, which all of its API keys share:
 
 ```python
 from herascrape import Client, RateLimit

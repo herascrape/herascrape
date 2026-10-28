@@ -85,8 +85,9 @@ print(post["like_count"], post["comment_count"])
 print(client.resolve_media(code="B4XpqViUFUI"))
 ```
 
-List responses carry `items`, `next_cursor` and `has_more`. `post_comments`
-and `user_posts` keep Instagram's own paging shape, so page those by hand; see
+Most list responses carry `items`, `next_cursor` and `has_more`. `post_comments`
+and `user_posts` keep Instagram's own paging shape, so page those by hand, and
+`search_top` returns `edges` with `next_cursor` only; see
 the [docs](https://herascrape.com/docs/getting-started/pagination?utm_source=pypi&utm_medium=readme&utm_campaign=herascrape).
 
 ### Async
@@ -145,7 +146,8 @@ The client retries connection errors and timeouts, 429, 502, 503 and
 `invalid_cursor` up to `max_retries` times (default 3), backing off from 0.5 s
 to 8 s with jitter. A 429 with a `Retry-After` header waits that long, capped
 at 300 s. It also throttles requests on the client with a token bucket that
-defaults to 50 requests per second. Match it to your key's limit:
+defaults to 50 requests per second. Match it to your account's limit, which
+all of its API keys share:
 
 ```python
 from herascrape import Client, RateLimit

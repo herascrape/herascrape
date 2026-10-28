@@ -92,8 +92,10 @@ console.log(post.like_count, post.comment_count);
 console.log(await client.resolveMedia({ code: "B4XpqViUFUI" }));
 ```
 
-List responses carry `items`, `next_cursor` and `has_more`. `userPosts` keeps
-Instagram's own feed shape, so it has no iterator and you page it by hand; see
+Most list responses carry `items`, `next_cursor` and `has_more`. `postComments`
+and `userPosts` keep Instagram's own paging shape, so they have no iterator and
+you page them by hand, and `searchTop` returns `edges` with `next_cursor` only;
+see
 the [docs](https://herascrape.com/docs/getting-started/pagination?utm_source=npm&utm_medium=readme&utm_campaign=herascrape).
 
 ## Errors
@@ -133,7 +135,8 @@ The client retries connection errors and timeouts, 429, 502, 503 and
 `invalid_cursor` up to `maxRetries` times (default 3), backing off from 0.5 s
 to 8 s with jitter. A 429 with a `Retry-After` header waits that long, capped
 at 300 s. It also throttles requests on the client with a token bucket that
-defaults to 50 requests per second. Match it to your key's limit:
+defaults to 50 requests per second. Match it to your account's limit, which
+all of its API keys share:
 
 ```ts
 import { Client } from "herascrape";
