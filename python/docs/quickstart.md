@@ -14,7 +14,7 @@ pip install herascrape
 
 ## Authenticate
 
-Create a key in the [dashboard](https://herascrape.com/api-keys). The client
+Create a key in the [dashboard](https://herascrape.com/api-keys?utm_source=readthedocs&utm_medium=docs&utm_campaign=herascrape). The client
 sends it as the `x-api-key` header on every request. Pass it in:
 
 ```python
