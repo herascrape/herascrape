@@ -66,7 +66,7 @@ def _make(
 
 
 def _ok(data: object = None) -> httpx.Response:
-    return httpx.Response(200, json={"status": "success", "data": data})
+    return httpx.Response(200, json=data)
 
 
 def _error(
@@ -90,7 +90,7 @@ def _assert_backoff(delay: float, *, attempt: int) -> None:
 
 
 @pytest.mark.asyncio
-async def test_async_unwraps_data():
+async def test_async_returns_response_body():
     client, _, _ = _make(_ok({"pk": "1"}))
     assert await client.get("/users/1") == {"pk": "1"}
 

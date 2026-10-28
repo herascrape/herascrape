@@ -75,7 +75,7 @@ def _make(
 
 
 def _ok(data: object = None) -> httpx.Response:
-    return httpx.Response(200, json={"status": "success", "data": data})
+    return httpx.Response(200, json=data)
 
 
 def _error(
@@ -98,13 +98,14 @@ def _assert_backoff(delay: float, *, attempt: int) -> None:
     assert lowest <= delay <= highest
 
 
-def test_unwraps_data():
+def test_returns_response_body():
     client, _, _ = _make(_ok({"pk": "1"}))
     assert client.get("/users/1") == {"pk": "1"}
 
 
-def test_unwrap_returns_data_member():
-    assert unwrap({"status": "success", "data": [1, 2]}) == [1, 2]
+def test_unwrap_returns_body_unchanged():
+    body = {"items": [1], "data": 5}
+    assert unwrap(body) == {"items": [1], "data": 5}
 
 
 def test_sends_api_key_and_accept_headers():

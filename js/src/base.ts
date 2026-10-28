@@ -31,7 +31,7 @@ export function sessionId(): string {
 }
 
 export function unwrap(payload: unknown): Record<string, unknown> {
-  return (payload as { data: Record<string, unknown> }).data;
+  return payload as Record<string, unknown>;
 }
 
 function dropNone(params: QueryParams | undefined): Record<string, QueryValue> {
