@@ -3,11 +3,11 @@
 [![PyPI](https://img.shields.io/pypi/v/herascrape?label=pypi)](https://pypi.org/project/herascrape/)
 [![npm](https://img.shields.io/npm/v/herascrape?label=npm)](https://www.npmjs.com/package/herascrape)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![Docs](https://img.shields.io/badge/docs-herascrape.com-4f46e5)](https://herascrape.com/docs)
+[![Docs](https://img.shields.io/badge/docs-herascrape.com-4f46e5)](https://herascrape.com/docs?utm_source=github&utm_medium=readme&utm_campaign=herascrape)
 [![Python docs](https://img.shields.io/readthedocs/herascrape?label=python%20docs)](https://herascrape.readthedocs.io/)
 
 `herascrape` is the official Python and TypeScript/JavaScript client for
-[herascrape](https://herascrape.com), a hosted Instagram scraper API. It reads
+[herascrape](https://herascrape.com/?utm_source=github&utm_medium=readme&utm_campaign=herascrape), a hosted Instagram scraper API. It reads
 Instagram's private API for you and returns Instagram's own JSON:
 **profiles, followers and following, posts, reels, stories, highlights,
 comments, hashtags, locations, audio, and search.** You bring an API key; the
@@ -24,7 +24,7 @@ service runs the accounts, devices and proxies.
 - Minimal footprint: `httpx` (Python) / native `fetch` (Node), Python 3.10+,
   Node 18+.
 
-Docs: [herascrape.com/docs](https://herascrape.com/docs) · interactive
+Docs: [herascrape.com/docs](https://herascrape.com/docs?utm_source=github&utm_medium=readme&utm_campaign=herascrape) · interactive
 reference: [api.herascrape.com/docs](https://api.herascrape.com/docs) ·
 Python library reference:
 [herascrape.readthedocs.io](https://herascrape.readthedocs.io/).
@@ -81,7 +81,7 @@ in both.
 
 ## Authentication
 
-Create a key in the [dashboard](https://herascrape.com/api-keys); the client
+Create a key in the [dashboard](https://herascrape.com/api-keys?utm_source=github&utm_medium=readme&utm_campaign=herascrape); the client
 sends it in the `x-api-key` header. Pass it to the constructor:
 
 ```python
@@ -97,13 +97,13 @@ With no key in either place, constructing the client raises an authentication
 error. Keep keys out of source control.
 
 Billing is per successful call; failed calls are not billed. See
-[pricing](https://herascrape.com/docs/getting-started/pricing).
+[pricing](https://herascrape.com/docs/getting-started/pricing?utm_source=github&utm_medium=readme&utm_campaign=herascrape).
 
 ## Usage (Python)
 
 Every method returns the response `data` as a plain `dict`, exactly as
 Instagram sent it. The shape follows Instagram, so check an endpoint's *What
-comes back* section in the [docs](https://herascrape.com/docs) before mapping
+comes back* section in the [docs](https://herascrape.com/docs?utm_source=github&utm_medium=readme&utm_campaign=herascrape) before mapping
 fields.
 
 ### Profiles and lists
@@ -417,7 +417,7 @@ that walks every page lazily. `user_posts` and `post_comments` page by hand (see
 
 ## Coming from another Instagram API
 
-The [HikerAPI migration guide](https://herascrape.com/docs/guides/hikerapi-migration)
+The [HikerAPI migration guide](https://herascrape.com/docs/guides/hikerapi-migration?utm_source=github&utm_medium=readme&utm_campaign=herascrape)
 maps each HikerAPI path to its herascrape equivalent.
 
 ## Disclaimer

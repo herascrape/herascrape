@@ -1,7 +1,7 @@
 # herascrape: Instagram API client for TypeScript & JavaScript
 
 `herascrape` is the official TypeScript/JavaScript client for
-[herascrape](https://herascrape.com), a hosted Instagram scraper API. It reads
+[herascrape](https://herascrape.com/?utm_source=npm&utm_medium=readme&utm_campaign=herascrape), a hosted Instagram scraper API. It reads
 Instagram's public data for you and hands back Instagram's own JSON: profiles,
 followers, posts, reels, comments, hashtags, locations, audio, stories and
 search. You do not manage the accounts, devices or proxies.
@@ -29,7 +29,7 @@ for await (const follower of client.iterUserFollowers({
   `RateLimitError` and the rest.
 - Retries with backoff, `Retry-After` handling and a client-side rate limiter.
 
-Documentation: [herascrape.com/docs](https://herascrape.com/docs).
+Documentation: [herascrape.com/docs](https://herascrape.com/docs?utm_source=npm&utm_medium=readme&utm_campaign=herascrape).
 
 ## Install
 
@@ -39,7 +39,7 @@ npm install herascrape
 
 ## Authentication
 
-Create a key in the [dashboard](https://herascrape.com/api-keys); the client
+Create a key in the [dashboard](https://herascrape.com/api-keys?utm_source=npm&utm_medium=readme&utm_campaign=herascrape); the client
 sends it in the `x-api-key` header. Pass it to the constructor:
 
 ```ts
@@ -53,7 +53,7 @@ With no key in either place, constructing a client throws
 `AuthenticationError`. Keep keys out of source control.
 
 Billing is per successful call, and failed calls are not billed. See
-[pricing](https://herascrape.com/docs/getting-started/pricing).
+[pricing](https://herascrape.com/docs/getting-started/pricing?utm_source=npm&utm_medium=readme&utm_campaign=herascrape).
 
 ## Usage
 
@@ -94,7 +94,7 @@ console.log(await client.resolveMedia({ code: "B4XpqViUFUI" }));
 
 List responses carry `items`, `next_cursor` and `has_more`. `userPosts` keeps
 Instagram's own feed shape, so it has no iterator and you page it by hand; see
-the [docs](https://herascrape.com/docs/getting-started/pagination).
+the [docs](https://herascrape.com/docs/getting-started/pagination?utm_source=npm&utm_medium=readme&utm_campaign=herascrape).
 
 ## Errors
 
@@ -162,7 +162,7 @@ matching `iter*` async iterator.
 | Utility | `resolveMedia`, `oembed`, `balance`, `health` |
 
 Coming from HikerAPI? The
-[migration guide](https://herascrape.com/docs/guides/hikerapi-migration) maps
+[migration guide](https://herascrape.com/docs/guides/hikerapi-migration?utm_source=npm&utm_medium=readme&utm_campaign=herascrape) maps
 each path to its herascrape equivalent.
 
 ## Disclaimer

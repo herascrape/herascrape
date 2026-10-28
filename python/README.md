@@ -1,7 +1,7 @@
 # herascrape: Instagram API client for Python
 
 `herascrape` is the official Python client for
-[herascrape](https://herascrape.com), a hosted Instagram scraper API. It reads
+[herascrape](https://herascrape.com/?utm_source=pypi&utm_medium=readme&utm_campaign=herascrape), a hosted Instagram scraper API. It reads
 Instagram's private API for you and hands back Instagram's own JSON: profiles,
 followers, posts, reels, comments, hashtags, locations, audio, stories and
 search. You do not manage the accounts, devices or proxies.
@@ -25,7 +25,7 @@ for follower in client.iter_user_followers(user["pk"], max_items=100):
 - Retries with backoff, `Retry-After` handling and a client-side rate limiter.
 - Typed package (`py.typed`), Python 3.10+, one dependency: `httpx`.
 
-Documentation: [herascrape.com/docs](https://herascrape.com/docs) for the
+Documentation: [herascrape.com/docs](https://herascrape.com/docs?utm_source=pypi&utm_medium=readme&utm_campaign=herascrape) for the
 API, [herascrape.readthedocs.io](https://herascrape.readthedocs.io/) for
 this library's reference.
 
@@ -37,7 +37,7 @@ pip install herascrape
 
 ## Authentication
 
-Create a key in the [dashboard](https://herascrape.com/api-keys); the client
+Create a key in the [dashboard](https://herascrape.com/api-keys?utm_source=pypi&utm_medium=readme&utm_campaign=herascrape); the client
 sends it in the `x-api-key` header. Pass it to the constructor:
 
 ```python
@@ -51,13 +51,13 @@ With no key in either place, constructing a client raises `AuthenticationError`.
 Keep keys out of source control.
 
 Billing is per successful call, and failed calls are not billed. See
-[pricing](https://herascrape.com/docs/getting-started/pricing).
+[pricing](https://herascrape.com/docs/getting-started/pricing?utm_source=pypi&utm_medium=readme&utm_campaign=herascrape).
 
 ## Usage
 
 Every method returns the response `data` as a plain `dict`, exactly as
 Instagram sent it. Check an endpoint's *What comes back* section in the
-[docs](https://herascrape.com/docs) before mapping fields.
+[docs](https://herascrape.com/docs?utm_source=pypi&utm_medium=readme&utm_campaign=herascrape) before mapping fields.
 
 ```python
 from herascrape import Client
@@ -87,7 +87,7 @@ print(client.resolve_media(code="B4XpqViUFUI"))
 
 List responses carry `items`, `next_cursor` and `has_more`. `post_comments`
 and `user_posts` keep Instagram's own paging shape, so page those by hand; see
-the [docs](https://herascrape.com/docs/getting-started/pagination).
+the [docs](https://herascrape.com/docs/getting-started/pagination?utm_source=pypi&utm_medium=readme&utm_campaign=herascrape).
 
 ### Async
 
@@ -174,7 +174,7 @@ All 37 endpoints are `GET`s. The full table with paths is in the
 | Utility | `resolve_media`, `oembed`, `balance`, `health` |
 
 Coming from HikerAPI? The
-[migration guide](https://herascrape.com/docs/guides/hikerapi-migration) maps
+[migration guide](https://herascrape.com/docs/guides/hikerapi-migration?utm_source=pypi&utm_medium=readme&utm_campaign=herascrape) maps
 each path to its herascrape equivalent.
 
 ## Disclaimer
