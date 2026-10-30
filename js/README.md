@@ -22,7 +22,7 @@ for await (const follower of client.iterUserFollowers({
 }
 ```
 
-- 37 endpoints, one method each, plus lazy `iter*` async iterators for lists.
+- 39 endpoints, one method each, plus lazy `iter*` async iterators for lists.
 - Async-only, built on the native `fetch` API. No runtime dependencies.
 - Ships ESM, CommonJS and TypeScript declarations. Node 18+.
 - Typed exception hierarchy: `NotFoundError`, `PrivateAccountError`,
@@ -150,7 +150,7 @@ Other constructor options: `timeout` (seconds, default 10), `maxRetries`, and
 
 ## Endpoints
 
-All 37 endpoints are `GET`s, grouped below. Paginable list endpoints also get a
+All 39 endpoints are `GET`s, grouped below. Paginable list endpoints also get a
 matching `iter*` async iterator.
 
 | Group | Methods |

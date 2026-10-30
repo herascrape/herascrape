@@ -18,7 +18,7 @@ for follower in client.iter_user_followers(user["pk"], max_items=100):
     print(follower["username"])
 ```
 
-- 37 endpoints, one method each, plus lazy `iter_*` paginators for the lists.
+- 39 endpoints, one method each, plus lazy `iter_*` paginators for the lists.
 - Sync (`Client`) and async (`AsyncClient`) with the same surface.
 - Typed exception hierarchy: `NotFoundError`, `PrivateAccountError`,
   `RateLimitError` and the rest.
@@ -161,7 +161,7 @@ Other constructor options: `timeout` (seconds, default 10), `max_retries`, and
 
 ## Endpoints
 
-All 37 endpoints are `GET`s. The full table with paths is in the
+All 39 endpoints are `GET`s. The full table with paths is in the
 [repository README](https://github.com/herascrape/herascrape#endpoints).
 
 | Group | Methods |

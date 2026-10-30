@@ -14,7 +14,7 @@ comments, hashtags, locations, audio, and search.** You bring an API key; the
 service runs the accounts, devices and proxies.
 
 - `pip install herascrape` · `npm i herascrape`
-- 37 `GET` endpoints, one method each, plus lazy `iter_*` paginators for lists.
+- 39 `GET` endpoints, one method each, plus lazy `iter_*` paginators for lists.
 - Real-time: every call fetches live from Instagram. Flat $0.0004 per
   successful call; failed calls are not billed.
 - **Python**: sync (`Client`) and async (`AsyncClient`). **TypeScript**: one
@@ -347,7 +347,7 @@ client = Client(api_key="hs_live_xxxxxxxx", rate_limit=None)  # no client-side l
 
 ## Endpoints
 
-All 37 endpoints are `GET`s. The Python method is `snake_case`; the TypeScript
+All 39 endpoints are `GET`s. The Python method is `snake_case`; the TypeScript
 method is the same name in `camelCase` and takes an options object. Rows marked
 `iter` also have an `iter_<method>` (Python) / `iter<Method>` (TypeScript) twin
 that walks every page lazily. `user_posts` and `post_comments` page by hand (see
