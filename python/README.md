@@ -166,9 +166,9 @@ All 37 endpoints are `GET`s. The full table with paths is in the
 
 | Group | Methods |
 | --- | --- |
-| Users | `user_by_username`, `user`, `user_followers`, `user_following`, `user_posts`, `user_reels`, `user_tagged`, `user_stories`, `user_highlights`, `user_reposts`, `user_about` |
+| Users | `user_by_username`, `user`, `user_followers`, `user_following`, `user_posts`, `user_reels`, `user_tagged`, `user_stories`, `user_highlights`, `user_reposts`, `user_about`, `user_similar` |
 | Posts and comments | `post`, `post_comments`, `post_likers`, `comment_replies`, `comment_likers` |
-| Search | `search_users`, `search_hashtags`, `search_audio`, `search_top`, `search_places` |
+| Search | `search_users`, `search_hashtags`, `search_audio`, `search_top`, `search_places`, `search_reels` |
 | Hashtags | `hashtag`, `hashtag_top`, `hashtag_recent`, `hashtag_reels` |
 | Locations | `location`, `location_top`, `location_recent` |
 | Audio | `audio_trending`, `audio`, `audio_medias` |

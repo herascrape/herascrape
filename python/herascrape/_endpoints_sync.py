@@ -74,8 +74,9 @@ class SyncEndpoints(BaseSyncClient):
         return paginate(fetch, item_key="items", max_items=max_items)
 
     def user_posts(self, user_id: str, *, cursor: str | None = None) -> Any:
-        """The profile grid. Page with ``cursor`` taken from
-        ``feed.profile_grid_items_cursor`` of the previous response.
+        """The profile grid. Page with the opaque ``next_cursor`` from the
+        previous response (it carries both the grid cursor and its
+        ``max_id``).
 
         ``GET /users/{user_id}/posts``
         """
@@ -92,7 +93,9 @@ class SyncEndpoints(BaseSyncClient):
         cursor: str | None = None,
         sort_by_views: bool | None = None,
     ) -> Any:
-        """A page of the user's reels (clips).
+        """A page of the user's reels (clips), enriched with the queried user's
+        profile under ``user`` (the clip author embed has no
+        ``follower_count``).
 
         ``GET /users/{user_id}/reels``
         """
@@ -182,6 +185,15 @@ class SyncEndpoints(BaseSyncClient):
         ``GET /users/{user_id}/about``
         """
         return self._request(method="get", path=f"/users/{user_id}/about")
+
+    def user_similar(self, user_id: str) -> Any:
+        """Related / "Suggested for you" accounts for a profile (single capped
+        page — Instagram does not paginate chaining). Empty only when the
+        target has no chaining graph at all.
+
+        ``GET /users/{user_id}/similar``
+        """
+        return self._request(method="get", path=f"/users/{user_id}/similar")
 
     def post(self, post_id: str) -> Any:
         """Fetch a single post.
@@ -320,7 +332,8 @@ class SyncEndpoints(BaseSyncClient):
         query: str,
         cursor: str | None = None,
     ) -> Any:
-        """Hashtag search.
+        """Hashtag search — the flat ~55-tag set, walked from the typeahead
+        SERP.
 
         ``GET /search/hashtags``
         """
@@ -355,6 +368,59 @@ class SyncEndpoints(BaseSyncClient):
 
         def fetch(cursor: str | None) -> Page:
             return self.search_hashtags(
+                search_session_id=search_session_id,
+                serp_session_id=serp_session_id,
+                query=query,
+                cursor=cursor,
+            )
+
+        return paginate(fetch, item_key="items", max_items=max_items)
+
+    def search_reels(
+        self,
+        *,
+        search_session_id: str | None = None,
+        serp_session_id: str | None = None,
+        query: str,
+        cursor: str | None = None,
+    ) -> Any:
+        """Reels (clips) keyword search. Served by the legacy
+        ``fbsearch/reels_serp`` endpoint — the 452 app's new GraphQL reels
+        SERP returns empty.
+
+        ``GET /search/reels``
+        """
+        if search_session_id is None:
+            search_session_id = _session_id()
+        if serp_session_id is None:
+            serp_session_id = _session_id()
+        return self._request(
+            method="get",
+            path="/search/reels",
+            params={
+                "search_session_id": search_session_id,
+                "serp_session_id": serp_session_id,
+                "query": query,
+                "cursor": cursor,
+            },
+        )
+
+    def iter_search_reels(
+        self,
+        *,
+        search_session_id: str | None = None,
+        serp_session_id: str | None = None,
+        query: str,
+        max_items: int | None = None,
+    ) -> Iterator[Any]:
+        """Lazily yield items from every page of ``search_reels``."""
+        if search_session_id is None:
+            search_session_id = _session_id()
+        if serp_session_id is None:
+            serp_session_id = _session_id()
+
+        def fetch(cursor: str | None) -> Page:
+            return self.search_reels(
                 search_session_id=search_session_id,
                 serp_session_id=serp_session_id,
                 query=query,
@@ -659,7 +725,10 @@ class SyncEndpoints(BaseSyncClient):
         return self._request(method="get", path=f"/audio/{audio_id}")
 
     def audio_medias(self, audio_id: str, *, cursor: str | None = None) -> Any:
-        """A page of reels that use this audio.
+        """A page of reels that use this audio. The pivot stream carries a
+        constant per-walk ``session_id`` tied to the minting account, so the
+        cursor pins that account and page two lands back on it (a different
+        account would restart the ranked set).
 
         ``GET /audio/{audio_id}/medias``
         """
