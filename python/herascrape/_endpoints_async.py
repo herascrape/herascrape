@@ -101,9 +101,7 @@ class AsyncEndpoints(BaseAsyncClient):
         cursor: str | None = None,
         sort_by_views: bool | None = None,
     ) -> Any:
-        """A page of the user's reels (clips), enriched with the queried user's
-        profile under ``user`` (the clip author embed has no
-        ``follower_count``).
+        """A page of the user's reels (clips).
 
         ``GET /users/{user_id}/reels``
         """
