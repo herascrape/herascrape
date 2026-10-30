@@ -373,7 +373,7 @@
           "public"
         ],
         "summary": "Get User Reels",
-        "description": "A page of the user's reels (clips), enriched with the queried user's\nprofile under ``user`` (the clip author embed has no ``follower_count``).",
+        "description": "A page of the user's reels (clips).",
         "operationId": "get_user_reels_users__user_id__reels_get",
         "parameters": [
           {
