@@ -1,7 +1,7 @@
 ---
 myst:
   html_meta:
-    description: "API reference for the herascrape Python client: Client and AsyncClient methods for all 37 Instagram API endpoints, exceptions, and types."
+    description: "API reference for the herascrape Python client: Client and AsyncClient methods for all 39 Instagram API endpoints, exceptions, and types."
 ---
 
 # Reference
@@ -18,7 +18,7 @@ errors
 types
 ```
 
-The two client classes carry the same 37 endpoint methods and the same
+The two client classes carry the same 39 endpoint methods and the same
 `iter_*` helpers; {class}`~herascrape.AsyncClient` returns awaitables and
 async iterators. Method names are the endpoint path in `snake_case`, and each
 method's docstring names the path it calls.

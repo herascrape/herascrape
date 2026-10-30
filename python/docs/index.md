@@ -1,7 +1,7 @@
 ---
 myst:
   html_meta:
-    description: "Python client for the herascrape Instagram API. 37 GET endpoints as typed methods, sync and async, cursor pagination helpers, typed errors, one dependency."
+    description: "Python client for the herascrape Instagram API. 39 GET endpoints as typed methods, sync and async, cursor pagination helpers, typed errors, one dependency."
 ---
 
 # herascrape Python client
@@ -9,7 +9,7 @@ myst:
 `herascrape` is the official Python client for
 [herascrape](https://herascrape.com/?utm_source=readthedocs&utm_medium=docs&utm_campaign=herascrape), a hosted Instagram API. The service runs
 the accounts, devices and proxies and reads Instagram's private API. The client
-turns each of its 37 `GET` endpoints into one method and hands back Instagram's
+turns each of its 39 `GET` endpoints into one method and hands back Instagram's
 own JSON.
 
 These pages are the **library reference**: the classes, methods, exceptions and
