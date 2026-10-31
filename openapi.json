@@ -977,6 +977,29 @@
             "description": "Walk toward older comments"
           },
           {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "relevant",
+                    "recent",
+                    "meta_verified"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Comment order: relevant (default ranked), recent (chronological, newest first), or meta_verified. Fixed for the walk \u2014 the cursor carries it.",
+              "title": "Sort"
+            },
+            "description": "Comment order: relevant (default ranked), recent (chronological, newest first), or meta_verified. Fixed for the walk \u2014 the cursor carries it."
+          },
+          {
             "name": "carousel_media_id",
             "in": "query",
             "required": false,

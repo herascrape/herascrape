@@ -210,6 +210,7 @@ class SyncEndpoints(BaseSyncClient):
         *,
         min_id: str | None = None,
         max_id: str | None = None,
+        sort: str | None = None,
         carousel_media_id: str | None = None,
         carousel_index: int | None = None,
     ) -> Any:
@@ -224,6 +225,7 @@ class SyncEndpoints(BaseSyncClient):
             params={
                 "min_id": min_id,
                 "max_id": max_id,
+                "sort": sort,
                 "carousel_media_id": carousel_media_id,
                 "carousel_index": carousel_index,
             },

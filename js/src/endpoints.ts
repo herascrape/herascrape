@@ -189,6 +189,7 @@ export class Endpoints extends BaseClient {
     postId: string;
     minId?: string;
     maxId?: string;
+    sort?: string;
     carouselMediaId?: string;
     carouselIndex?: number;
   }): Promise<Record<string, unknown>> {
@@ -198,6 +199,7 @@ export class Endpoints extends BaseClient {
       searchParams: {
         min_id: opts.minId,
         max_id: opts.maxId,
+        sort: opts.sort,
         carousel_media_id: opts.carouselMediaId,
         carousel_index: opts.carouselIndex,
       },
