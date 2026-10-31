@@ -239,6 +239,15 @@ class SyncEndpoints(BaseSyncClient):
         """
         return self._request(method="get", path=f"/posts/{post_id}/likers")
 
+    def post_likers_all(self, post_id: str) -> Any:
+        """Every account that liked a post — the full chronological list (up to
+        ~1-2k), not the ranked ~100 of ``/posts/{id}/likers``. One call, no
+        pagination; Instagram sets the mega-post ceiling itself.
+
+        ``GET /posts/{post_id}/likers/all``
+        """
+        return self._request(method="get", path=f"/posts/{post_id}/likers/all")
+
     def comment_replies(
         self, comment_id: str, *, media_id: str, cursor: str | None = None
     ) -> Any:

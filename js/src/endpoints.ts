@@ -213,6 +213,13 @@ export class Endpoints extends BaseClient {
     });
   }
 
+  postLikersAll(opts: { postId: string }): Promise<Record<string, unknown>> {
+    return this.request({
+      method: "get",
+      path: `/posts/${opts.postId}/likers/all`,
+    });
+  }
+
   commentReplies(opts: {
     commentId: string;
     mediaId: string;

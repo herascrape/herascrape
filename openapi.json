@@ -1125,6 +1125,64 @@
         }
       }
     },
+    "/posts/{post_id}/likers/all": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "summary": "Get Post Likers All",
+        "description": "Every account that liked a post \u2014 the full chronological list (up to\n~1-2k), not the ranked ~100 of ``/posts/{id}/likers``. One call, no\npagination; Instagram sets the mega-post ceiling itself.",
+        "operationId": "get_post_likers_all_posts__post_id__likers_all_get",
+        "parameters": [
+          {
+            "name": "post_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Post Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "success"
+                      ]
+                    },
+                    "data": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/comments/{comment_id}/replies": {
       "get": {
         "tags": [
