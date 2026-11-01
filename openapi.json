@@ -2574,6 +2574,259 @@
         }
       }
     },
+    "/stories/templates/{template_id}": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "summary": "Get Story Template",
+        "description": "An Add Yours template: who started it, its text and when.\n\n``template_id`` is ``story_prompts[].prompt_sticker.id`` on a story. The\nparticipant count and template image live on the author's original story:\ncall ``/stories/templates/{id}/stories`` with ``user_ids`` set to\n``original_prompt.author.pk``.",
+        "operationId": "get_story_template_stories_templates__template_id__get",
+        "parameters": [
+          {
+            "name": "template_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d+$",
+              "description": "Add Yours template id: `story_prompts[].prompt_sticker.id` on a story",
+              "title": "Template Id"
+            },
+            "description": "Add Yours template id: `story_prompts[].prompt_sticker.id` on a story"
+          },
+          {
+            "name": "media_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^\\d+$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Optional pk of a story that carries the template",
+              "title": "Media Id"
+            },
+            "description": "Optional pk of a story that carries the template"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "success"
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "additionalProperties": true,
+                      "title": "Response Get Story Template Stories Templates  Template Id  Get"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/stories/templates/{template_id}/participants": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "summary": "Get Story Template Participants",
+        "description": "A page of accounts whose live story (last 24 hours) uses the template.\n\nEach item is ``{user, reel_pk}``. Instagram returns a fresh sample of about\n200 per walk, so separate walks return overlapping, not identical, lists.",
+        "operationId": "get_story_template_participants_stories_templates__template_id__participants_get",
+        "parameters": [
+          {
+            "name": "template_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d+$",
+              "description": "Add Yours template id: `story_prompts[].prompt_sticker.id` on a story",
+              "title": "Template Id"
+            },
+            "description": "Add Yours template id: `story_prompts[].prompt_sticker.id` on a story"
+          },
+          {
+            "name": "media_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "pattern": "^\\d+$"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Optional pk of a story that carries the template",
+              "title": "Media Id"
+            },
+            "description": "Optional pk of a story that carries the template"
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Opaque pagination cursor from a previous next_cursor",
+              "title": "Cursor"
+            },
+            "description": "Opaque pagination cursor from a previous next_cursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "success"
+                      ]
+                    },
+                    "data": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/stories/templates/{template_id}/stories": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "summary": "Get Story Template Stories",
+        "description": "Each listed participant's story that uses the template (up to 20 users\nper call; users without a live template story are skipped).",
+        "operationId": "get_story_template_stories_stories_templates__template_id__stories_get",
+        "parameters": [
+          {
+            "name": "template_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d+$",
+              "description": "Add Yours template id: `story_prompts[].prompt_sticker.id` on a story",
+              "title": "Template Id"
+            },
+            "description": "Add Yours template id: `story_prompts[].prompt_sticker.id` on a story"
+          },
+          {
+            "name": "user_ids",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^\\d+(,\\d+){0,19}$",
+              "description": "Comma-separated participant user ids (pk), at most 20",
+              "title": "User Ids"
+            },
+            "description": "Comma-separated participant user ids (pk), at most 20"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "success"
+                      ]
+                    },
+                    "data": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/audio/trending": {
       "get": {
         "tags": [

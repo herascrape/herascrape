@@ -707,6 +707,75 @@ class SyncEndpoints(BaseSyncClient):
         """
         return self._request(method="get", path=f"/stories/{story_id}")
 
+    def story_template(
+        self, template_id: str, *, media_id: str | None = None
+    ) -> Any:
+        """An Add Yours template: who started it, its text and when.
+
+        ``template_id`` is ``story_prompts[].prompt_sticker.id`` on a story.
+        The participant count and template image live on the author's
+        original story: call ``/stories/templates/{id}/stories`` with
+        ``user_ids`` set to ``original_prompt.author.pk``.
+
+        ``GET /stories/templates/{template_id}``
+        """
+        return self._request(
+            method="get",
+            path=f"/stories/templates/{template_id}",
+            params={"media_id": media_id},
+        )
+
+    def story_template_participants(
+        self,
+        template_id: str,
+        *,
+        media_id: str | None = None,
+        cursor: str | None = None,
+    ) -> Any:
+        """A page of accounts whose live story (last 24 hours) uses the
+        template.
+
+        Each item is ``{user, reel_pk}``. Instagram returns a fresh sample of
+        about 200 per walk, so separate walks return overlapping, not
+        identical, lists.
+
+        ``GET /stories/templates/{template_id}/participants``
+        """
+        return self._request(
+            method="get",
+            path=f"/stories/templates/{template_id}/participants",
+            params={"media_id": media_id, "cursor": cursor},
+        )
+
+    def iter_story_template_participants(
+        self,
+        template_id: str,
+        *,
+        media_id: str | None = None,
+        max_items: int | None = None,
+    ) -> Iterator[Any]:
+        """Lazily yield items from every page of
+        ``story_template_participants``."""
+
+        def fetch(cursor: str | None) -> Page:
+            return self.story_template_participants(
+                template_id, media_id=media_id, cursor=cursor
+            )
+
+        return paginate(fetch, item_key="items", max_items=max_items)
+
+    def story_template_stories(self, template_id: str, *, user_ids: str) -> Any:
+        """Each listed participant's story that uses the template (up to 20
+        users per call; users without a live template story are skipped).
+
+        ``GET /stories/templates/{template_id}/stories``
+        """
+        return self._request(
+            method="get",
+            path=f"/stories/templates/{template_id}/stories",
+            params={"user_ids": user_ids},
+        )
+
     def audio_trending(self, *, cursor: str | None = None) -> Any:
         """The trending-audio list.
 

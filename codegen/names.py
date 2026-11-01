@@ -38,6 +38,11 @@ PATH_METHOD_NAMES: dict[str, str] = {
     "/locations/{location_id}/recent": "location_recent",
     "/highlights/{highlight_id}": "highlight",
     "/stories/{story_id}": "story",
+    "/stories/templates/{template_id}": "story_template",
+    "/stories/templates/{template_id}/participants": (
+        "story_template_participants"
+    ),
+    "/stories/templates/{template_id}/stories": "story_template_stories",
     "/audio/trending": "audio_trending",
     "/audio/{audio_id}": "audio",
     "/audio/{audio_id}/medias": "audio_medias",

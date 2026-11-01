@@ -229,9 +229,14 @@ def _iter_method(ep: Endpoint, *, is_async: bool) -> list[str]:
     parts.append("max_items: int | None = None")
     sig = f"({', '.join(parts)}) -> {iter_ret}[Any]:"
     out: list[str] = [f"    def iter_{ep.name}{sig}"]
-    out.append(
-        f'        """Lazily yield items from every page of ``{ep.name}``."""'
-    )
+    doc = f"Lazily yield items from every page of ``{ep.name}``."
+    if len(f'        """{doc}"""') <= 80:
+        out.append(f'        """{doc}"""')
+    else:
+        out += [
+            '        """Lazily yield items from every page of',
+            f'        ``{ep.name}``."""',
+        ]
     out += _session_fills(ep)
     args = [p.name for p in ep.path_params]
     args += [

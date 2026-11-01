@@ -622,6 +622,63 @@ export class Endpoints extends BaseClient {
     return this.request({ method: "get", path: `/stories/${opts.storyId}` });
   }
 
+  storyTemplate(opts: {
+    templateId: string;
+    mediaId?: string;
+  }): Promise<Record<string, unknown>> {
+    return this.request({
+      method: "get",
+      path: `/stories/templates/${opts.templateId}`,
+      searchParams: {
+        media_id: opts.mediaId,
+      },
+    });
+  }
+
+  storyTemplateParticipants(opts: {
+    templateId: string;
+    mediaId?: string;
+    cursor?: string;
+  }): Promise<Record<string, unknown>> {
+    return this.request({
+      method: "get",
+      path: `/stories/templates/${opts.templateId}/participants`,
+      searchParams: {
+        media_id: opts.mediaId,
+        cursor: opts.cursor,
+      },
+    });
+  }
+
+  iterStoryTemplateParticipants(opts: {
+    templateId: string;
+    mediaId?: string;
+    maxItems?: number | null;
+  }): AsyncIterable<Record<string, unknown>> {
+    const fetchPage = (
+      cursor: string | undefined,
+    ): Promise<Record<string, unknown>> =>
+      this.storyTemplateParticipants({
+        templateId: opts.templateId,
+        mediaId: opts.mediaId,
+        cursor,
+      });
+    return paginate(fetchPage, { itemKey: "items", maxItems: opts.maxItems });
+  }
+
+  storyTemplateStories(opts: {
+    templateId: string;
+    userIds: string;
+  }): Promise<Record<string, unknown>> {
+    return this.request({
+      method: "get",
+      path: `/stories/templates/${opts.templateId}/stories`,
+      searchParams: {
+        user_ids: opts.userIds,
+      },
+    });
+  }
+
   audioTrending(
     opts: { cursor?: string } = {},
   ): Promise<Record<string, unknown>> {
