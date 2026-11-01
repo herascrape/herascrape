@@ -54,8 +54,8 @@ def _method_src(src: str, name: str) -> str:
 
 def test_name_map_covers_all_paths():
     assert set(PATH_METHOD_NAMES) == _openapi_paths()
-    assert len(PATH_METHOD_NAMES) == 43
-    assert len(set(PATH_METHOD_NAMES.values())) == 43
+    assert len(PATH_METHOD_NAMES) == 44
+    assert len(set(PATH_METHOD_NAMES.values())) == 44
 
 
 def test_generated_sync_has_user_followers_signature():

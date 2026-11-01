@@ -22,7 +22,7 @@ for await (const follower of client.iterUserFollowers({
 }
 ```
 
-- 43 endpoints, one method each, plus lazy `iter*` async iterators for lists.
+- 44 endpoints, one method each, plus lazy `iter*` async iterators for lists.
 - Async-only, built on the native `fetch` API. No runtime dependencies.
 - Ships ESM, CommonJS and TypeScript declarations. Node 18+.
 - Typed exception hierarchy: `NotFoundError`, `PrivateAccountError`,
@@ -150,13 +150,13 @@ Other constructor options: `timeout` (seconds, default 10), `maxRetries`, and
 
 ## Endpoints
 
-All 43 endpoints are `GET`s, grouped below. Paginable list endpoints also get a
+All 44 endpoints are `GET`s, grouped below. Paginable list endpoints also get a
 matching `iter*` async iterator.
 
 | Group | Methods |
 | --- | --- |
 | Users | `userByUsername`, `user`, `userFollowers`, `userFollowing`, `userPosts`, `userReels`, `userTagged`, `userStories`, `userHighlights`, `userReposts`, `userAbout`, `userSimilar` |
-| Posts and comments | `post`, `postComments`, `postLikers`, `postLikersAll`, `commentReplies`, `commentLikers` |
+| Posts and comments | `post`, `postComments`, `postLikers`, `postLikersAll`, `postCounts`, `commentReplies`, `commentLikers` |
 | Search | `searchUsers`, `searchHashtags`, `searchAudio`, `searchTop`, `searchPlaces`, `searchReels` |
 | Hashtags | `hashtag`, `hashtagTop`, `hashtagRecent`, `hashtagReels` |
 | Locations | `location`, `locationTop`, `locationRecent` |

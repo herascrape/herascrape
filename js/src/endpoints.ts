@@ -181,6 +181,16 @@ export class Endpoints extends BaseClient {
     });
   }
 
+  postCounts(opts: { ids: string }): Promise<Record<string, unknown>> {
+    return this.request({
+      method: "get",
+      path: "/posts/counts",
+      searchParams: {
+        ids: opts.ids,
+      },
+    });
+  }
+
   post(opts: { postId: string }): Promise<Record<string, unknown>> {
     return this.request({ method: "get", path: `/posts/${opts.postId}` });
   }

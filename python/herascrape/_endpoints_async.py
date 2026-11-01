@@ -211,6 +211,17 @@ class AsyncEndpoints(BaseAsyncClient):
             method="get", path=f"/users/{user_id}/similar"
         )
 
+    async def post_counts(self, *, ids: str) -> Any:
+        """Comment, like and play counts for many posts in one call (up to 20
+        ids, one billed request). Basic info only — fetch ``/posts/{id}`` for
+        the full object.
+
+        ``GET /posts/counts``
+        """
+        return await self._request(
+            method="get", path="/posts/counts", params={"ids": ids}
+        )
+
     async def post(self, post_id: str) -> Any:
         """Fetch a single post.
 

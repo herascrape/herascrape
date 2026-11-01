@@ -862,6 +862,68 @@
         }
       }
     },
+    "/posts/counts": {
+      "get": {
+        "tags": [
+          "public"
+        ],
+        "summary": "Get Post Counts",
+        "description": "Comment, like and play counts for many posts in one call (up to 20 ids,\none billed request). Basic info only \u2014 fetch ``/posts/{id}`` for the full\nobject.",
+        "operationId": "get_post_counts_posts_counts_get",
+        "parameters": [
+          {
+            "name": "ids",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "description": "Up to 20 post ids (shortcode, bare or composite pk), comma-separated",
+              "title": "Ids"
+            },
+            "description": "Up to 20 post ids (shortcode, bare or composite pk), comma-separated"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "status",
+                    "data"
+                  ],
+                  "properties": {
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "success"
+                      ]
+                    },
+                    "data": {
+                      "type": "object",
+                      "additionalProperties": true,
+                      "title": "Response Get Post Counts Posts Counts Get"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/posts/{post_id}": {
       "get": {
         "tags": [

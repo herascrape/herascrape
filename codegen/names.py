@@ -1,4 +1,4 @@
-"""Authoritative OpenAPI path to public method-name map (40 GET endpoints).
+"""Authoritative OpenAPI path to public method-name map (44 GET endpoints).
 
 Hand-maintained public surface, consumed by ``generate.py``. Keep in sync
 with ``openapi.json``; the generator asserts full coverage.
@@ -17,6 +17,7 @@ PATH_METHOD_NAMES: dict[str, str] = {
     "/users/{user_id}/reposts": "user_reposts",
     "/users/{user_id}/about": "user_about",
     "/users/{user_id}/similar": "user_similar",
+    "/posts/counts": "post_counts",
     "/posts/{post_id}": "post",
     "/posts/{post_id}/comments": "post_comments",
     "/posts/{post_id}/likers": "post_likers",
