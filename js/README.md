@@ -22,7 +22,7 @@ for await (const follower of client.iterUserFollowers({
 }
 ```
 
-- 39 endpoints, one method each, plus lazy `iter*` async iterators for lists.
+- 43 endpoints, one method each, plus lazy `iter*` async iterators for lists.
 - Async-only, built on the native `fetch` API. No runtime dependencies.
 - Ships ESM, CommonJS and TypeScript declarations. Node 18+.
 - Typed exception hierarchy: `NotFoundError`, `PrivateAccountError`,
@@ -150,18 +150,18 @@ Other constructor options: `timeout` (seconds, default 10), `maxRetries`, and
 
 ## Endpoints
 
-All 39 endpoints are `GET`s, grouped below. Paginable list endpoints also get a
+All 43 endpoints are `GET`s, grouped below. Paginable list endpoints also get a
 matching `iter*` async iterator.
 
 | Group | Methods |
 | --- | --- |
 | Users | `userByUsername`, `user`, `userFollowers`, `userFollowing`, `userPosts`, `userReels`, `userTagged`, `userStories`, `userHighlights`, `userReposts`, `userAbout`, `userSimilar` |
-| Posts and comments | `post`, `postComments`, `postLikers`, `commentReplies`, `commentLikers` |
+| Posts and comments | `post`, `postComments`, `postLikers`, `postLikersAll`, `commentReplies`, `commentLikers` |
 | Search | `searchUsers`, `searchHashtags`, `searchAudio`, `searchTop`, `searchPlaces`, `searchReels` |
 | Hashtags | `hashtag`, `hashtagTop`, `hashtagRecent`, `hashtagReels` |
 | Locations | `location`, `locationTop`, `locationRecent` |
 | Audio | `audioTrending`, `audio`, `audioMedias` |
-| Stories and highlights | `highlight`, `story` |
+| Stories and highlights | `highlight`, `story`, `storyTemplate`, `storyTemplateParticipants`, `storyTemplateStories` |
 | Utility | `resolveMedia`, `oembed`, `balance`, `health` |
 
 Coming from HikerAPI? The

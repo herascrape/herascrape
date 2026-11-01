@@ -18,7 +18,7 @@ for follower in client.iter_user_followers(user["pk"], max_items=100):
     print(follower["username"])
 ```
 
-- 39 endpoints, one method each, plus lazy `iter_*` paginators for the lists.
+- 43 endpoints, one method each, plus lazy `iter_*` paginators for the lists.
 - Sync (`Client`) and async (`AsyncClient`) with the same surface.
 - Typed exception hierarchy: `NotFoundError`, `PrivateAccountError`,
   `RateLimitError` and the rest.
@@ -161,18 +161,18 @@ Other constructor options: `timeout` (seconds, default 10), `max_retries`, and
 
 ## Endpoints
 
-All 39 endpoints are `GET`s. The full table with paths is in the
+All 43 endpoints are `GET`s. The full table with paths is in the
 [repository README](https://github.com/herascrape/herascrape#endpoints).
 
 | Group | Methods |
 | --- | --- |
 | Users | `user_by_username`, `user`, `user_followers`, `user_following`, `user_posts`, `user_reels`, `user_tagged`, `user_stories`, `user_highlights`, `user_reposts`, `user_about`, `user_similar` |
-| Posts and comments | `post`, `post_comments`, `post_likers`, `comment_replies`, `comment_likers` |
+| Posts and comments | `post`, `post_comments`, `post_likers`, `post_likers_all`, `comment_replies`, `comment_likers` |
 | Search | `search_users`, `search_hashtags`, `search_audio`, `search_top`, `search_places`, `search_reels` |
 | Hashtags | `hashtag`, `hashtag_top`, `hashtag_recent`, `hashtag_reels` |
 | Locations | `location`, `location_top`, `location_recent` |
 | Audio | `audio_trending`, `audio`, `audio_medias` |
-| Stories and highlights | `highlight`, `story` |
+| Stories and highlights | `highlight`, `story`, `story_template`, `story_template_participants`, `story_template_stories` |
 | Utility | `resolve_media`, `oembed`, `balance`, `health` |
 
 Coming from HikerAPI? The

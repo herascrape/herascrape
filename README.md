@@ -14,7 +14,7 @@ comments, hashtags, locations, audio, and search.** You bring an API key; the
 service runs the accounts, devices and proxies.
 
 - `pip install herascrape` · `npm i herascrape`
-- 39 `GET` endpoints, one method each, plus lazy `iter_*` paginators for lists.
+- 43 `GET` endpoints, one method each, plus lazy `iter_*` paginators for lists.
 - Real-time: every call fetches live from Instagram. Flat $0.0004 per
   successful call; failed calls are not billed.
 - **Python**: sync (`Client`) and async (`AsyncClient`). **TypeScript**: one
@@ -347,7 +347,7 @@ client = Client(api_key="hs_live_xxxxxxxx", rate_limit=None)  # no client-side l
 
 ## Endpoints
 
-All 39 endpoints are `GET`s. The Python method is `snake_case`; the TypeScript
+All 43 endpoints are `GET`s. The Python method is `snake_case`; the TypeScript
 method is the same name in `camelCase` and takes an options object. Rows marked
 `iter` also have an `iter_<method>` (Python) / `iter<Method>` (TypeScript) twin
 that walks every page lazily. `user_posts` and `post_comments` page by hand (see
@@ -376,6 +376,7 @@ that walks every page lazily. `user_posts` and `post_comments` page by hand (see
 | `post` | `post` | `/posts/{post_id}` | A post or reel, by pk or shortcode | |
 | `post_comments` | `postComments` | `/posts/{post_id}/comments` | Comments | |
 | `post_likers` | `postLikers` | `/posts/{post_id}/likers` | Users who liked the post | |
+| `post_likers_all` | `postLikersAll` | `/posts/{post_id}/likers/all` | Every liker, up to ~1-2k, in one call | |
 | `comment_replies` | `commentReplies` | `/comments/{comment_id}/replies` | Replies to a comment | yes |
 | `comment_likers` | `commentLikers` | `/comments/{comment_id}/likers` | Users who liked a comment | |
 
@@ -410,6 +411,9 @@ that walks every page lazily. `user_posts` and `post_comments` page by hand (see
 | `audio_medias` | `audioMedias` | `/audio/{audio_id}/medias` | Reels using the audio | yes |
 | `highlight` | `highlight` | `/highlights/{highlight_id}` | Media in a highlight | |
 | `story` | `story` | `/stories/{story_id}` | A single story by media pk | |
+| `story_template` | `storyTemplate` | `/stories/templates/{template_id}` | An Add Yours template: author, text, created_at | |
+| `story_template_participants` | `storyTemplateParticipants` | `/stories/templates/{template_id}/participants` | Accounts with a live story using the template | yes |
+| `story_template_stories` | `storyTemplateStories` | `/stories/templates/{template_id}/stories` | Those accounts' template stories, up to 20 per call | |
 
 ### Utility
 
