@@ -1,3 +1,5 @@
+[![herascrape Instagram API: 44 real-time endpoints](assets/readme-banner.png)](https://herascrape.com/?utm_source=github&utm_medium=readme&utm_campaign=herascrape)
+
 # herascrape: Instagram API client for Python & TypeScript
 
 [![PyPI](https://img.shields.io/pypi/v/herascrape?label=pypi)](https://pypi.org/project/herascrape/)
