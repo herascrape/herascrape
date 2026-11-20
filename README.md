@@ -8,28 +8,29 @@
 [![Docs](https://img.shields.io/badge/docs-herascrape.com-4f46e5)](https://herascrape.com/docs?utm_source=github&utm_medium=readme&utm_campaign=herascrape)
 [![Python docs](https://img.shields.io/readthedocs/herascrape?label=python%20docs)](https://herascrape.readthedocs.io/)
 
-`herascrape` is the official Python and TypeScript/JavaScript client for
-[herascrape](https://herascrape.com/?utm_source=github&utm_medium=readme&utm_campaign=herascrape), a hosted Instagram scraper API. It reads
-Instagram's private API for you and returns Instagram's own JSON:
-**profiles, followers and following, posts, reels, stories, highlights,
-comments, hashtags, locations, audio, and search.** You bring an API key; the
-service runs the accounts, devices and proxies.
+Python and TypeScript/JavaScript clients for the
+[herascrape Instagram API](https://herascrape.com/?utm_source=github&utm_medium=readme&utm_campaign=herascrape).
+Fetch **profiles, followers and following, posts, reels, stories, highlights,
+comments, hashtags, locations, audio, and search results** as Instagram JSON.
+Your app needs an API key; the service manages the Instagram accounts, devices,
+and proxies.
 
 - `pip install herascrape` · `npm i herascrape`
 - 44 `GET` endpoints, one method each, plus lazy `iter_*` paginators for lists.
-- Real-time: every call fetches live from Instagram. Flat $0.0004 per
+- Every call fetches live data from Instagram. $0.0004 per
   successful call; failed calls are not billed.
-- **Python**: sync (`Client`) and async (`AsyncClient`). **TypeScript**: one
-  async `Client`, ESM + CJS, bundled `.d.ts` types.
+- **Python**: synchronous and asynchronous clients.
+- **TypeScript**: an asynchronous client with ESM and CommonJS builds and
+  TypeScript declarations.
 - Typed errors, retries with backoff and `Retry-After`, and a client-side rate
   limiter.
-- Minimal footprint: `httpx` (Python) / native `fetch` (Node), Python 3.10+,
-  Node 18+.
 
-Docs: [herascrape.com/docs](https://herascrape.com/docs?utm_source=github&utm_medium=readme&utm_campaign=herascrape) · interactive
-reference: [api.herascrape.com/docs](https://api.herascrape.com/docs) ·
-Python library reference:
-[herascrape.readthedocs.io](https://herascrape.readthedocs.io/).
+Documentation:
+
+- [Guides and examples](https://herascrape.com/docs?utm_source=github&utm_medium=readme&utm_campaign=herascrape)
+- [Interactive API reference](https://api.herascrape.com/docs)
+- [Python library reference](https://herascrape.readthedocs.io/)
+
 Also from herascrape: [herascrape-mcp](https://github.com/herascrape/herascrape-mcp),
 the Instagram MCP server for AI agents, and
 [hikerapi-to-herascrape](https://github.com/herascrape/hikerapi-to-herascrape) to
