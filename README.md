@@ -2,11 +2,16 @@
 
 # herascrape: Instagram API client for Python & TypeScript
 
-[![PyPI](https://img.shields.io/pypi/v/herascrape?label=pypi)](https://pypi.org/project/herascrape/)
-[![npm](https://img.shields.io/npm/v/herascrape?label=npm)](https://www.npmjs.com/package/herascrape)
+[![PyPI](https://img.shields.io/pypi/v/herascrape?label=pypi&color=555)](https://pypi.org/project/herascrape/)
+[![npm](https://img.shields.io/npm/v/herascrape?label=npm&color=555)](https://www.npmjs.com/package/herascrape)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
 [![Docs](https://img.shields.io/badge/docs-herascrape.com-4f46e5)](https://herascrape.com/docs?utm_source=github&utm_medium=readme&utm_campaign=herascrape)
 [![Python docs](https://img.shields.io/readthedocs/herascrape?label=python%20docs)](https://herascrape.readthedocs.io/)
+
+<p>
+  <a href="https://datacircle.dev/best-instagram-profile-api"><img src="https://datacircle.dev/badge/best-instagram-profile-api/herascrape.svg" alt="Datacircle ranking: #1 Instagram Profile API" width="160" height="108"></a>
+  <a href="https://datacircle.dev/best-instagram-post-api"><img src="https://datacircle.dev/badge/best-instagram-post-api/herascrape.svg" alt="Datacircle ranking: #1 Instagram Post API" width="160" height="108"></a>
+</p>
 
 Python and TypeScript/JavaScript clients for the
 [herascrape Instagram API](https://herascrape.com/?utm_source=github&utm_medium=readme&utm_campaign=herascrape).
