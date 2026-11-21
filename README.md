@@ -36,6 +36,10 @@ Documentation:
 - [Interactive API reference](https://api.herascrape.com/docs)
 - [Python library reference](https://herascrape.readthedocs.io/)
 
+Try the [free Instagram profile lookup](https://herascrape.com/instagram-profile-lookup?utm_source=github&utm_medium=readme&utm_campaign=herascrape)
+to preview a public account, its recent posts, and any contact details the account shares.
+No API key or signup is required.
+
 Also from herascrape: [herascrape-mcp](https://github.com/herascrape/herascrape-mcp),
 the Instagram MCP server for AI agents, and
 [hikerapi-to-herascrape](https://github.com/herascrape/hikerapi-to-herascrape) to
