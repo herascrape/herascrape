@@ -134,7 +134,7 @@
           "public"
         ],
         "summary": "Get User Followers",
-        "description": "A page of the user's followers. Note: for business accounts Instagram\ncaps pagination depth, so the full list may not be reachable.",
+        "description": "A page of the user's followers. ``list_hidden`` is true when a public\naccount hides its follower list. Instagram fixes the page at ~25 (not tunable). Note: for\nbusiness accounts Instagram caps pagination depth, so the full list may not\nbe reachable.",
         "operationId": "get_user_followers_users__user_id__followers_get",
         "parameters": [
           {
@@ -213,7 +213,7 @@
           "public"
         ],
         "summary": "Get User Following",
-        "description": "A page of the accounts this user follows.",
+        "description": "A page of the accounts this user follows. ``list_hidden`` is true when a\npublic account hides its following list. Instagram fixes the page at ~25 (the page\nsize is not tunable); send the header ``X-Type: chronological`` for the\nnewest-first list, which Instagram serves ~200 per page.",
         "operationId": "get_user_following_users__user_id__following_get",
         "parameters": [
           {
@@ -324,6 +324,18 @@
               "title": "Cursor"
             },
             "description": "Opaque pagination cursor from a previous next_cursor"
+          },
+          {
+            "name": "flat",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "description": "Return one items list in grid order, each post joined with its grid entry, instead of the feed and posts halves",
+              "default": false,
+              "title": "Flat"
+            },
+            "description": "Return one items list in grid order, each post joined with its grid entry, instead of the feed and posts halves"
           }
         ],
         "responses": {
@@ -373,7 +385,7 @@
           "public"
         ],
         "summary": "Get User Reels",
-        "description": "A page of the user's reels (clips).",
+        "description": "A page of the user's reels (clips). With ``x-longform: true`` the response\nalso carries a ``longform`` array of any full-length \"Features\" episodes\nwhose trailer clip is on the Reels tab (not the feed grid).",
         "operationId": "get_user_reels_users__user_id__reels_get",
         "parameters": [
           {
@@ -438,7 +450,9 @@
                       ]
                     },
                     "data": {
-                      "type": "object"
+                      "type": "object",
+                      "additionalProperties": true,
+                      "title": "Response Get User Reels Users  User Id  Reels Get"
                     }
                   }
                 }
@@ -543,7 +557,7 @@
           "public"
         ],
         "summary": "Get User Stories",
-        "description": "The user's currently-active story items (empty if none live).",
+        "description": "The user's currently-active story ``items``, plus ``broadcast`` \u2014 the\nlive-video object when the user is live, ``None`` otherwise.",
         "operationId": "get_user_stories_users__user_id__stories_get",
         "parameters": [
           {
@@ -604,7 +618,7 @@
           "public"
         ],
         "summary": "Get User Highlights",
-        "description": "The profile's highlight reels (tray).",
+        "description": "The profile's highlight reels (tray). The whole tray comes in one\nrequest \u2014 Instagram does not paginate it, so ``has_more`` is always false\nand there is no cursor.",
         "operationId": "get_user_highlights_users__user_id__highlights_get",
         "parameters": [
           {
@@ -807,7 +821,7 @@
           "public"
         ],
         "summary": "Get User Similar",
-        "description": "Related / \"Suggested for you\" accounts for a profile (single capped\npage \u2014 Instagram does not paginate chaining). Empty only when the target\nhas no chaining graph at all.",
+        "description": "Accounts related to a profile: Instagram's \"Suggested for you\" list, as\none page. ``expand=true`` returns up to 30 suggestion cards, each with the\naccount's recent posts.",
         "operationId": "get_user_similar_users__user_id__similar_get",
         "parameters": [
           {
@@ -821,6 +835,18 @@
               "title": "User Id"
             },
             "description": "Numeric Instagram user id (pk)"
+          },
+          {
+            "name": "expand",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "description": "Return up to 30 suggestion cards, each with the account's recent post previews (media_infos)",
+              "default": false,
+              "title": "Expand"
+            },
+            "description": "Return up to 30 suggestion cards, each with the account's recent post previews (media_infos)"
           }
         ],
         "responses": {
@@ -1193,7 +1219,7 @@
           "public"
         ],
         "summary": "Get Post Likers All",
-        "description": "Every account that liked a post \u2014 the full chronological list (up to\n~1-2k), not the ranked ~100 of ``/posts/{id}/likers``. One call, no\npagination; Instagram sets the mega-post ceiling itself.",
+        "description": "Every account that liked a post \u2014 the full chronological list (up to\n~1-2k), not the ranked ~100 of ``/posts/{id}/likers``. One call, no\npagination; Instagram sets the mega-post ceiling itself. For the post's\ntotal like *count*, read the post (``/posts/{id}``, ``like_count``) \u2014\nInstagram does not include a total in the likers payload.",
         "operationId": "get_post_likers_all_posts__post_id__likers_all_get",
         "parameters": [
           {
@@ -1251,7 +1277,7 @@
           "public"
         ],
         "summary": "Get Comment Replies",
-        "description": "Threaded replies to a comment. Requires the parent ``media_id``.",
+        "description": "Threaded replies to a comment, plus the parent ``comment`` object (its\n``pk`` is ``comment_id``) \u2014 so this doubles as \"fetch one comment by id\".\nRequires the parent ``media_id``. The walk can return fewer than\n``child_comment_count``: that count includes replies Instagram has filtered\n(deleted, hidden or spam) and serves to no one; every retrievable reply is\nreturned.",
         "operationId": "get_comment_replies_comments__comment_id__replies_get",
         "parameters": [
           {
@@ -1396,7 +1422,7 @@
           "public"
         ],
         "summary": "Search Users",
-        "description": "Account search.",
+        "description": "Account search. Instagram caps the result depth (~40 accounts) on its\nside; it is not extendable by paging.",
         "operationId": "search_users_search_users_get",
         "parameters": [
           {
@@ -1602,64 +1628,8 @@
           "public"
         ],
         "summary": "Search Reels",
-        "description": "Reels (clips) keyword search. Served by the legacy ``fbsearch/reels_serp``\nendpoint \u2014 the 452 app's new GraphQL reels SERP returns empty.",
+        "description": "Discontinued (410 Gone): Instagram no longer offers a standalone reels\nkeyword search. Use ``/search/top``, which returns reels among the top\nresults for a query.",
         "operationId": "search_reels_search_reels_get",
-        "parameters": [
-          {
-            "name": "search_session_id",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid",
-              "description": "Client-created UUID reused for one search journey",
-              "title": "Search Session Id"
-            },
-            "description": "Client-created UUID reused for one search journey"
-          },
-          {
-            "name": "serp_session_id",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid",
-              "description": "Client-created UUID reused for one SERP journey",
-              "title": "Serp Session Id"
-            },
-            "description": "Client-created UUID reused for one SERP journey"
-          },
-          {
-            "name": "query",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "minLength": 1,
-              "description": "Search query",
-              "title": "Query"
-            },
-            "description": "Search query"
-          },
-          {
-            "name": "cursor",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "description": "Opaque pagination cursor from a previous next_cursor",
-              "title": "Cursor"
-            },
-            "description": "Opaque pagination cursor from a previous next_cursor"
-          }
-        ],
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -1678,25 +1648,14 @@
                         "success"
                       ]
                     },
-                    "data": {
-                      "type": "object"
-                    }
+                    "data": {}
                   }
                 }
               }
             }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object"
-                }
-              }
-            }
           }
-        }
+        },
+        "deprecated": true
       }
     },
     "/search/audio": {
@@ -1929,14 +1888,14 @@
           {
             "name": "query",
             "in": "query",
-            "required": true,
+            "required": false,
             "schema": {
               "type": "string",
-              "minLength": 1,
-              "description": "Place name to search for",
+              "description": "Place name to search for; optional when lat+lng are given",
+              "default": "",
               "title": "Query"
             },
-            "description": "Place name to search for"
+            "description": "Place name to search for; optional when lat+lng are given"
           },
           {
             "name": "lat",
@@ -1953,10 +1912,10 @@
                   "type": "null"
                 }
               ],
-              "description": "Bias results toward this latitude",
+              "description": "Latitude \u2014 with lng, lists nearby venues (query optional)",
               "title": "Lat"
             },
-            "description": "Bias results toward this latitude"
+            "description": "Latitude \u2014 with lng, lists nearby venues (query optional)"
           },
           {
             "name": "lng",
@@ -1973,10 +1932,10 @@
                   "type": "null"
                 }
               ],
-              "description": "Bias results toward this longitude",
+              "description": "Longitude \u2014 with lat, lists nearby venues (query optional)",
               "title": "Lng"
             },
-            "description": "Bias results toward this longitude"
+            "description": "Longitude \u2014 with lat, lists nearby venues (query optional)"
           }
         ],
         "responses": {
@@ -2160,8 +2119,9 @@
           "public"
         ],
         "summary": "Get Hashtag Recent",
-        "description": "Most-recent media for a hashtag.",
+        "description": "Discontinued (410 Gone). Instagram removed the chronological hashtag tab\n(the legacy ``tags/{name}/sections/`` it was served from is gone); only Top\nremains, via GraphQL. Use ``/hashtags/{name}/top``.",
         "operationId": "get_hashtag_recent_hashtags__name__recent_get",
+        "deprecated": true,
         "parameters": [
           {
             "name": "name",
@@ -2171,24 +2131,6 @@
               "type": "string",
               "title": "Name"
             }
-          },
-          {
-            "name": "cursor",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "description": "Opaque pagination cursor from a previous next_cursor",
-              "title": "Cursor"
-            },
-            "description": "Opaque pagination cursor from a previous next_cursor"
           }
         ],
         "responses": {
@@ -2209,9 +2151,7 @@
                         "success"
                       ]
                     },
-                    "data": {
-                      "type": "object"
-                    }
+                    "data": {}
                   }
                 }
               }
@@ -2236,8 +2176,9 @@
           "public"
         ],
         "summary": "Get Hashtag Reels",
-        "description": "Reels/clips for a hashtag.",
+        "description": "Discontinued (410 Gone). Instagram removed the reels hashtag tab; only Top\nremains, via GraphQL. Use ``/hashtags/{name}/top``.",
         "operationId": "get_hashtag_reels_hashtags__name__reels_get",
+        "deprecated": true,
         "parameters": [
           {
             "name": "name",
@@ -2247,24 +2188,6 @@
               "type": "string",
               "title": "Name"
             }
-          },
-          {
-            "name": "cursor",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "description": "Opaque pagination cursor from a previous next_cursor",
-              "title": "Cursor"
-            },
-            "description": "Opaque pagination cursor from a previous next_cursor"
           }
         ],
         "responses": {
@@ -2285,9 +2208,7 @@
                         "success"
                       ]
                     },
-                    "data": {
-                      "type": "object"
-                    }
+                    "data": {}
                   }
                 }
               }
@@ -2524,7 +2445,7 @@
           "public"
         ],
         "summary": "Get Highlight",
-        "description": "The media items of a single highlight reel.",
+        "description": "A single highlight reel: its media ``items`` plus the album's own\nmetadata under ``highlight`` (title, cover_media, owner, ...).",
         "operationId": "get_highlight_highlights__highlight_id__get",
         "parameters": [
           {

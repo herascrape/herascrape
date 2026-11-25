@@ -35,8 +35,10 @@ class AsyncEndpoints(BaseAsyncClient):
     async def user_followers(
         self, user_id: str, *, cursor: str | None = None
     ) -> Any:
-        """A page of the user's followers. Note: for business accounts Instagram
-        caps pagination depth, so the full list may not be reachable.
+        """A page of the user's followers. ``list_hidden`` is true when a public
+        account hides its follower list. Instagram fixes the page at ~25 (not
+        tunable). Note: for business accounts Instagram caps pagination
+        depth, so the full list may not be reachable.
 
         ``GET /users/{user_id}/followers``
         """
@@ -59,7 +61,11 @@ class AsyncEndpoints(BaseAsyncClient):
     async def user_following(
         self, user_id: str, *, cursor: str | None = None
     ) -> Any:
-        """A page of the accounts this user follows.
+        """A page of the accounts this user follows. ``list_hidden`` is true
+        when a public account hides its following list. Instagram fixes the
+        page at ~25 (the page size is not tunable); send the header ``X-Type:
+        chronological`` for the newest-first list, which Instagram serves
+        ~200 per page.
 
         ``GET /users/{user_id}/following``
         """
@@ -80,7 +86,11 @@ class AsyncEndpoints(BaseAsyncClient):
         return apaginate(fetch, item_key="items", max_items=max_items)
 
     async def user_posts(
-        self, user_id: str, *, cursor: str | None = None
+        self,
+        user_id: str,
+        *,
+        cursor: str | None = None,
+        flat: bool | None = None,
     ) -> Any:
         """The profile grid. Page with the opaque ``next_cursor`` from the
         previous response (it carries both the grid cursor and its
@@ -91,7 +101,7 @@ class AsyncEndpoints(BaseAsyncClient):
         return await self._request(
             method="get",
             path=f"/users/{user_id}/posts",
-            params={"cursor": cursor},
+            params={"cursor": cursor, "flat": flat},
         )
 
     async def user_reels(
@@ -101,7 +111,10 @@ class AsyncEndpoints(BaseAsyncClient):
         cursor: str | None = None,
         sort_by_views: bool | None = None,
     ) -> Any:
-        """A page of the user's reels (clips).
+        """A page of the user's reels (clips). With ``x-longform: true`` the
+        response also carries a ``longform`` array of any full-length
+        "Features" episodes whose trailer clip is on the Reels tab (not the
+        feed grid).
 
         ``GET /users/{user_id}/reels``
         """
@@ -151,7 +164,8 @@ class AsyncEndpoints(BaseAsyncClient):
         return apaginate(fetch, item_key="items", max_items=max_items)
 
     async def user_stories(self, user_id: str) -> Any:
-        """The user's currently-active story items (empty if none live).
+        """The user's currently-active story ``items``, plus ``broadcast`` — the
+        live-video object when the user is live, ``None`` otherwise.
 
         ``GET /users/{user_id}/stories``
         """
@@ -160,7 +174,9 @@ class AsyncEndpoints(BaseAsyncClient):
         )
 
     async def user_highlights(self, user_id: str) -> Any:
-        """The profile's highlight reels (tray).
+        """The profile's highlight reels (tray). The whole tray comes in one
+        request — Instagram does not paginate it, so ``has_more`` is always
+        false and there is no cursor.
 
         ``GET /users/{user_id}/highlights``
         """
@@ -200,15 +216,19 @@ class AsyncEndpoints(BaseAsyncClient):
         """
         return await self._request(method="get", path=f"/users/{user_id}/about")
 
-    async def user_similar(self, user_id: str) -> Any:
-        """Related / "Suggested for you" accounts for a profile (single capped
-        page — Instagram does not paginate chaining). Empty only when the
-        target has no chaining graph at all.
+    async def user_similar(
+        self, user_id: str, *, expand: bool | None = None
+    ) -> Any:
+        """Accounts related to a profile: Instagram's "Suggested for you" list,
+        as one page. ``expand=true`` returns up to 30 suggestion cards, each
+        with the account's recent posts.
 
         ``GET /users/{user_id}/similar``
         """
         return await self._request(
-            method="get", path=f"/users/{user_id}/similar"
+            method="get",
+            path=f"/users/{user_id}/similar",
+            params={"expand": expand},
         )
 
     async def post_counts(self, *, ids: str) -> Any:
@@ -273,7 +293,10 @@ class AsyncEndpoints(BaseAsyncClient):
     async def post_likers_all(self, post_id: str) -> Any:
         """Every account that liked a post — the full chronological list (up to
         ~1-2k), not the ranked ~100 of ``/posts/{id}/likers``. One call, no
-        pagination; Instagram sets the mega-post ceiling itself.
+        pagination; Instagram sets the mega-post ceiling itself. For the
+        post's total like *count*, read the post (``/posts/{id}``,
+        ``like_count``) — Instagram does not include a total in the likers
+        payload.
 
         ``GET /posts/{post_id}/likers/all``
         """
@@ -284,7 +307,12 @@ class AsyncEndpoints(BaseAsyncClient):
     async def comment_replies(
         self, comment_id: str, *, media_id: str, cursor: str | None = None
     ) -> Any:
-        """Threaded replies to a comment. Requires the parent ``media_id``.
+        """Threaded replies to a comment, plus the parent ``comment`` object
+        (its ``pk`` is ``comment_id``) — so this doubles as "fetch one
+        comment by id". Requires the parent ``media_id``. The walk can return
+        fewer than ``child_comment_count``: that count includes replies
+        Instagram has filtered (deleted, hidden or spam) and serves to no
+        one; every retrievable reply is returned.
 
         ``GET /comments/{comment_id}/replies``
         """
@@ -323,7 +351,8 @@ class AsyncEndpoints(BaseAsyncClient):
         query: str,
         cursor: str | None = None,
     ) -> Any:
-        """Account search.
+        """Account search. Instagram caps the result depth (~40 accounts) on its
+        side; it is not extendable by paging.
 
         ``GET /search/users``
         """
@@ -418,58 +447,14 @@ class AsyncEndpoints(BaseAsyncClient):
 
         return apaginate(fetch, item_key="items", max_items=max_items)
 
-    async def search_reels(
-        self,
-        *,
-        search_session_id: str | None = None,
-        serp_session_id: str | None = None,
-        query: str,
-        cursor: str | None = None,
-    ) -> Any:
-        """Reels (clips) keyword search. Served by the legacy
-        ``fbsearch/reels_serp`` endpoint — the 452 app's new GraphQL reels
-        SERP returns empty.
+    async def search_reels(self) -> Any:
+        """Discontinued (410 Gone): Instagram no longer offers a standalone
+        reels keyword search. Use ``/search/top``, which returns reels among
+        the top results for a query.
 
         ``GET /search/reels``
         """
-        if search_session_id is None:
-            search_session_id = _session_id()
-        if serp_session_id is None:
-            serp_session_id = _session_id()
-        return await self._request(
-            method="get",
-            path="/search/reels",
-            params={
-                "search_session_id": search_session_id,
-                "serp_session_id": serp_session_id,
-                "query": query,
-                "cursor": cursor,
-            },
-        )
-
-    def iter_search_reels(
-        self,
-        *,
-        search_session_id: str | None = None,
-        serp_session_id: str | None = None,
-        query: str,
-        max_items: int | None = None,
-    ) -> AsyncIterator[Any]:
-        """Lazily yield items from every page of ``search_reels``."""
-        if search_session_id is None:
-            search_session_id = _session_id()
-        if serp_session_id is None:
-            serp_session_id = _session_id()
-
-        async def fetch(cursor: str | None) -> Page:
-            return await self.search_reels(
-                search_session_id=search_session_id,
-                serp_session_id=serp_session_id,
-                query=query,
-                cursor=cursor,
-            )
-
-        return apaginate(fetch, item_key="items", max_items=max_items)
+        return await self._request(method="get", path="/search/reels")
 
     async def search_audio(
         self,
@@ -583,7 +568,11 @@ class AsyncEndpoints(BaseAsyncClient):
         return apaginate(fetch, item_key="edges", max_items=max_items)
 
     async def search_places(
-        self, *, query: str, lat: float | None = None, lng: float | None = None
+        self,
+        *,
+        query: str | None = None,
+        lat: float | None = None,
+        lng: float | None = None,
     ) -> Any:
         """Venue search. Instagram retired the standalone location-search
         screen, but the capability survives in the composer's place picker,
@@ -626,51 +615,24 @@ class AsyncEndpoints(BaseAsyncClient):
 
         return apaginate(fetch, item_key="items", max_items=max_items)
 
-    async def hashtag_recent(
-        self, name: str, *, cursor: str | None = None
-    ) -> Any:
-        """Most-recent media for a hashtag.
+    async def hashtag_recent(self, name: str) -> Any:
+        """Discontinued (410 Gone). Instagram removed the chronological hashtag
+        tab (the legacy ``tags/{name}/sections/`` it was served from is
+        gone); only Top remains, via GraphQL. Use ``/hashtags/{name}/top``.
 
         ``GET /hashtags/{name}/recent``
         """
         return await self._request(
-            method="get",
-            path=f"/hashtags/{name}/recent",
-            params={"cursor": cursor},
+            method="get", path=f"/hashtags/{name}/recent"
         )
 
-    def iter_hashtag_recent(
-        self, name: str, *, max_items: int | None = None
-    ) -> AsyncIterator[Any]:
-        """Lazily yield items from every page of ``hashtag_recent``."""
-
-        async def fetch(cursor: str | None) -> Page:
-            return await self.hashtag_recent(name, cursor=cursor)
-
-        return apaginate(fetch, item_key="items", max_items=max_items)
-
-    async def hashtag_reels(
-        self, name: str, *, cursor: str | None = None
-    ) -> Any:
-        """Reels/clips for a hashtag.
+    async def hashtag_reels(self, name: str) -> Any:
+        """Discontinued (410 Gone). Instagram removed the reels hashtag tab;
+        only Top remains, via GraphQL. Use ``/hashtags/{name}/top``.
 
         ``GET /hashtags/{name}/reels``
         """
-        return await self._request(
-            method="get",
-            path=f"/hashtags/{name}/reels",
-            params={"cursor": cursor},
-        )
-
-    def iter_hashtag_reels(
-        self, name: str, *, max_items: int | None = None
-    ) -> AsyncIterator[Any]:
-        """Lazily yield items from every page of ``hashtag_reels``."""
-
-        async def fetch(cursor: str | None) -> Page:
-            return await self.hashtag_reels(name, cursor=cursor)
-
-        return apaginate(fetch, item_key="items", max_items=max_items)
+        return await self._request(method="get", path=f"/hashtags/{name}/reels")
 
     async def location(self, location_id: str) -> Any:
         """Location / place metadata (name, category, city, hours).
@@ -728,7 +690,8 @@ class AsyncEndpoints(BaseAsyncClient):
         return apaginate(fetch, item_key="items", max_items=max_items)
 
     async def highlight(self, highlight_id: str) -> Any:
-        """The media items of a single highlight reel.
+        """A single highlight reel: its media ``items`` plus the album's own
+        metadata under ``highlight`` (title, cover_media, owner, ...).
 
         ``GET /highlights/{highlight_id}``
         """

@@ -1,4 +1,4 @@
-export const VERSION = "0.1.7";
+export const VERSION = "0.1.10";
 
 export { Client } from "./client";
 export type { ClientOptions } from "./base";

@@ -67,12 +67,14 @@ export class Endpoints extends BaseClient {
   userPosts(opts: {
     userId: string;
     cursor?: string;
+    flat?: boolean;
   }): Promise<Record<string, unknown>> {
     return this.request({
       method: "get",
       path: `/users/${opts.userId}/posts`,
       searchParams: {
         cursor: opts.cursor,
+        flat: opts.flat,
       },
     });
   }
@@ -174,10 +176,16 @@ export class Endpoints extends BaseClient {
     return this.request({ method: "get", path: `/users/${opts.userId}/about` });
   }
 
-  userSimilar(opts: { userId: string }): Promise<Record<string, unknown>> {
+  userSimilar(opts: {
+    userId: string;
+    expand?: boolean;
+  }): Promise<Record<string, unknown>> {
     return this.request({
       method: "get",
       path: `/users/${opts.userId}/similar`,
+      searchParams: {
+        expand: opts.expand,
+      },
     });
   }
 
@@ -348,44 +356,8 @@ export class Endpoints extends BaseClient {
     return paginate(fetchPage, { itemKey: "items", maxItems: opts.maxItems });
   }
 
-  searchReels(opts: {
-    searchSessionId?: string;
-    serpSessionId?: string;
-    query: string;
-    cursor?: string;
-  }): Promise<Record<string, unknown>> {
-    const searchSessionId = opts.searchSessionId ?? sessionId();
-    const serpSessionId = opts.serpSessionId ?? sessionId();
-    return this.request({
-      method: "get",
-      path: "/search/reels",
-      searchParams: {
-        search_session_id: searchSessionId,
-        serp_session_id: serpSessionId,
-        query: opts.query,
-        cursor: opts.cursor,
-      },
-    });
-  }
-
-  iterSearchReels(opts: {
-    searchSessionId?: string;
-    serpSessionId?: string;
-    query: string;
-    maxItems?: number | null;
-  }): AsyncIterable<Record<string, unknown>> {
-    const searchSessionId = opts.searchSessionId ?? sessionId();
-    const serpSessionId = opts.serpSessionId ?? sessionId();
-    const fetchPage = (
-      cursor: string | undefined,
-    ): Promise<Record<string, unknown>> =>
-      this.searchReels({
-        searchSessionId,
-        serpSessionId,
-        query: opts.query,
-        cursor,
-      });
-    return paginate(fetchPage, { itemKey: "items", maxItems: opts.maxItems });
+  searchReels(): Promise<Record<string, unknown>> {
+    return this.request({ method: "get", path: "/search/reels" });
   }
 
   searchAudio(opts: {
@@ -474,11 +446,9 @@ export class Endpoints extends BaseClient {
     return paginate(fetchPage, { itemKey: "edges", maxItems: opts.maxItems });
   }
 
-  searchPlaces(opts: {
-    query: string;
-    lat?: number;
-    lng?: number;
-  }): Promise<Record<string, unknown>> {
+  searchPlaces(
+    opts: { query?: string; lat?: number; lng?: number } = {},
+  ): Promise<Record<string, unknown>> {
     return this.request({
       method: "get",
       path: "/search/places",
@@ -518,52 +488,18 @@ export class Endpoints extends BaseClient {
     return paginate(fetchPage, { itemKey: "items", maxItems: opts.maxItems });
   }
 
-  hashtagRecent(opts: {
-    name: string;
-    cursor?: string;
-  }): Promise<Record<string, unknown>> {
+  hashtagRecent(opts: { name: string }): Promise<Record<string, unknown>> {
     return this.request({
       method: "get",
       path: `/hashtags/${opts.name}/recent`,
-      searchParams: {
-        cursor: opts.cursor,
-      },
     });
   }
 
-  iterHashtagRecent(opts: {
-    name: string;
-    maxItems?: number | null;
-  }): AsyncIterable<Record<string, unknown>> {
-    const fetchPage = (
-      cursor: string | undefined,
-    ): Promise<Record<string, unknown>> =>
-      this.hashtagRecent({ name: opts.name, cursor });
-    return paginate(fetchPage, { itemKey: "items", maxItems: opts.maxItems });
-  }
-
-  hashtagReels(opts: {
-    name: string;
-    cursor?: string;
-  }): Promise<Record<string, unknown>> {
+  hashtagReels(opts: { name: string }): Promise<Record<string, unknown>> {
     return this.request({
       method: "get",
       path: `/hashtags/${opts.name}/reels`,
-      searchParams: {
-        cursor: opts.cursor,
-      },
     });
-  }
-
-  iterHashtagReels(opts: {
-    name: string;
-    maxItems?: number | null;
-  }): AsyncIterable<Record<string, unknown>> {
-    const fetchPage = (
-      cursor: string | undefined,
-    ): Promise<Record<string, unknown>> =>
-      this.hashtagReels({ name: opts.name, cursor });
-    return paginate(fetchPage, { itemKey: "items", maxItems: opts.maxItems });
   }
 
   location(opts: { locationId: string }): Promise<Record<string, unknown>> {

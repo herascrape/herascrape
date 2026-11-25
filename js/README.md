@@ -157,7 +157,7 @@ matching `iter*` async iterator.
 | --- | --- |
 | Users | `userByUsername`, `user`, `userFollowers`, `userFollowing`, `userPosts`, `userReels`, `userTagged`, `userStories`, `userHighlights`, `userReposts`, `userAbout`, `userSimilar` |
 | Posts and comments | `post`, `postComments`, `postLikers`, `postLikersAll`, `postCounts`, `commentReplies`, `commentLikers` |
-| Search | `searchUsers`, `searchHashtags`, `searchAudio`, `searchTop`, `searchPlaces`, `searchReels` |
+| Search | `searchUsers`, `searchHashtags`, `searchAudio`, `searchTop`, `searchPlaces` |
 | Hashtags | `hashtag`, `hashtagTop`, `hashtagRecent`, `hashtagReels` |
 | Locations | `location`, `locationTop`, `locationRecent` |
 | Audio | `audioTrending`, `audio`, `audioMedias` |
