@@ -59,29 +59,40 @@ class AsyncEndpoints(BaseAsyncClient):
         return apaginate(fetch, item_key="items", max_items=max_items)
 
     async def user_following(
-        self, user_id: str, *, cursor: str | None = None
+        self,
+        user_id: str,
+        *,
+        cursor: str | None = None,
+        query: str | None = None,
     ) -> Any:
         """A page of the accounts this user follows. ``list_hidden`` is true
         when a public account hides its following list. Instagram fixes the
         page at ~25 (the page size is not tunable); send the header ``X-Type:
         chronological`` for the newest-first list, which Instagram serves
-        ~200 per page.
+        ~200 per page. ``query`` searches the list by username or name
+        instead; a search returns at most a few pages and ignores ``X-Type``.
 
         ``GET /users/{user_id}/following``
         """
         return await self._request(
             method="get",
             path=f"/users/{user_id}/following",
-            params={"cursor": cursor},
+            params={"cursor": cursor, "query": query},
         )
 
     def iter_user_following(
-        self, user_id: str, *, max_items: int | None = None
+        self,
+        user_id: str,
+        *,
+        query: str | None = None,
+        max_items: int | None = None,
     ) -> AsyncIterator[Any]:
         """Lazily yield items from every page of ``user_following``."""
 
         async def fetch(cursor: str | None) -> Page:
-            return await self.user_following(user_id, cursor=cursor)
+            return await self.user_following(
+                user_id, query=query, cursor=cursor
+            )
 
         return apaginate(fetch, item_key="items", max_items=max_items)
 

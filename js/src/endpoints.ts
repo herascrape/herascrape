@@ -43,24 +43,27 @@ export class Endpoints extends BaseClient {
   userFollowing(opts: {
     userId: string;
     cursor?: string;
+    query?: string;
   }): Promise<Record<string, unknown>> {
     return this.request({
       method: "get",
       path: `/users/${opts.userId}/following`,
       searchParams: {
         cursor: opts.cursor,
+        query: opts.query,
       },
     });
   }
 
   iterUserFollowing(opts: {
     userId: string;
+    query?: string;
     maxItems?: number | null;
   }): AsyncIterable<Record<string, unknown>> {
     const fetchPage = (
       cursor: string | undefined,
     ): Promise<Record<string, unknown>> =>
-      this.userFollowing({ userId: opts.userId, cursor });
+      this.userFollowing({ userId: opts.userId, cursor, query: opts.query });
     return paginate(fetchPage, { itemKey: "items", maxItems: opts.maxItems });
   }
 

@@ -213,7 +213,7 @@
           "public"
         ],
         "summary": "Get User Following",
-        "description": "A page of the accounts this user follows. ``list_hidden`` is true when a\npublic account hides its following list. Instagram fixes the page at ~25 (the page\nsize is not tunable); send the header ``X-Type: chronological`` for the\nnewest-first list, which Instagram serves ~200 per page.",
+        "description": "A page of the accounts this user follows. ``list_hidden`` is true when a\npublic account hides its following list. Instagram fixes the page at ~25 (the page\nsize is not tunable); send the header ``X-Type: chronological`` for the\nnewest-first list, which Instagram serves ~200 per page. ``query`` searches\nthe list by username or name instead; a search returns at most a few pages\nand ignores ``X-Type``.",
         "operationId": "get_user_following_users__user_id__following_get",
         "parameters": [
           {
@@ -245,6 +245,25 @@
               "title": "Cursor"
             },
             "description": "Opaque pagination cursor from a previous next_cursor"
+          },
+          {
+            "name": "query",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "minLength": 1
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Return only the accounts this user follows whose username or full name matches this text. Page with `cursor`, sending the same `query`. Empty `items` means nothing matched.",
+              "title": "Query"
+            },
+            "description": "Return only the accounts this user follows whose username or full name matches this text. Page with `cursor`, sending the same `query`. Empty `items` means nothing matched."
           }
         ],
         "responses": {
